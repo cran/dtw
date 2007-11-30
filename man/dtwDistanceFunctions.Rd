@@ -1,7 +1,8 @@
-\name{euclideanSquared}
+\name{dtwDistanceFunctions}
+\alias{dtwDistanceFunctions}
 \alias{euclideanSquared}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{ Euclidean Distance between two vectors }
+\title{Distance functions for DTW}
 \description{
   Compute Euclidean squared distance between two given vectors
   (default function for \code{dtw}).
@@ -18,10 +19,10 @@ euclideanSquared(a, b)
   This is a trivial distance function supplied as an example of what can be
   passed to the \code{distance.function} argument in \code{\link{dtw}}.
   
-  Altough it makes a lot of sense for \code{a} and \code{b} to be
+  Altough it makes  sense for \code{a} and \code{b} to be
   \emph{vectors} rather than numbers, direct alignment of two
   multivariate time series is currently not supported natively by
-  \code{dtw} (this may change soon).  The user can instead build a local
+  \code{dtw} (this may change soon).  The user should instead build a local
   distance matrix, e.g. via a custom function or
   \code{\link[pkg:analogue]{distance}} in package \code{analogue}, and
   feed the result into \code{dtw} as a matrix first argument.
@@ -37,15 +38,23 @@ euclideanSquared(a, b)
 
 \seealso{  See Also \code{\link[pkg:analogue]{distance}}  }
 \examples{
-## The function is currently defined as
-function(a,b) {
-  z<-a-b;
-  z<-drop(z \%*\% z);                     #inner dot product
-  return (z);
-}
+
+# A constant vector
+z<-numeric(10);     
+
+# dtw between two constant vectors with a squared euclidean distance
+# this should be 2^2 times 10 elements = 40
+d2<-dtw(z,z+2);
+stopifnot(d2$distance==40);
+
+# dtw between two constant vectors with a root squared euclidean distance
+# this should be 2 times 10 elements = 20
+d1<-dtw(z,z+2,
+ 	distance.function=function(a,b){return(abs(a-b));})
+stopifnot(d1$distance==20);
+
+
 }
 
 
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ts }
+\keyword{ internal }

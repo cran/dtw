@@ -1,15 +1,18 @@
 ###############################################################
 #                                                             #
-#   Author: Toni Giorgino <toni.giorgino@gmail.com>           #
+#   (c) Toni Giorgino <toni.giorgino@gmail.com>           #
 #       Laboratory for Biomedical Informatics                 #
 #       University of Pavia - Italy                           #
 #       www.labmedinfo.org                                    #
 #                                                             #
-#   $Id$
+#   $Id: dtw.R 33 2007-12-07 12:19:40Z tonig $
 #                                                             #
 ###############################################################
 
 
+##
+## Frontend stuff, including coercing shorthand types
+##
 
 
 `dtw` <-
@@ -17,11 +20,12 @@ function(x, y=NULL,
          distance.function=euclideanSquared,
          step.pattern="s",
          window.type="none",
-         window.size=10,
-         keep.internals=FALSE ) {
+         keep.internals=FALSE, ... ) {
 
   lm <- NULL;
 
+
+  
   ## if matrix given
   if(is.matrix(x)) {
     lm <- x;
@@ -31,19 +35,31 @@ function(x, y=NULL,
     lm <- outer(as.numeric(x),
                 as.numeric(y),
                 FUN=distance.function);
-  } 
+  }
+
+
+  ## Now we have a function
+  wfun<-.canonicalizeWindowFunction(window.type);
+  
+
+  ## Now we have a step pattern
+  dir<-.canonicalizeStepPattern(step.pattern);
 
 
   ## shorthand names
   n <- dim(lm)[1];
   m <- dim(lm)[2];
 
-  gcm <- globalCostMatrix(lm, step.pattern, window.type, window.size);
+  gcm <- globalCostMatrix(lm, step.matrix=dir,
+                          window.function=wfun, ...);
 
   jmin <- m;
 
   ## result: distance (add to existing list gcm?)
   distance <- gcm$costMatrix[n,jmin];
+
+  ## alignment valid?
+  if(is.na(distance)) { stop("No warping paths exists that is allowed by costraints"); }
 
   ## perform the backtrack
   mapping <- backtrack(jmin,gcm);
@@ -57,11 +73,69 @@ function(x, y=NULL,
   if(!keep.internals) {
     gcm$costMatrix<-NULL;
     gcm$directionMatrix<-NULL;
-  }
+  } 
 
   ## if a dtw object is to be sponsored:
-  # class(gcm) <- "dtw";
+  class(gcm) <- "dtw";
 
   return(gcm);
 }
+
+
+##############################
+## OO class check
+is.dtw <- function(d) {
+    return(inherits(d,"dtw"));
+}
+
+
+
+
+## Replace  char window.type  with appropriate
+## windowing FUNCTION 
+
+.canonicalizeWindowFunction <- function(w) {
+  if(is.function(w)) {
+    return(w);
+  }
+
+  # else 
+  wt<-pmatch(w,c("none","sakoechiba","itakura","slantedband"));
+  if(is.na(wt)) {
+    stop("Ambiguous or unsupported char argument for window.type");
+  } 
+
+  wfun<-switch(wt,
+	noWindow,
+	sakoeChibaWindow,
+	itakuraWindow,
+	slantedBandWindow);
+
+  return(wfun);
+}
+
+
+
+## Replace char step.pattern with matrix equivalent
+## Step patterns: \delta i, \delta j, cost
+##                                      ...
+## all deltas MUST be positive (otherwise we violate monotonicity)
+
+.canonicalizeStepPattern <- function(step.pattern) {
+  if(is.stepPattern(step.pattern))
+    return(step.pattern);
+
+  # else 
+  sp<-pmatch(step.pattern,c("symmetric","asymmetric"));
+  if(is.na(sp))
+    stop("Ambiguous or unsupported char argument for step.pattern");
+
+  dir<-switch(sp,
+	symmetric1,
+	asymmetric);
+
+  return(dir);
+}
+
+
 

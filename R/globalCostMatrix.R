@@ -1,7 +1,24 @@
+###############################################################
+#                                                             #
+#   Author: Toni Giorgino <toni.giorgino@gmail.com>           #
+#       Laboratory for Biomedical Informatics                 #
+#       University of Pavia - Italy                           #
+#       www.labmedinfo.org                                    #
+#                                                             #
+#   $Id: globalCostMatrix.R 27 2007-12-06 14:18:41Z tonig $
+#                                                             #
+###############################################################
+
 
 ########################################
 ## Compute the cost matrix from a local distance matrix
-## $Id:$
+
+
+
+## We assume that all arguments are expanded from
+## char shortands. This includes:
+##  step.matrix - should be a 3x3 matrix
+##  window.function - should be a function
 
 
 
@@ -9,49 +26,13 @@
 
 `globalCostMatrix` <-
 function(lm,
-         step.pattern="s",
-         window.type="none",
-         window.size=10) {
+         step.matrix=symmetric1,
+         window.function=noWindow,
+         ...) {
 
 
-  ## TODO. Coerce lm to matrix?
-  
-  
-  wfun<-window.type;
-
-  if(!is.function(wfun)) {
-    wt<-pmatch(window.type,c("sakoechiba","itakura","none"));    
-    if(is.na(wt)) {
-      wfun<-noWindow;
-      warning("Unsupported argument for window.type: using no windowing");
-    } else if(wt==1) {                  #SAKOE band
-      wfun<-sakoeChibaWindow;
-    } else if(wt==2) {                  #ITAKURA pg.
-      wfun<-itakuraWindow;
-    } else if(wt==3) {                  #no windowing
-      wfun<-noWindow;
-    } else {
-      wfun<-noWindow;
-      warning("Should not happen on window.type: using no windowing");
-    }
-  }
-  
-
-  # Step patterns: \delta i, \delta j, cost
-  #                                      ...
-  # all deltas MUST be positive (otherwise we violate monotonicity)
-  #       #TODO pmatch
-  
-  dir<-step.pattern;        # custom step pattern
-  if(dir == "s") { # symmetric DTW
-    dir<-matrix(c(0,1,1,
-                  1,0,1,
-                  1,1,1), nrow=3, ncol=3,byrow=TRUE);
-  } else if(dir == "a") { # asymmetric DTW
-    dir<-matrix(c(1,0,1,
-                  1,1,1,
-                  1,2,1), nrow=3, ncol=3,byrow=TRUE);
-  }
+  # a shorthand
+  dir <- step.matrix;
 
   # i = 1 .. n in query sequence, on first index, ie rows
   # j = 1 .. m on template sequence, on second index, ie columns
@@ -61,8 +42,11 @@ function(lm,
   template.size <- m <- dim(lm)[2];
 
 
-  # number of step patterns allowed
+  # number of individual steps (counting all patterns)
   nsteps<-dim(dir)[1];
+
+  # number of step patterns defined
+  npats<-max(dir[,1]); 
 
   # clear the cost and step matrix
   cm <- matrix(NA,nrow=n,ncol=m);
@@ -72,35 +56,42 @@ function(lm,
   cm[1,1] <- lm[1,1];
 
 
+
+
   # now walk through the matrix, column-wise and row-wise,
   # and recursively compute the accumulated distance. Unreachable
   # elements are handled via NAs (removed)
 
   for (j in 1:m) {
     for (i in 1:n) {
-      d<-lm[i,j];
-      clist<-c();
-      slist<-c();
+      ## It is ok to window on the arrival point (?)
+      if(!window.function(i,j, query.size, template.size, ...)) { next; }
+
+      clist<-numeric(npats)+NA;
       for (s in 1:nsteps) {
+	## current pattern
+	p<-dir[s,1];
         ## ii,jj is the cell from where potentially we could
-        ## come from. TODO add windowing here.
-        ii<-i-dir[s,1];                 # previous step in inp
-        jj<-j-dir[s,2];                 # previous step in tpl
+        ## have come from. 
+        ii<-i-dir[s,2];                 # previous step in inp
+        jj<-j-dir[s,3];                 # previous step in tpl
         if(ii>=1 && jj>=1) {            # element exists?
-          cc<-  dir[s,3];                 # step penalty
-          clist<-c(clist,cm[ii,jj]+cc*d); #build a cost list
-          slist<-c(slist,s);              #remember whence we came
+          cc<-  dir[s,4];               # step penalty
+	  if(cc == -1) {		#  -1? cumulative cost:
+		clist[p]<-cm[ii,jj];	#  there must be exactly 1 per pattern
+	  } else {			#  a cost for 
+		clist[p]<-clist[p]+cc*lm[ii,jj];
+	  }
         }
       }
 
 
-      ## there could no NAs at this point
-
-      # store in cost matrix
-      if(length(which.min(clist))>0) {          # odd way to exclude NANs
-        minc<-which.min(clist);                 # pick the least cost
+      ## no NAs in clist at this point BUT clist can be empty
+      ## store in cost matrix
+      minc<-which.min(clist);           # pick the least cost
+      if(length(minc)>0) {          	# false if clist has all NAs
         cm[i,j]<-clist[minc];
-        sm[i,j]<-slist[minc];
+        sm[i,j]<-minc;			# remember the pattern picked
       }
     }
   }

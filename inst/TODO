@@ -1,11 +1,21 @@
 
+=== Old style (3-col) step patterns: last in revision 17 ==
+
+
 IMPLEMENTATION
-* plot
-* windowing 
-* allow ts objects
+* plot OK
+* windowing  OK
+* allow ts objects OK
+* preserve TS names 
+* test OK
+* move plot elsewhere
+* dtw OO
+
 
 DOCUMENTATION
-* references
+* references OK
+* citation
+* demo OK
 
 STUDY
 * binary
@@ -14,5 +24,5 @@ STUDY
 
 
 EXAMPLES
-* density plot
-* put example of passing a distance matrix (also in euclideanSquared)
+* density plot OK
+* put example of passing a distance matrix OK

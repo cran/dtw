@@ -1,8 +1,9 @@
 \name{dtw}
 \alias{dtw}
+\alias{is.dtw}
 
 
-%- Also NEED an '\alias' for EACH other topic documented here.
+
 \title{Dynamic Time Warp}
 \description{
   Compute Dynamic Time Warp
@@ -10,24 +11,26 @@
 }
 \usage{
 dtw(x, y=NULL, distance.function=euclideanSquared, step.pattern="s",
-  window.type="none", window.size=10, keep.internals=FALSE)
+  window.type="none", keep.internals=FALSE, ...)
+
+is.dtw(d)
+
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{ Query vector OR local cost matrix }
-  \item{y}{ Template vector, or unused if cost matrix given }
+  \item{x}{ query vector OR local cost matrix }
+  \item{y}{ template vector, or unused if cost matrix given }
   %  \item{partial}{ ~~Describe \code{partial} here~~ }
-  \item{distance.function}{ Pointwise distance function. See e.g. \code{\link{euclideanSquared}} }
-  \item{step.pattern}{ The step pattern. Char: "s" (symmetric), "a"
-    (asymmetric), or an $s\times3$ matrix containing the allowed
-    steps with their cost -- to be documented better}
-  \item{window.type}{ Windowing function. Char: "none" (none, default),
-    "itakura" (Itakura Parallelogram), "sakoechiba" (Sakoe-Chiba band),
-    or a  function}
-  \item{window.size}{Window size (used by some
-    \cite{window.type}s)}
-  \item{keep.internals}{Don't discard the cumulative cost matrix and other
+  \item{distance.function}{ pointwise distance function. See e.g. \code{\link{dtwDistanceFunctions}} }
+  \item{step.pattern}{ step pattern. Char: "s" (symmetric), "a"
+    (asymmetric), or step matrix containing the allowed
+    steps with their cost (see \code{\link{stepPattern}})}
+  \item{window.type}{ windowing function, character or function. Char: "none",
+    "itakura", "sakoechiba", "slantedband". Function: boolean of two arguments.}
+  \item{keep.internals}{don't discard the cumulative cost matrix and other
     internal structures}
+  \item{...}{additional arguments, passed to \code{window.function}}
+  \item{d}{a timeseries object returned by \code{dtw}}
 }
 
 \details{
@@ -35,106 +38,98 @@ dtw(x, y=NULL, distance.function=euclideanSquared, step.pattern="s",
   The function performs Dynamic Time Warp (DTW) and computes the optimal
   alignment between two time series \code{x} and \code{y}, given as
   numeric vectors.  The ``optimal'' alignment minimizes the sum of
-  distances between aligned elements.
+  distances between aligned elements. Lengths of \code{x} and \code{y} may be different.
   
   The (local) distance between elements of \code{x} (query) and \code{y}
-  (template) is computed through the \code{distance.function}
-  (see). Lengths of \code{x} and \code{y} may  differ.
+  (template) is computed through the supplied \code{distance.function}
+  (see \code{\link{dtwDistanceFunctions}}). 
 
-  A local-distance matrix can be passed, as well; element $i,j$ of the
-  local-distance matrix is the distance between element x[i] and
-  y[j]. The distance matrix has therefore $n=length(x)$ rows and
-  $m=length(y)$ columns (see note below).
+  Multivariate time series and complex distance functions can be handled
+  by supplying a local-distance
+  matrix. Element \code{[i,j]} of the
+  local-distance matrix is understood as the distance between element  \code{x[i]} and
+  \code{y[j]}. The distance matrix has therefore \code{n=length(x)} rows and
+  \code{m=length(y)} columns (see note below). 
+  To generate a local distance matrix, the functions \code{outer}
+  and \code{\link[pkg:analogue]{distance}} in package
+  \pkg{analogue} may come handy.
 
-  Given the two time series, a local distance matrix can also be
-  computed by the user, for example e.g. via the function \code{outer}
-  or the complete \code{\link[pkg:analogue]{distance}} in package
-  \code{analogue}.
-
-  Common variants of DTW are supported via the \code{step.pattern}
-  argument, namely: 
-
-  \preformatted{
-    DTW Type     step.pattern     step.pattern (as matrix)
-    --------------------------------------------------
-      Symmetric    "s"              [1,] c(1,0,1)   # advance in x
-                                    [2,] c(0,1,1)   # advance in y
-                                    [3,] c(1,1,1)   # diagonal
-
-      Asymmetric   "a"              [1,] c(1,0,1)   # duplicate
-                                    [2,] c(1,1,1)   # copy
-				    [3,] c(1,2,1)   # skip
-  }
-
-  A custom step pattern is a matrix with three columns. Each row has an
-  allowed step size in the $x$ (element [,1]) and $y$ (element [,2])
-  series. Element [,3] is the weight which multiplies the local
-  distance, if that step is taken.  Steps must be \emph{non-negative}
-  integers (otherwise the monotonicity constraint is violated); weight
-  can be float.
-				  
+  Several common variants of DTW are supported via the \code{step.pattern}
+  argument, which defaults to \code{symmetric}. Most common
+  step patterns are supported and pre-defined matrices; the 
+  user can write their own. See 
+  \code{\link{stepPattern}} for details.
 
   Windowing is supported by supplying a name into the \code{window.type}
-  argument (abbreviations allowed)
-  between:
-  \preformatted{
-    "none"         No windowing (default)
-    "sakoechiba"   A "diagonal" band (see below if rectangular)
-    "itakura"      Itakura parallelogram (unimplemented yet)
+  argument (abbreviations allowed)  between the built-in types:
+
+  \itemize{
+	\item{\code{"none"}}{No windowing (default)}
+	\item{\code{"sakoechiba"}}{A band around main diagonal}
+	\item{\code{"slantedband"}}{A band around slanted diagonal}
+	\item{\code{"itakura"}}{So-called Itakura parallelogram}
   }
 
-  Alternatively, \code{window.type} can be a boolean function of two
-  integer arguments to return \code{TRUE} if the given coordinates fall
-  within the window (see e.g.\    \code{\link{sakoeChibaWindow}}).
-  
-  If the cost matrix is non-square, \emph{built-in} window types are
-  automatically adjusted. The Sakoe-Chiba band, for example, is centered
-  about the (jagged) line which joins element $(1,1)$ to element $(n,m)$,
-  and \code{window.size} columns wide.
+  \code{window.type} can also be user-defined windowing function. 
+  See \code{\link{dtwWindowingFunctions}} for
+  all available windowing functions, details on user-defined windowing, 
+  and a discussion of the (mis)naming of the "Itakura" parallelogram 
+  as a global constraint. 
 
+  Some windowing functions may require parameters, such as the
+  \code{window.size} argument.
 
-  
-
-  TODO references
-  
-
-  
 }
+
+
+
 \value{
-  An object (currently a plain list) with the following items:
-  \item{distance }{The computed distance}
-  \item{index1 }{Matched elements: indices in $x$}
-  \item{index2 }{Corresponding mapped indices in $y$}
-  \item{stepPatterns }{The step patterns used in the computation, in
-    the matrix form documented above.}
+  An object of class \code{dtw} with the following items:
+  \item{distance }{The computed distance \emph{non normalized}. Normalization 
+	depends on the chosen step pattern.}
+  \item{index1 }{Matched elements: indices in \code{x}}
+  \item{index2 }{Corresponding mapped indices in \code{y}}
+  \item{stepPatterns }{The \code{stepPattern} object used in the computation}
   \item{costMatrix}{ If \code{keep.internals=TRUE}, the cumulative
     cost matrix}
   \item{directionMatrix}{ If \code{keep.internals=TRUE}, the
     directions of steps that would be taken at each alignment pair
-    (integers indexing rows in stepPatterns)}
+    (integers indexing rows in stepPattern)}
   }
-\references{ TODO }
+  \references{
+  Sakoe, H.; Chiba, S., \emph{Dynamic programming algorithm optimization for spoken word recognition,}
+ Acoustics, Speech, and Signal Processing [see also IEEE Transactions on Signal Processing], IEEE Transactions on , 
+vol.26, no.1, pp. 43-49, Feb 1978 URL: \url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=1163055} \cr
+  }
 \author{Toni Giorgino }
 \note{Cost matrices (both input and output) have query elements row-wise
   (first index), and template elements column-wise (second index). They
-  print as usual, with indexes increasing down and right.  In some
-  DTW  tutorials cost matrices follow  plot-like conventions
-  (e.g.  one index grows upward). This may
-  be confusing.
+  print according to the usual convention, with indexes increasing down and right.  Many
+  DTW  papers and tutorials show matrices according to plot-like conventions, i.e.
+  one index growing upwards. This may   be confusing.
 }
-\seealso{  \code{\link[pkg:analogue]{distance}},
-  \code{\link{dtwWindowingFunctions}}, \code{\link{outer}} }
+\seealso{
+  \code{\link{outer}},\code{\link[pkg:analogue]{distance}};
+  \code{\link{dtwWindowingFunctions}},  windowing and global constraints;
+  \code{\link{stepPattern}}, step patterns and local constraints
+  including slope;
+  \code{\link{plot.dtw}}, the plot method for DTW objects.
+}
+
+
 \examples{
 ## A noisy sine wave as query
-idx<-seq(0,6.28,len=100)
+idx<-seq(0,6.28,len=100);
 query<-sin(idx)+runif(100)/10;
 
-## A cosine is for template; they are offset by 25 samples
+## A cosine is for template; sin and cos are offset by 25 samples
 template<-cos(idx)
 plot(template); lines(query);
 
 ## Find the best match (approx 1sec on Pentium 4)
-dtw(query,template)->alignment;
+## keep = TRUE so we can make a density plot later on
+alignment<-dtw(query,template,keep=TRUE);
+
 
 ## Display the mapping
 plot(alignment$index1,alignment$index2);
@@ -143,14 +138,48 @@ plot(alignment$index1,alignment$index2);
 lines(1:100-25,col="red")
 
 
+## Contour plots of the global cost
+
+
+## A profile of the cumulative distance matrix
+## similar to: plot(alignment,type="density") or dtwPlotDensity(alignment)
+
+contour(alignment$costMatrix,col=terrain.colors(100),x=1:100,y=1:100,
+	xlab="Query (noisy sine)",ylab="Template (cosine)");
+
+lines(alignment$index1,alignment$index2,col="red",lwd=2);
+
+
+## More plots on dtw.plot!
+
+
+#########
+## An hand-checkable example
+
+ldist<-matrix(1,nrow=6,ncol=6);  # Matrix of ones
+ldist[2,]<-0; ldist[,5]<-0;      # Mark a clear path of zeroes
+ldist[2,5]<-.01;		 # Forcely cut the corner
+
+ds<-dtw(ldist);			 # DTW with user-supplied local cost matrix
+da<-dtw(ldist,step="a");	 # Also compute the asymmetric 
+plot(ds$index1,ds$index2,pch=3);    	 # Symmetric: alignment follows the marked path
+points(da$index1,da$index2,col="red");    	 # Asymmetric: visiting 1 is required twice
+
+ds$distance;
+da$distance;
+
+
+
+
 }
 
 \concept{Dynamic Time Warp}
+\concept{Dynamic programming}
 \concept{Align timeseries}
 \concept{Minimum cumulative cost}
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ multivariate }
+
+
+
 \keyword{ ts }
 \keyword{ optimize }
 
