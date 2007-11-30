@@ -5,7 +5,7 @@
 #       University of Pavia - Italy                           #
 #       www.labmedinfo.org                                    #
 #                                                             #
-#   $Id: distance.R 45 2007-12-10 18:14:42Z tonig $
+#   $Id: distance.R 51 2007-12-11 10:59:08Z tonig $
 #                                                             #
 ###############################################################
 

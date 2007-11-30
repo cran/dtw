@@ -36,14 +36,12 @@ dtwPlotThreeWay(d,xts=NULL,yts=NULL,type.align="p",type.ts="l",
 
 \details{
 
-  Display the  query and template time series and their
-  alignment, arranged so that alignment can be
-  visually inspected.
+  Display the query and template time series and their alignment,
+  arranged so that alignment can be visually inspected.
 
-  Only single-variate time series are supported, and
-  they must be passed to the \code{x} and \code{y}
-  arguments (query and template are not stored
-  in the \code{dtw} object).
+  Only single-variate time series are supported, and they must be passed
+  to the \code{xts} and \code{yts} arguments (query and template are not
+  stored in the \code{dtw} object).
   
 }
 

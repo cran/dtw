@@ -3,7 +3,7 @@ citHeader("To cite package 'dtw' in publications use (subject to change):")
 
 citEntry(entry="Manual",
         title ="dtw: Dynamic Time Warping algorithms in R",
-        author = personList(as.person("T. Giorgino")),
+        author = personList(as.person("Toni Giorgino")),
         year = 2007,
 	url = "http://dtw.r-forge.r-project.org",
         note = paste("R package version", packageDescription("dtw")$Version),

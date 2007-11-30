@@ -13,7 +13,7 @@ Dynamic Time Warp algorithms in R
 \tabular{ll}{
 Package: \tab dtw\cr
 Type: \tab Package\cr
-Version: \tab 0.4\cr
+Version: \tab 1.0\cr
 Date: \tab 2007-12-10\cr
 License: \tab GPL-2\cr
 }
@@ -34,12 +34,13 @@ A fast, compiled version of the algorithm is normally used.
 Should it not be available, a slower pure-R equivalent is 
 automatically used as a fall-back.
 
+If you use 
+this software, please cite it according to \code{citation("dtw")}. 
+The package home page is at \url{http://dtw.r-forge.r-project.org}. 
 
-
-The package home page is at \url{http://dtw.r-forge.r-project.org}. The
-command
-\code{install.packages("dtw",repos="http://r-forge.r-project.org")}
-should get you the development (possibly unstable) version.
+To get the latest stable version from CRAN, use \code{install.packages("dtw")}. 
+To get the development version (possibly unstable), use 
+\code{install.packages("dtw",repos="http://r-forge.r-project.org")}.
 
 }
 \author{

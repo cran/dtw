@@ -7,29 +7,48 @@
 \alias{symmetric1}
 \alias{symmetric2}
 \alias{asymmetric}
-\alias{symmetricP1}
+
 \alias{asymmetricItakura}
+%\alias{symmetricVelichkoZagoruyko}
+
+\alias{symmetricP0}
+\alias{asymmetricP0}
+\alias{symmetricP05}
+\alias{asymmetricP05}
+\alias{symmetricP1}
+\alias{asymmetricP1}
+\alias{symmetricP2}
+\alias{asymmetricP2}
+
+
 
 
 \title{Local constraints and step patterns for DTW}
 
-\description{ A step pattern object lists the allowed step patterns for
-a given DTW variant.  It can be used to constrain the warping
-  paths considered by the   \code{\link{dtw}} function.
-}
+\description{ DTW variants are implemented through step pattern objects.
+  A step pattern lists the allowed step patterns considered by the
+  \code{\link{dtw}} function when searching for the minimum distance
+  path.  }
 
 \usage{
+## Well-known step patterns
+  symmetric1
+  symmetric2
+  asymmetric
+  asymmetricItakura
+%  symmetricVelichkoZagoruyko
 
-# predefined step patterns:
-symmetric1
-symmetric2
-asymmetric
-symmetricP1
-asymmetricItakura
+## Slope-constrained step patterns from Sakoe-Chiba
+  symmetricP0;  asymmetricP0
+  symmetricP05; asymmetricP05
+  symmetricP1;  asymmetricP1
+  symmetricP2;  asymmetricP2 
+
 
 \method{print}{stepPattern}(x,...)
-is.stepPattern(x)
+
 stepPattern(v)
+is.stepPattern(x)
 
 }
 
@@ -42,56 +61,64 @@ stepPattern(v)
 
 \details{
 
-    A step pattern characterizes the matching model and/or slope constraint
-    specific of a DTW variant.
+  A step pattern characterizes the matching model and/or slope constraint
+  specific of a DTW variant.
 
-    \code{print.stepPattern} prints an user-readable
-    description of the recurrence equation defined by the pattern.
+  \code{print.stepPattern} prints an user-readable
+  description of the recurrence equation defined by the given pattern.
 
-    Several step patterns are pre-defined:
 
-    \itemize {
-    \item{\code{symmetric1}}{quasi-symmetric, no slope constraint. Favours oblique steps.}
+  % TODO REPLACE as TABLE
+  Several step patterns are pre-defined with the package:
+
+  \itemize{
+    \item{\code{symmetric1}}{quasi-symmetric, no slope constraint (favours oblique steps);}
 
     \item{\code{symmetric2}}{properly symmetric, no slope constraint: oblique
     step costs as much as the sum of the equivalent steps along the
-    sides.}
+    sides; }
 
-    \item{\code{asymmetric}}{asymmetric, no slope constraint. Matches each
-      element of the query time series exactly once.}
+    \item{\code{asymmetric}}{asymmetric, slope constrained between 0 --
+    2. Matches each element of the query time series exactly once; }
 
-    \item{\code{symmetricP1}}{symmetric, slope contraint $P=1$ (see
-      reference [1], page 47, table I)}
+    \item{\code{asymmetricItakura}}{asymmetric, slope contrained 0.5
+	-- 2 from reference [2]. This is the recursive definition
+	that generates the Itakura parallelogram; }
 
-    \item{\code{asymmetricItakura}}{asymmetric, slope contrained. This is the 
-	recursive function described  in reference [2] that generates 
-  	the Itakura parallelogram. 
-    }
+%    \item{\code{symmetricVelichkoZagoruyko}}{symmetric, reproduced from [1]. Use distance matrix \code{1-d}}
 
-    \item{}{...more to come}
+    \item{\code{symmetricPx}}{symmetric, slope contraint $P=x$;}
 
-    }
-    
+    \item{\code{asymmetricPx}}{asymmetric, slope contraint $P=x$.}
 
-    The vector description for \code{stepPattern} constructor is
-    currently not well documented. Please see the example below,
-    implementing Sakoe's P=1, Symmetric algorithm in Table I, p47 [1].
+
+  }
+
+  The \code{symmetricPx} and \code{asymmetricPx} slope-constrained
+  patterns are discussed in Sakoe-Chiba [1], and reproduced as shown in
+  page 47, table I. Values available for \emph{P} are accordingly: \code{0}
+  (no constraint), \code{1}, \code{05} (half) and \code{2}. See [1] for
+  details.
+  
+  The vector description for \code{stepPattern} constructor is currently
+  not well documented. Please see the example below, implementing
+  Sakoe's P=1, Symmetric algorithm.
 
     \preformatted{
-      symmetricP1 <- stepPattern(c(
-                         1,1,2,-1,	# First branch: g(i-1,j-2) +
-                         1,0,1,2,	#            + 2d( i ,j-1) + 
-                         1,0,0,1,	#            +  d( i , j )
-                         2,1,1,-1,	# Second branch: g(i-1,j-1) +
-                         2,0,0,2,	#             + 2d( i , j )
-                         3,2,1,-1,	# Third branch: g(i-2,j-1) +
-                         3,1,0,2,	#            + 2d(i-1, j ) +
-                         3,0,0,1	#            +  d( i , j )		
-                         ));
-			 }
+     symmetricP1 <- stepPattern(c(
+        1,1,2,-1,       # First branch: g(i-1,j-2) +
+        1,0,1,2,        #            + 2d( i ,j-1) + 
+        1,0,0,1,        #            +  d( i , j )
+        2,1,1,-1,       # Second br.:   g(i-1,j-1) +
+        2,0,0,2,        #            + 2d( i , j )
+        3,2,1,-1,       # Third branch: g(i-2,j-1) +
+        3,1,0,2,        #            + 2d(i-1, j ) +
+        3,0,0,1         #            +  d( i , j )              
+      ));
+    }
 
-			 Decoding is left
-    to the reader as an exercise.  \code{print.stepPattern} may come handy.
+    Decoding is left to the reader as an exercise, and
+    \code{print.stepPattern} may come handy for this task.
 		
 
 }
@@ -125,27 +152,22 @@ Transactions on Signal Processing], IEEE Transactions on , vol.23, no.1, pp.
 ##      g[i-1,j] + d[i,j] ,
 ##   )
 
-print.stepPattern(symmetric2)
+print.stepPattern(symmetric2)   # or just "symmetric2"
 
 
 
-## Same example seen in dtw help, but with asymmetric  step pattern
+## Same example seen in ?dtw , now with asymmetric step pattern
 
 idx<-seq(0,6.28,len=100);
 query<-sin(idx)+runif(100)/10;
 template<-cos(idx);
 
-## Do the computation (takes ~5 s)
+## Do the computation 
 asy<-dtw(query,template,keep=TRUE,step=asymmetric);
 
 dtwPlot(asy,type="density",main="Sine and cosine, asymmetric step")
 
-
-
-
-
 }
-
 
 
 

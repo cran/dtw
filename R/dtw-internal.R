@@ -5,12 +5,12 @@
 #       University of Pavia - Italy                           #
 #       www.labmedinfo.org                                    #
 #                                                             #
-#   $Id: dtw-internal.R 4 2007-12-03 11:04:52Z tonig $
+#   $Id: dtw-internal.R 51 2007-12-11 10:59:08Z tonig $
 #                                                             #
 ###############################################################
 
 ##
-## $Id: dtw-internal.R 4 2007-12-03 11:04:52Z tonig $
+## $Id: dtw-internal.R 51 2007-12-11 10:59:08Z tonig $
 ##
 
 ## Internal functions for the dtw package.

@@ -5,7 +5,7 @@
 #       University of Pavia - Italy                           #
 #       www.labmedinfo.org                                    #
 #                                                             #
-#   $Id: globalCostMatrix.R 40 2007-12-10 00:29:04Z tonig $
+#   $Id: globalCostMatrix.R 51 2007-12-11 10:59:08Z tonig $
 #                                                             #
 ###############################################################
 

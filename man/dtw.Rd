@@ -55,9 +55,9 @@ is.dtw(d)
   \pkg{analogue} may come handy.
 
   Several common variants of DTW are supported via the \code{step.pattern}
-  argument, which defaults to \code{symmetric}. Most common
-  step patterns are supported and pre-defined matrices; the 
-  user can write their own. See 
+  argument, which defaults to \code{symmetric1} (White-Neely). Most common
+  step patterns are supported and pre-defined; the 
+  user can also write their own. See 
   \code{\link{stepPattern}} for details.
 
   Windowing is supported by supplying a name into the \code{window.type}

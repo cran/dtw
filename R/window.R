@@ -5,7 +5,7 @@
 #       University of Pavia - Italy                           #
 #       www.labmedinfo.org                                    #
 #                                                             #
-#   $Id: window.R 30 2007-12-06 18:55:28Z tonig $
+#   $Id: window.R 51 2007-12-11 10:59:08Z tonig $
 #                                                             #
 ###############################################################
 
