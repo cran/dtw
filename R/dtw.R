@@ -5,7 +5,7 @@
 #       University of Pavia - Italy                           #
 #       www.labmedinfo.org                                    #
 #                                                             #
-#   $Id: dtw.R 51 2007-12-11 10:59:08Z tonig $
+#   $Id: dtw.R 69 2007-12-31 13:38:41Z tonig $
 #                                                             #
 ###############################################################
 
@@ -64,6 +64,11 @@ function(x, y=NULL,
   
   jmin <- m;
 
+
+  ## remember size
+  gcm$N <- n;
+  gcm$M <- m;
+  
   ## result: distance (add to existing list gcm?)
   distance <- gcm$costMatrix[n,jmin];
 
@@ -74,9 +79,13 @@ function(x, y=NULL,
   mapping <- backtrack(jmin,gcm);
 
   ## append to existing list gcm, for now
+  ## perhaps replace by attr()
   gcm$distance <- distance;
   gcm$index1 <- mapping$index1;
   gcm$index2 <- mapping$index2;
+
+  ## store call
+  gcm$call <- match.call();
 
   ## delete sizey intermediate steps 
   if(!keep.internals) {

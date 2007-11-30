@@ -9,8 +9,11 @@ IMPLEMENTATION
 * preserve TS names 
 * test OK
 * move plot elsewhere OK
-* dtw OO
-* two-way plot
+* dtw OO OK
+* two-way plot OK
+* 2w: interesting
+* fix 2w lenghts
+* legends in plots
 
 
 DOCUMENTATION
@@ -21,7 +24,7 @@ DOCUMENTATION
 STUDY
 * binary OK
 * skip computation of distance for elements outside-window OK
-* its alignments should be natural (timestamps reported as index)
+* its
 
 
 EXAMPLES

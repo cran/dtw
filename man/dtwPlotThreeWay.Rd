@@ -4,7 +4,7 @@
 
 
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{Plotting of dynamic time warp results}
+\title{Plotting of dynamic time warp results: annotated warping function}
 \description{
   Plot a DTW results for visual inspection.
 }
@@ -53,6 +53,9 @@ dtwPlotThreeWay(d,xts=NULL,yts=NULL,type.align="p",type.ts="l",
   This may be counter-intuitive.
 }
 
+\section{Warning}{ These functions are incompatible with mechanisms for
+     arranging plots on a device: \code{par(mfrow)}, \code{layout} and
+     \code{split.screen}.}
 
 \examples{
 

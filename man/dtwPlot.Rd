@@ -1,8 +1,8 @@
-\name{plot.dtw}
-\alias{plot.dtw}
+\name{dtwPlot}
 \alias{dtwPlot}
 \alias{dtwPlotAlignment}
 \alias{dtwPlotDensity}
+\alias{plot.dtw}
 
 
 
@@ -45,39 +45,48 @@ dtwPlotDensity(d, normalize="no",
   \code{type} argument (may be abbreviated):
 
   \itemize{
-    \item{\code{alignment}}{simple plot of the warping path}
-    %    \item{\code{twoway}}{Point-by-point comparison}
+    \item{\code{alignment}}{plot of the warping curve (may be
+      multi-valued unless the \code{asymmetric}-like step pattern is used)}
+    \item{\code{twoway}}{Point-by-point comparison with matching lines}
     \item{\code{threeway}}{vis-a-vis visual inspection of the
        original timeseries and their alignment }
-    \item{\code{density}}{show the cumulative cost matrix with the
+    \item{\code{density}}{show the cumulative cost landscape with the
       warping path overimposed}
   }
 
-  Three-way plotting is documented separately in
-  function \code{\link{dtwPlotThreeWay}}.
+  
+  For two-way plotting, see documentation for function
+  \code{\link{dtwPlotTwoWay}}.
 
-  \code{normalize} can be one of \code{"N"} of \code{"N+M"}.
-  If set, \emph{average} cost per step is plotted instead
-  of the cumulative one. Step averaging depends on the
-  step pattern chosen. \code{N}  is suitable
-  for asymmetric patterns and divides the distance
-  by the number of steps along the query; \code{N+M}
-  is for (normalizable) symmetric patterns,
-  and divides by the Manhattan distance from
-  the origin.
+  For three-way plotting, see documentation for function
+  \code{\link{dtwPlotThreeWay}}.
+
+
+  \code{normalize} can be one of \code{"N"} of \code{"N+M"}.  If set,
+  \emph{average} cost per step is plotted instead of the cumulative
+  one. Step averaging depends on the step pattern chosen. \code{N} is
+  suitable for asymmetric patterns and divides the distance by the index
+  in query; \code{N+M} is for (normalizable) symmetric patterns, and
+  divides by the Manhattan distance from the origin.
   
   Additional  parameters are carried on to the plotting
   functions: use with care.
 
 }
 
+
 \note{
   The density plot is more colorful than useful.
   }
 
+\section{Warning}{ These functions are incompatible with mechanisms for
+     arranging plots on a device: \code{par(mfrow)}, \code{layout} and
+     \code{split.screen}.}
+
 \author{Toni Giorgino }
 
 \seealso{
+  \code{\link{dtwPlotTwoWay}} for details on  two-way plotting function.
   \code{\link{dtwPlotThreeWay}} for details on  three-way plotting function.
 }
 
@@ -95,34 +104,39 @@ alignment<-dtw(query,template,keep=TRUE);
 ## A profile of the cumulative distance matrix
 ## Contour plot of the global cost
 
-dtwPlotDensity(alignment, main="Sine/cosine: symmetric  alignment, no constraints")
+dtwPlotDensity(alignment,
+  main="Sine/cosine: symmetric  alignment, no constraints")
 
 
 
 ######
-
-## A study of the "itakura" parallelogram
-
-
-## A widely held misconception is that the "Itakura parallelogram" 
-## (as described in the original article) is a global constraint.
-## Instead, it arises from local slope restrictions. Anyway, an "itakuraWindow",
+##
+## A study of the "Itakura" parallelogram
+##
+## A widely held misconception is that the "Itakura parallelogram" (as
+## described in the original article) is a global constraint.  Instead,
+## it arises from local slope restrictions. Anyway, an "itakuraWindow",
 ## is provided in this package. A comparison between the two follows.
 
 
 ## The local constraint: three sides of the parallelogram are seen
-dtw(query,template,keep=TRUE,step=asymmetricItakura)->ita;
-dtwPlot(ita,type="density",main="Slope-limited asymmetric step (Itakura)")
 
-## Symmetric step with global parallelogram-shaped constraint
-## Note how long (>2 steps) horizontal stretches are allowed within the window.
+dtw(query,template,keep=TRUE,step=asymmetricItakura)->ita;
+dtwPlot(ita,type="density",
+        main="Slope-limited asymmetric step (Itakura)")
+
+## Symmetric step with global parallelogram-shaped constraint. Note how
+## long (>2 steps) horizontal stretches are allowed within the window.
+
 dtw(query,template,keep=TRUE,window=itakuraWindow)->ita;
-dtwPlot(ita,type="density",main="Symmetric step with Itakura parallelogram window")
+dtwPlot(ita,type="density",
+        main="Symmetric step with Itakura parallelogram window")
 
 
 }
 
 \concept{Dynamic Time Warp}
+\concept{Warping function}
 
 
 \keyword{ ts }

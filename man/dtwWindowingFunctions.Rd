@@ -63,21 +63,22 @@ dtwWindow.plot(fun,query.size=200,template.size=220,...);
   > \code{window.size}$,  warping becomes
   impossible.
 
-  A widely held misconception is that the "Itakura parallelogram" 
-  (as described in reference [2]) is a \emph{global} constraint, i.e. a window.
-  To the author's knowledge, it instead arises from the local slope restrictions imposed to 
-	the warping path (they are implemented in this
-  package through the \code{\link{asymmetricItakura}} step pattern. 
+  A widely held misconception is that the "Itakura parallelogram" (as
+  described in reference [2]) is a \emph{global} constraint, i.e. a
+  window.  To the author's knowledge, it instead arises from the local
+  slope restrictions imposed to the warping path, such as the one
+  implemented by the \code{\link{asymmetricItakura}} step pattern.
 
   An \code{itakuraWindow}  global constraint is still provided with this
   package.    See example below for a demonstration of
   the difference between a local the two.
 
-  The \code{slantedBandWindow} is a package-specific window: it is a
-  band centered around the (jagged) line segment
-  which joins element \code{[1,1]} to element
-  \code{[query.size,template.size]}, and will be
-  \code{window.size} columns wide.
+  The \code{slantedBandWindow} (package-specific) is a band centered
+  around the (jagged) line segment which joins element \code{[1,1]} to
+  element \code{[query.size,template.size]}, and will be
+  \code{window.size} columns wide. In other words, the "diagonal" goes
+  from one corner to the other of the possibly rectangular cost matrix,
+  therefore having a slope of \code{M/N}, not 1.
 
 }
 

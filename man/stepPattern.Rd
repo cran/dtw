@@ -26,8 +26,8 @@
 \title{Local constraints and step patterns for DTW}
 
 \description{ DTW variants are implemented through step pattern objects.
-  A step pattern lists the allowed step patterns considered by the
-  \code{\link{dtw}} function when searching for the minimum distance
+  A \code{stepPattern} instance lists the transitions allowed by the
+  \code{\link{dtw}} function in the search for the minimum-distance
   path.  }
 
 \usage{
@@ -72,14 +72,18 @@ is.stepPattern(x)
   Several step patterns are pre-defined with the package:
 
   \itemize{
-    \item{\code{symmetric1}}{quasi-symmetric, no slope constraint (favours oblique steps);}
 
-    \item{\code{symmetric2}}{properly symmetric, no slope constraint: oblique
-    step costs as much as the sum of the equivalent steps along the
-    sides; }
+    \item{\code{symmetric1}}{quasi-symmetric, no slope constraint
+    (favours oblique steps);}
 
-    \item{\code{asymmetric}}{asymmetric, slope constrained between 0 --
-    2. Matches each element of the query time series exactly once; }
+    \item{\code{symmetric2}}{properly symmetric, no slope constraint:
+    one diagonal step costs as much as the sum of the equivalent steps
+    along the sides; }
+
+    \item{\code{asymmetric}}{asymmetric, slope constrained between 0 and
+      2. Matches each element of the query time series exactly once, so
+      the warping path \code{index2~index1} is guaranteed to
+      be single-valued; }
 
     \item{\code{asymmetricItakura}}{asymmetric, slope contrained 0.5
 	-- 2 from reference [2]. This is the recursive definition
@@ -98,11 +102,11 @@ is.stepPattern(x)
   patterns are discussed in Sakoe-Chiba [1], and reproduced as shown in
   page 47, table I. Values available for \emph{P} are accordingly: \code{0}
   (no constraint), \code{1}, \code{05} (half) and \code{2}. See [1] for
-  details.
+  details. They are also known as type V (Rabiner and Huang) [3].
   
-  The vector description for \code{stepPattern} constructor is currently
-  not well documented. Please see the example below, implementing
-  Sakoe's P=1, Symmetric algorithm.
+  The \code{stepPattern} constructor is currently not well
+  documented. Please see the example below, implementing Sakoe's
+  \emph{P=1, Symmetric} algorithm.
 
     \preformatted{
      symmetricP1 <- stepPattern(c(
@@ -118,7 +122,7 @@ is.stepPattern(x)
     }
 
     Decoding is left to the reader as an exercise, and
-    \code{print.stepPattern} may come handy for this task.
+    \code{print.stepPattern} may come handy.
 		
 
 }
@@ -133,7 +137,11 @@ vol.26, no.1, pp. 43-49, Feb 1978 URL: \url{http://ieeexplore.ieee.org/xpls/abs_
 [2] Itakura, F., \emph{Minimum prediction residual principle applied to speech
 recognition,} Acoustics, Speech, and Signal Processing [see also IEEE
 Transactions on Signal Processing], IEEE Transactions on , vol.23, no.1, pp.
-67-72, Feb 1975. URL: \url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=1162641} 
+67-72, Feb 1975. URL:
+\url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=1162641} \cr
+\cr
+[3] Rabiner, L. R., & Juang, B.-H. (1993). \emph{Fundamentals of speech
+recognition.} Englewood Cliffs, NJ: Prentice Hall.
  
 }
 
@@ -174,6 +182,7 @@ dtwPlot(asy,type="density",main="Sine and cosine, asymmetric step")
 \concept{Dynamic Time Warp}
 \concept{Dynamic Programming}
 \concept{Step pattern}
+\concept{Transition}
 \concept{Local constraint}
 \concept{Asymmetric DTW}
 \concept{Symmetric DTW}

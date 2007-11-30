@@ -5,7 +5,7 @@
 #       University of Pavia - Italy                           #
 #       www.labmedinfo.org                                    #
 #                                                             #
-#   $Id: plot.dtw.R 51 2007-12-11 10:59:08Z tonig $
+#   $Id: plot.dtw.R 67 2007-12-26 12:38:01Z tonig $
 #                                                             #
 ###############################################################
 
@@ -21,7 +21,7 @@ plot.dtw <- function(x, type="alignment", ...) {
                     "threeway",
                     "density"));
   switch(pt, 	dtwPlotAlignment(x, ...),
-                .dtwPlotTwoWay(x, ...),
+                dtwPlotTwoWay(x, ...),
                 dtwPlotThreeWay(x, ...),
                 dtwPlotDensity(x, ...)
  );
@@ -67,12 +67,60 @@ dtwPlotDensity <- function(d, normalize="no",
 	image(cm,col=terrain.colors(100),x=1:xd,y=1:yd,
 		xlab=xlab,ylab=ylab, ...);
 	contour(cm,x=1:xd,y=1:yd,add=TRUE);
-	lines(d$index1,d$index2,col="red",lwd=2);
+	lines(d$index1,d$index2,col="blue",lwd=2);
 }
 
 
-.dtwPlotTwoWay <- function(x) {
-  stop("Not implemented");
+
+
+## Well-known and much-copied pairwise matching
+
+dtwPlotTwoWay <- function(d,xts=NULL,yts=NULL, offset=0,
+			type="o",pch=21, 
+			xlab="Index", ylab="Query value", 
+			match.col="gray70",
+			... ) {
+
+	if(is.null(xts) || is.null(yts))
+		stop("Original timeseries are required");
+        ytso<-yts+offset;
+
+        ## pad to longest
+        maxlen<-max(length(xts),length(ytso));
+        length(xts)<-maxlen;
+        length(ytso)<-maxlen;
+	
+	## save default, for resetting...
+	def.par <- par(no.readonly = TRUE);
+
+
+	## plot q+t
+	matplot(cbind(xts,ytso),
+			type=type,pch=pch, 
+			xlab=xlab, ylab=ylab,
+			...);
+
+        ## display secondary axis if offset
+        if(offset!=0) {
+          axt<-axTicks(2);
+          axis(4,at=axt+offset,labels=axt);
+        }
+
+
+	## plot the matching 
+	# par(par.match);
+	ml<-length(d$index1);
+	idx<-1:ml;
+
+	## x0, y0 	coordinates of points from which to draw.
+	## x1, y1 	coordinates of points to which to draw.
+	segments(d$index1[idx],xts[d$index1[idx]],
+		 d$index2[idx],ytso[d$index2[idx]],
+		 col=match.col);
+
+	
+	par(def.par)#- reset to default
+
 }
 
 
