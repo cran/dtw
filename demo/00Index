@@ -1,1 +1,1 @@
-dtw	Shows results of several variants of dtw, including various step patterns, slope limitations, windowing, on a test case
+dtw	Shows several examples of the Dynamic Time Warp algorithm applied to a test case, including various step patterns, local  and global constraints, etc.

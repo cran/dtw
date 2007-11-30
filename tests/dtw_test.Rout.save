@@ -1,24 +1,61 @@
+
+R version 2.6.1 (2007-11-26)
+Copyright (C) 2007 The R Foundation for Statistical Computing
+ISBN 3-900051-07-0
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
 > library(dtw);
 > 
+> ### Synthetic example: check indexes, distance
 > ldist<-matrix(1,nrow=6,ncol=6);  # Matrix of ones
 > ldist[2,]<-0; ldist[,5]<-0;      # Mark a clear path of zeroes
 > ldist[2,5]<-.01;		 # Forcely cut the corner
 > 
 > ds<-dtw(ldist);			 # DTW with user-supplied local cost matrix
-> da<-dtw(ldist,step="a");	 # Also compute the asymmetric
-> 
-> 
-> ds$distance
+> ds$distance			 # 2
 [1] 2
-> ds$index1
+> ds$index1			 # 1 2 2 2 2 3 4 5 6 6
  [1] 1 2 2 2 2 3 4 5 6 6
-> ds$index2
+> ds$index2			 # 1 1 2 3 4 5 5 5 5 6
  [1] 1 1 2 3 4 5 5 5 5 6
 > 
-> da$index1
-[1] 1 2 3 4 5 6
-> da$index2
-[1] 1 3 5 5 5 6
-> da$distance
+> da<-dtw(ldist,step="a");	 # Also compute the asymmetric
+> da$distance			 # 2
 [1] 2
+> da$index1			 # 1 2 3 4 5 6
+[1] 1 2 3 4 5 6
+> da$index2			 # 1 3 5 5 5 6
+[1] 1 3 5 5 5 6
+> 
+> ###  Synthetic example: verify native output
+> ds<- globalCostMatrix(ldist) 
+> dsn<- globalCostNative(ldist)
+> all.equal(ds,dsn)		 # TRUE
+[1] TRUE
+> 
+> 
+> ###  Sine/cosine example: verify native output
+> ### there may be a random chance of failing due to rounding errors
+> idx<-seq(0,6.28,len=100);
+> query<-sin(idx)+runif(100)/10;	
+> template<-cos(idx)
+> ldist<-outer(query,template,FUN=euclideanSquared)
+> ds<- globalCostMatrix(ldist)
+> dsn<- globalCostNative(ldist)
+> all.equal(ds,dsn)		# TRUE
+[1] TRUE
+> 
 > 

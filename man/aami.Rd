@@ -23,7 +23,7 @@ data(aami3b);}
 
 The following text is reproduced (abridged) from PhysioBank, page
 \url{http://www.physionet.org/physiobank/database/aami-ec13/}.  Other
-recordings belong to the same dataset and can be obtained from the same
+recordings belong  to the  dataset and can be obtained from the same
 page.
 
 
@@ -39,9 +39,9 @@ Hz with 12-bit resolution.
 
 \note{
    Timestamps in the datasets have been re-created at the indicated
-  frequency of 720 Hz, whereas the original timestamps 
+  frequency of 720 Hz, whereas the original timestamps in ms (at least in text format)
   only had three decimal digits' precision, and were therefore
-  unevenly spaced. 
+  affected by substantial jittering. 
   }
 
 \source{
@@ -64,7 +64,7 @@ data(aami3a);
 data(aami3b);
 
 ## Plot both as a multivariate TS object
-##  only extract the fist 10 seconds
+##  only extract the first 10 seconds
 
 plot( main="ECG (mV)",
  window(

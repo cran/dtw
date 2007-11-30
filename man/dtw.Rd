@@ -29,8 +29,8 @@ is.dtw(d)
     "itakura", "sakoechiba", "slantedband". Function: boolean of two arguments.}
   \item{keep.internals}{don't discard the cumulative cost matrix and other
     internal structures}
+  \item{d}{an arbitrary R object}
   \item{...}{additional arguments, passed to \code{window.function}}
-  \item{d}{a timeseries object returned by \code{dtw}}
 }
 
 \details{
@@ -79,22 +79,28 @@ is.dtw(d)
   Some windowing functions may require parameters, such as the
   \code{window.size} argument.
 
+  A native (fast, compiled) version of the function is normally available.
+  If it is not, an interpreted equivalent will be used as 
+  a fall-back, with a warning.
+
+  \code{is.dtw} tests whether the argument is of class \code{dtw}.
+
 }
 
 
 
 \value{
   An object of class \code{dtw} with the following items:
-  \item{distance }{The computed distance \emph{non normalized}. Normalization 
+  \item{distance}{the computed distance \emph{not normalized}. Normalization 
 	depends on the chosen step pattern.}
-  \item{index1 }{Matched elements: indices in \code{x}}
-  \item{index2 }{Corresponding mapped indices in \code{y}}
-  \item{stepPatterns }{The \code{stepPattern} object used in the computation}
-  \item{costMatrix}{ If \code{keep.internals=TRUE}, the cumulative
+  \item{index1}{matched elements: indices in \code{x}}
+  \item{index2}{corresponding mapped indices in \code{y}}
+  \item{stepPatterns}{the \code{stepPattern} object used for the computation}
+  \item{costMatrix}{if \code{keep.internals=TRUE}, the cumulative
     cost matrix}
-  \item{directionMatrix}{ If \code{keep.internals=TRUE}, the
+  \item{directionMatrix}{if \code{keep.internals=TRUE}, the
     directions of steps that would be taken at each alignment pair
-    (integers indexing rows in stepPattern)}
+    (integers indexing step patterns)}
   }
   \references{
   Sakoe, H.; Chiba, S., \emph{Dynamic programming algorithm optimization for spoken word recognition,}

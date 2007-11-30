@@ -13,8 +13,8 @@ Dynamic Time Warp algorithms in R
 \tabular{ll}{
 Package: \tab dtw\cr
 Type: \tab Package\cr
-Version: \tab 0.2\cr
-Date: \tab 2007-12-06\cr
+Version: \tab 0.4\cr
+Date: \tab 2007-12-10\cr
 License: \tab GPL-2\cr
 }
 
@@ -27,14 +27,19 @@ template of arbitrary lengths. Multivariate matching and arbitrary
 definition for a distance function are supported via user-supplied local
 distance matrix.
 
-Currently pure-R.
+Please see documentation for function \code{\link{dtw}}, which is the
+main entry point to the package.
 
-Please see documentation for function \code{\link{dtw}}.
+A fast, compiled version of the algorithm is normally used.
+Should it not be available, a slower pure-R equivalent is 
+automatically used as a fall-back.
 
-You are encouraged to download the latest version at
-\url{http://r-forge.r-project.org/projects/dtw/}. The command
+
+
+The package home page is at \url{http://dtw.r-forge.r-project.org}. The
+command
 \code{install.packages("dtw",repos="http://r-forge.r-project.org")}
-should get you the latest version.
+should get you the development (possibly unstable) version.
 
 }
 \author{
@@ -43,8 +48,12 @@ should get you the latest version.
   Maintainer:  toni.giorgino@unipv.it
 }
 
-\seealso{  \code{\link[pkg:analogue]{distance}},
-  \code{\link{dtwWindowingFunctions}},  \code{\link{stepPattern}} , \code{\link{outer}} }
+\seealso{ \code{\link{dtw}} for the main entry point to the package;
+  \code{\link{dtwWindowingFunctions}} for global constraints;
+  \code{\link{stepPattern}} for local constraints;
+  \code{\link[pkg:analogue]{distance}},  \code{\link{outer}} for
+  building a local cost matrix with multivariate
+  timeseries and custom distance functions. }
 
 \references{
    TODO

@@ -1,12 +1,16 @@
-
 ## $Id:$
-## Show off some capabilities, on the same sine/cosine
-## alignment problem
 
+
+## Show off some dtw capabilities on a sine/cosine
+## alignment toy problem
+
+## Load the library and pause at each plot
 library(dtw);
-idx<-seq(0,6.28,len=100);
+opar<-par(ask=TRUE);
+
 
 ## A noisy sine wave as query
+idx<-seq(0,6.28,len=100);
 query<-sin(idx)+runif(100)/10;
 template<-cos(idx);
 
@@ -14,28 +18,21 @@ template<-cos(idx);
 dtw(query,template,keep=TRUE)->alignment;
 
 ## Display the mapping with reference
-dtw(query,template,keep=TRUE)->alignment;
 plot(alignment$index1,alignment$index2);
 lines(1:100-25,col="red")
 
 ## We can also make a nice three-way plot
 ## Beware of the template's y axis, may be confusing
-dtwPlot(alignment,x=query,y=template,type="threeway");
+plot(alignment,xts=query,yts=template,type="threeway");
 
 
 ## A profile of the cumulative distance matrix
-## similar to: dtwPlot(alignment,type="density");
-
-image(alignment$costMatrix,col=terrain.colors(100),x=1:100,y=1:100,
-	xlab="Query (noisy sine)",ylab="Template (cosine)");
-contour(alignment$costMatrix,x=1:100,y=1:100,add=TRUE);
-
-lines(alignment$index1,alignment$index2,col="red",lwd=2);
+plot(alignment,type="density");
 
 
-## Do the same with asymmetric step (takes ~5 s)
+## Do the same with asymmetric step
 dtw(query,template,keep=TRUE,step=asymmetric)->ita;
-dtwPlot(ita,type="density",main="Sine and cosine, asymmetric step");
+plot(ita,type="density",main="Sine and cosine, asymmetric step");
 
 
 ## Windowing functions (global constraints) can be applied and plotted
@@ -49,7 +46,23 @@ dtwPlot(ita,type="density",main="Symmetric step with Itakura parallelogram windo
 
 
 ## Asymmetric step with slope constraint
-## The local constraint: three sides of the parallelogram are seen
+## The "Itakura parallelogram" arises from the local constraint
+## plus the boundary condition. Three sides of the parallelogram are seen
 dtw(query,template,keep=TRUE,step=asymmetricItakura)->ita;
 dtwPlot(ita,type="density",main="Slope-limited asymmetric step (Itakura)");
 
+
+
+## Local and global constraint can be in effect at the same time
+## Sakoe-chiba band, plus asymmetric step pattern
+asyband<-dtw(query,template,keep=TRUE,
+             step=asymmetric,
+             window.type=sakoeChibaWindow,
+             window.size=30                  );
+
+dtwPlot(asyband,type="density",main="Sine/cosine: asymmetric step, S-C window")
+
+
+
+## Demo ends here
+par(opar);

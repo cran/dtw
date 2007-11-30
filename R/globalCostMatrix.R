@@ -1,11 +1,11 @@
 ###############################################################
 #                                                             #
-#   Author: Toni Giorgino <toni.giorgino@gmail.com>           #
+#   (c) Toni Giorgino <toni.giorgino@gmail.com>               #
 #       Laboratory for Biomedical Informatics                 #
 #       University of Pavia - Italy                           #
 #       www.labmedinfo.org                                    #
 #                                                             #
-#   $Id: globalCostMatrix.R 27 2007-12-06 14:18:41Z tonig $
+#   $Id: globalCostMatrix.R 40 2007-12-10 00:29:04Z tonig $
 #                                                             #
 ###############################################################
 
@@ -17,7 +17,7 @@
 
 ## We assume that all arguments are expanded from
 ## char shortands. This includes:
-##  step.matrix - should be a 3x3 matrix
+##  step.matrix - should be a stepMatrix object
 ##  window.function - should be a function
 
 

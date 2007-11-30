@@ -1,32 +1,29 @@
 ###############################################################
 #                                                             #
-#   (c) Toni Giorgino <toni.giorgino@gmail.com>           #
+#   (c) Toni Giorgino <toni.giorgino gmail.com>           #
 #       Laboratory for Biomedical Informatics                 #
 #       University of Pavia - Italy                           #
 #       www.labmedinfo.org                                    #
 #                                                             #
-#   $Id: distance.R 45 2007-12-10 18:14:42Z tonig $
+#   $Id: dtw.R 31 2007-12-07 10:46:09Z tonig $
 #                                                             #
 ###############################################################
 
 
-## Euclidean squared distance.
-## should work on vectors (in R^n) too
-
-## `euclideanSquared` <-
-## function(a,b) {
-##   z<-a-b;
-##   z<-drop(z %*% z);                     #inner dot product
-##   return (z);
-## }
-
-`euclideanSquared` <-
-  function(a,b) {
-    return((a-b)^2);
-  }
 
 
-`euclideanDistance` <-
-  function(a,b) {
-    return(abs(a-b));
-  }
+# Preserve the R makefile default target
+.PHONY:
+all: $(SHLIB)
+
+
+# Allow building a stand alone executable with test main method
+# Usage: make -f Makevars test_computeCM
+
+# You may want to undefine  DMALLOC below
+TEST_UNIT_CFLAGS=-std=gnu99 -DDMALLOC -g -DTEST_UNIT
+TEST_UNIT_LOADLIBES=-ldmalloc
+
+test_computeCM: computeCM.c computeCM.h
+	$(CC) $(TEST_UNIT_CFLAGS) $< -o $@  $(TEST_UNIT_LOADLIBES)
+

@@ -5,7 +5,7 @@
 #       University of Pavia - Italy                           #
 #       www.labmedinfo.org                                    #
 #                                                             #
-#   $Id: dtw.R 33 2007-12-07 12:19:40Z tonig $
+#   $Id: dtw.R 41 2007-12-10 12:38:51Z tonig $
 #                                                             #
 ###############################################################
 
@@ -20,7 +20,8 @@ function(x, y=NULL,
          distance.function=euclideanSquared,
          step.pattern="s",
          window.type="none",
-         keep.internals=FALSE, ... ) {
+         keep.internals=FALSE,
+         ... ) {
 
   lm <- NULL;
 
@@ -50,9 +51,17 @@ function(x, y=NULL,
   n <- dim(lm)[1];
   m <- dim(lm)[2];
 
-  gcm <- globalCostMatrix(lm, step.matrix=dir,
-                          window.function=wfun, ...);
+  if(is.loaded("computeCM")) {
+    gcm <- globalCostNative(lm, step.matrix=dir,
+                            window.function=wfun, ...);
+  } else {
+    warning("Native dtw implementation not available: using (slow) interpreted fallback");
+    gcm <- globalCostMatrix(lm, step.matrix=dir,
+                            window.function=wfun, ...);
+  }
 
+
+  
   jmin <- m;
 
   ## result: distance (add to existing list gcm?)

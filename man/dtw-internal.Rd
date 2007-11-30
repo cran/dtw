@@ -1,6 +1,7 @@
 \name{dtw-internal}
 \alias{backtrack}
 \alias{globalCostMatrix}
+\alias{globalCostNative}
 
 \title{Internal dtw Functions}
 \description{

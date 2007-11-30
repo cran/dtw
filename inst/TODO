@@ -8,18 +8,19 @@ IMPLEMENTATION
 * allow ts objects OK
 * preserve TS names 
 * test OK
-* move plot elsewhere
+* move plot elsewhere OK
 * dtw OO
+* two-way plot
 
 
 DOCUMENTATION
 * references OK
-* citation
+* citation OK
 * demo OK
 
 STUDY
-* binary
-* skip computation of distance for elements outside-window
+* binary OK
+* skip computation of distance for elements outside-window OK
 * its alignments should be natural (timestamps reported as index)
 
 

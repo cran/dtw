@@ -1,6 +1,7 @@
 \name{dtwDistanceFunctions}
 \alias{dtwDistanceFunctions}
 \alias{euclideanSquared}
+\alias{euclideanDistance}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Distance functions for DTW}
 \description{
@@ -9,23 +10,24 @@
 }
 \usage{
 euclideanSquared(a, b)
+euclideanDistance(a, b)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{a}{ The first element }
-  \item{b}{ The second element }
+  \item{a,b}{ floating point values }
 }
+
 \details{
-  This is a trivial distance function supplied as an example of what can be
+  These distance functions are supplied as an example of what can be
   passed to the \code{distance.function} argument in \code{\link{dtw}}.
   
-  Altough it makes  sense for \code{a} and \code{b} to be
-  \emph{vectors} rather than numbers, direct alignment of two
-  multivariate time series is currently not supported natively by
-  \code{dtw} (this may change soon).  The user should instead build a local
-  distance matrix, e.g. via a custom function or
-  \code{\link[pkg:analogue]{distance}} in package \code{analogue}, and
-  feed the result into \code{dtw} as a matrix first argument.
+  Although it makes sense for \code{a} and \code{b} to be \emph{vectors}
+  rather than numbers, direct alignment of two multivariate time series
+  is currently not supported natively by \code{dtw} (this may change in
+  the future).  The user should instead build a local distance matrix,
+  e.g. via a custom function or \code{\link[pkg:analogue]{distance}} in
+  package \code{analogue}, and feed the result into \code{dtw} as a
+  matrix first argument.
 
 }
 
@@ -36,7 +38,8 @@ euclideanSquared(a, b)
 \author{Toni Giorgino }
 
 
-\seealso{  See Also \code{\link[pkg:analogue]{distance}}  }
+\seealso{  \code{\link[pkg:analogue]{distance}} can build a distance
+  matrix according to several distance definitions.}
 \examples{
 
 # A constant vector
