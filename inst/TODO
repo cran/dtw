@@ -1,0 +1,18 @@
+
+IMPLEMENTATION
+* plot
+* windowing 
+* allow ts objects
+
+DOCUMENTATION
+* references
+
+STUDY
+* binary
+* skip computation of distance for elements outside-window
+* its alignments should be natural (timestamps reported as index)
+
+
+EXAMPLES
+* density plot
+* put example of passing a distance matrix (also in euclideanSquared)
