@@ -3,6 +3,7 @@
 \alias{stepPattern}
 \alias{is.stepPattern}
 \alias{print.stepPattern}
+\alias{plot.stepPattern}
 
 \alias{symmetric1}
 \alias{symmetric2}
@@ -69,6 +70,7 @@
 
 
 \method{print}{stepPattern}(x,...)
+\method{plot}{stepPattern}(x,...)
 
 stepPattern(v)
 is.stepPattern(x)
@@ -89,6 +91,11 @@ is.stepPattern(x)
 
   \code{print.stepPattern} prints an user-readable
   description of the recurrence equation defined by the given pattern.
+
+  \code{plot.stepPattern} graphically displays the step patterns
+  productions which can lead to element (0,0). (Weights are not
+  currently shown.)
+  
 
 
   % TODO REPLACE as TABLE
@@ -212,6 +219,14 @@ recognition.} Englewood Cliffs, NJ: Prentice Hall.
 
 print.stepPattern(symmetric2)   # or just "symmetric2"
 
+
+
+#########
+##
+## The well-known plotting style for step patterns
+
+plot.stepPattern(symmetricP2,main="Sakoe's Symmetric P=2 recursion")
+   # or just "plot(symmetricP2)"
 
 
 #########

@@ -73,7 +73,8 @@ function(x, y=NULL,
   gcm$distance <- gcm$costMatrix[n,jmin];
 
   ## alignment valid?
-  if(is.na(gcm$distance)) { stop("No warping paths exists that is allowed by costraints"); }
+  if(is.na(gcm$distance))
+    stop("No warping paths exists that is allowed by costraints"); 
 
   
   if(!distance.only) {
@@ -89,9 +90,11 @@ function(x, y=NULL,
 
   ## delete sizey intermediate steps 
   if(!keep.internals) {
-    gcm$costMatrix<-NULL;
-    gcm$directionMatrix<-NULL;
-  } 
+      gcm$costMatrix<-NULL;
+      gcm$directionMatrix<-NULL;
+  } else {
+      gcm$localCostMatrix <- lm;
+  }
 
   ## if a dtw object is to be sponsored:
   class(gcm) <- "dtw";

@@ -5,7 +5,7 @@
 #       University of Pavia - Italy                           #
 #       www.labmedinfo.org                                    #
 #                                                             #
-#   $Id: stepPattern.R 87 2008-01-07 13:59:07Z tonig $
+#   $Id: stepPattern.R 108 2008-02-15 21:35:13Z tonig $
 #                                                             #
 ###############################################################
 
@@ -33,6 +33,25 @@ is.stepPattern <- function(x) {
 }
 
 
+
+## plot the step pattern
+
+plot.stepPattern <- function(x,...) {
+  pats <- unique(x[,1]);                #list of patterns
+  xr <- max(x[,2]);
+  yr <- max(x[,3]);
+
+  ## dummy plot to fix the plot limits
+  plot(-x[,2],-x[,3],type="n",
+       xlab="Query index",ylab="Template index",
+       asp=1,lab=c(xr+1,yr+1,1),
+       ...);
+
+  for(i in pats) {
+    ss <- x[,1]==i;
+    lines(-x[ss,2],-x[ss,3],type="o");
+  }
+}
 
 
 

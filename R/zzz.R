@@ -5,22 +5,25 @@
 #       University of Pavia - Italy                           #
 #       www.labmedinfo.org                                    #
 #                                                             #
-#   $Id: zzz.R 94 2008-01-08 16:44:46Z tonig $
+#   $Id: zzz.R 98 2008-01-09 14:20:18Z tonig $
 #                                                             #
 ###############################################################
 
 .First.lib <- function(lib, pkg)  {
-  cat(paste("This is dtw ",
+  library(proxy);
+
+  cat(paste("Loaded dtw v",
             utils::packageDescription("dtw")$Version,
-	    ". Please see citation(\"dtw\") for use in publications.",
+	    ". See ?dtw for help, citation(\"dtw\") for use in publication.",
 	    "\n",
             sep=""))
   library.dynam("dtw");
-  library(proxy);
 
   ## Register DTW as a distance function into package proxy
-  pr_DB$set_entry(FUN=dtwpairdist, names="DTW", description="Dynamic Time Warping",
-                  loop=TRUE, formula="minimum of sum(x[xw[i]]-y[yw[i]]) over all xw, yw");
+  pr_DB$set_entry(FUN=dtwpairdist, names="DTW", 
+                  loop=TRUE, type="metric",
+                  description="Dynamic Time Warping",
+                  formula="minimum of sum(x[xw[i]]-y[yw[i]]) over all monotonic xw, yw");
 
   invisible()
 }

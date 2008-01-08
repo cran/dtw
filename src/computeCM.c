@@ -1,8 +1,10 @@
 /* 
  * Compute global cost matrix - companion
  * to the dtw R package
- * (c) Toni Giorgino  2007
+ * (c) Toni Giorgino  2007-8
  * Distributed under GPL-2 with NO WARRANTY.
+ *
+ * $Id: computeCM.c 117 2008-02-22 16:27:03Z tonig $
  *  
  */
 
@@ -11,7 +13,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#include <malloc.h>
 
 #ifdef DMALLOC
 #include "dmalloc.h"
