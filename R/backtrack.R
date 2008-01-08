@@ -5,7 +5,7 @@
 #       University of Pavia - Italy                           #
 #       www.labmedinfo.org                                    #
 #                                                             #
-#   $Id: backtrack.R 51 2007-12-11 10:59:08Z tonig $
+#   $Id: backtrack.R 72 2007-12-31 16:40:44Z tonig $
 #                                                             #
 ###############################################################
 
@@ -16,17 +16,33 @@
 `backtrack` <-
 function(jmin, gcm) {
 
-  ## mapping lists
-  ii<-c();
-  jj<-c();
-
   dir<-gcm$stepPatterns;
+  npat <- attr(dir,"npat");
 
-  n <- dim(gcm$costMatrix)[1];
-  m <- dim(gcm$costMatrix)[2];
+  n <- nrow(gcm$costMatrix);
+  m <- ncol(gcm$costMatrix);
 
   i <- n;
   j <- jmin;
+
+
+
+  ## drop rows with (0,0) deltas 
+  nullrows <- dir[,2]==0 & dir[,3] ==0 ;
+  tmp <- dir[!nullrows,];
+
+  ## Pre-compute steps
+  stepsCache <- list();  
+  for(k in 1:npat) {
+    stepsCache[[k]] <- .extractpattern(tmp,k);
+  }
+
+  
+  ## mapping lists
+  ii<-c(n);
+  jj<-c(m);
+
+
 
   repeat {
     ## cross fingers for termination
@@ -39,25 +55,23 @@ function(jmin, gcm) {
 
     ## undo the steps
 
-    steps<-.extractpattern(dir,s);
-    ns<-dim(steps)[1];
+    steps<-stepsCache[[s]];
+    ns<-nrow(steps);
 
-    for(k in 1:(ns-1)) {
+    ## In some rare cases (eg symmetricP0), ns will be 1
+    ## R indexing rules make k==0 a no-op anyway
+    for(k in 1:ns) {
 	## take note of current cell, prepending to mapping lists
 	ii <- c(i-steps[k,1],ii);
 	jj <- c(j-steps[k,2],jj);
-	## The final cell is not appended; it will be done 
-	## processing step 0,0 at the next iteration
+	## All sub-steps are visited & appended; we have dropped (0,0) deltas
     }
 
-    ## And don't forget where we arrived
+    ## And don't forget where we arrived to
     i<-i-steps[ns,1];
     j<-j-steps[ns,2];
   }
 
-  ## The very final point of the backtrack is not otherwise appended 
-  ii<-c(1,ii);
-  jj<-c(1,jj);
 
   out<-list();
   out$index1<-ii;
@@ -65,5 +79,3 @@ function(jmin, gcm) {
 
   return(out);
 }
-
-

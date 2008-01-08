@@ -98,6 +98,10 @@ void computeCM(			/* IN */
     malloc(npats*sizeof(double));
 
 
+  /* initialize the seed */
+  cm[0]=lm[0];
+
+
   /* lets go */
   for(int j=0; j<m; j++) {
     for(int i=0; i<n; i++) {

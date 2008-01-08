@@ -10,8 +10,13 @@
   and find optimal alignment between two time series.
 }
 \usage{
-dtw(x, y=NULL, distance.function=euclideanSquared, step.pattern="s",
-  window.type="none", keep.internals=FALSE, ...)
+dtw(x, y=NULL,
+         dist.method="Euclidean",
+         step.pattern="s",
+         window.type="none",
+         keep.internals=FALSE,
+         distance.only=FALSE,
+         ... )
 
 is.dtw(d)
 
@@ -21,16 +26,19 @@ is.dtw(d)
   \item{x}{ query vector \emph{or} local cost matrix }
   \item{y}{ template vector,  unused if \code{x} given as cost matrix }
   %  \item{partial}{ ~~Describe \code{partial} here~~ }
-  \item{distance.function}{ pointwise distance function. See e.g. \code{\link{dtwDistanceFunctions}} }
-  \item{step.pattern}{ step pattern. Char: "s" (symmetric1), "a"
-    (asymmetric), or stepPattern object describing the 
+  \item{dist.method}{ pointwise (local) distance function. See
+    \code{\link[pkg:proxy]{dist}} in package \pkg{proxy} }
+  \item{step.pattern}{ step pattern. Character "s" (symmetric1), "a"
+    (asymmetric), or a stepPattern object describing the 
     local warping steps allowed with their cost (see \code{\link{stepPattern}})}
-  \item{window.type}{ windowing function, character or function. Char: "none",
-    "itakura", "sakoechiba", "slantedband". Function: boolean of two arguments.}
+  \item{window.type}{ windowing function. Character: "none",
+    "itakura", "sakoechiba", "slantedband", or a  function
+    (see details).}
   \item{keep.internals}{don't discard the cumulative cost matrix and other
     internal structures}
+  \item{distance.only}{only compute distance (no backtrack, faster)}
   \item{d}{an arbitrary R object}
-  \item{...}{additional arguments, passed to \code{window.function}}
+  \item{...}{additional arguments, passed to \code{window.type}}
 }
 
 \details{
@@ -42,17 +50,16 @@ is.dtw(d)
   may differ.
   
   The (local) distance between elements of \code{x} (query) and \code{y}
-  (template) is computed through the supplied \code{distance.function}
-  (see \code{\link{dtwDistanceFunctions}}). 
+  (template) is computed passing \code{x} and \code{y} to the
+  \code{\link[pkg:proxy]{dist}} function in package \pkg{proxy}
+  with the method \code{dist.method}. 
 
   Multivariate time series and arbitrary distance metrics can be handled
   by supplying a local-distance matrix. Element \code{[i,j]} of the
   local-distance matrix is understood as the distance between element
   \code{x[i]} and \code{y[j]}. The distance matrix has therefore
   \code{n=length(x)} rows and \code{m=length(y)} columns (see note
-  below).  To generate a local distance matrix, the functions
-  \code{outer} and \code{\link[pkg:analogue]{distance}} in package
-  \pkg{analogue} may come handy.
+  below). 
 
   Several common variants of DTW are supported via the
   \code{step.pattern} argument, which defaults to \code{symmetric1}
@@ -92,6 +99,7 @@ is.dtw(d)
   \item{distance}{the computed distance \emph{not normalized}. Normalization 
     depends on the chosen step pattern.}
   \item{N,M}{query and template length}
+  \item{call}{the function call that created the object}
   \item{index1}{matched elements: indices in \code{x}}
   \item{index2}{corresponding mapped indices in \code{y}}
   \item{stepPatterns}{the \code{stepPattern} object used for the computation}
@@ -114,15 +122,18 @@ vol.26, no.1, pp. 43-49, Feb 1978 URL: \url{http://ieeexplore.ieee.org/xpls/abs_
   (first index), and template elements column-wise (second index). They
   print according to the usual convention, with indexes increasing down-
   and rightwards.  Many DTW papers and tutorials show matrices according to
-  plot-like conventions, i.e.  one index growing upwards. This may be
+  plot-like conventions, i.e.  template index growing upwards. This may be
   confusing.  }
 
 \seealso{
+  \code{\link{dtwDist}}, for iterating dtw over a set of timeseries;
   \code{\link{dtwWindowingFunctions}}, for windowing and global constraints;
   \code{\link{stepPattern}}, step patterns and local constraints;
-  \code{\link{plot.dtw}},  plot methods for DTW objects;
-  \code{\link{outer}},\code{\link[pkg:analogue]{distance}}, for building a
-  local distance matrix.
+  \code{\link{plot.dtw}},  plot methods for DTW objects.
+ To generate a local distance matrix, the functions
+  \code{\link[pkg:proxy]{dist}} in package \pkg{proxy},
+  \code{\link[pkg:analogue]{distance}} in package \pkg{analogue},
+  \code{\link{outer}} may come handy.
 }
 
 

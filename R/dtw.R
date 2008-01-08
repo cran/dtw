@@ -5,7 +5,7 @@
 #       University of Pavia - Italy                           #
 #       www.labmedinfo.org                                    #
 #                                                             #
-#   $Id: dtw.R 69 2007-12-31 13:38:41Z tonig $
+#   $Id: dtw.R 83 2008-01-04 00:25:00Z tonig $
 #                                                             #
 ###############################################################
 
@@ -17,10 +17,11 @@
 
 `dtw` <-
 function(x, y=NULL,
-         distance.function=euclideanSquared,
+         dist.method="Euclidean",
          step.pattern="s",
          window.type="none",
          keep.internals=FALSE,
+         distance.only=FALSE,
          ... ) {
 
   lm <- NULL;
@@ -28,14 +29,15 @@ function(x, y=NULL,
 
   
   ## if matrix given
-  if(is.matrix(x)) {
+  if(is.null(y)) {
+    if(!is.matrix(x)) 
+      stop("Single argument requires a global cost matrix");
+    
     lm <- x;
   } else {
     ## two ts. given TODO handle multivariate
     ## as.numeric handles ts, but not multivariates
-    lm <- outer(as.numeric(x),
-                as.numeric(y),
-                FUN=distance.function);
+    lm <- proxy::dist(x,y,method=dist.method);
   }
 
 
@@ -48,17 +50,12 @@ function(x, y=NULL,
 
 
   ## shorthand names
-  n <- dim(lm)[1];
-  m <- dim(lm)[2];
+  n <- nrow(lm);
+  m <- ncol(lm);
 
-  if(is.loaded("computeCM")) {
-    gcm <- globalCostNative(lm, step.matrix=dir,
-                            window.function=wfun, ...);
-  } else {
-    warning("Native dtw implementation not available: using (slow) interpreted fallback");
-    gcm <- globalCostMatrix(lm, step.matrix=dir,
-                            window.function=wfun, ...);
-  }
+  ## perform the computation
+  gcm <- globalCostMatrix(lm, step.matrix=dir,
+                          window.function=wfun, ...);
 
 
   
@@ -68,24 +65,27 @@ function(x, y=NULL,
   ## remember size
   gcm$N <- n;
   gcm$M <- m;
-  
-  ## result: distance (add to existing list gcm?)
-  distance <- gcm$costMatrix[n,jmin];
-
-  ## alignment valid?
-  if(is.na(distance)) { stop("No warping paths exists that is allowed by costraints"); }
-
-  ## perform the backtrack
-  mapping <- backtrack(jmin,gcm);
-
-  ## append to existing list gcm, for now
-  ## perhaps replace by attr()
-  gcm$distance <- distance;
-  gcm$index1 <- mapping$index1;
-  gcm$index2 <- mapping$index2;
 
   ## store call
   gcm$call <- match.call();
+
+  ## result: distance (add to existing list gcm?)
+  gcm$distance <- gcm$costMatrix[n,jmin];
+
+  ## alignment valid?
+  if(is.na(gcm$distance)) { stop("No warping paths exists that is allowed by costraints"); }
+
+  
+  if(!distance.only) {
+    ## perform the backtrack
+    mapping <- backtrack(jmin,gcm);
+
+    ## append to existing list gcm, for now
+    ## perhaps replace by attr()
+    gcm$index1 <- mapping$index1;
+    gcm$index2 <- mapping$index2;
+  }
+
 
   ## delete sizey intermediate steps 
   if(!keep.internals) {

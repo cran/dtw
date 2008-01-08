@@ -10,23 +10,19 @@
 ###############################################################
 
 
-## Euclidean squared distance.
-## should work on vectors (in R^n) too
+## Compute a dissimilarity matrix, akin to "dist", analogue/distance,
+## vegan/vegdist, etc. , based on the dtw "distance" measure.
 
-## `euclideanSquared` <-
-## function(a,b) {
-##   z<-a-b;
-##   z<-drop(z %*% z);                     #inner dot product
-##   return (z);
-## }
 
-`euclideanSquared` <-
-  function(a,b) {
-    return((a-b)^2);
+## Apply FUN to all row pairs
+dtwDist <- function(m,...) {
+  mye<-function(y,x,FUN,...) {
+    apply(x,1,FUN,y,...);
   }
 
+  apply(m,1,mye,m,dtwpairdist,...);
+}
 
-`euclideanDistance` <-
-  function(a,b) {
-    return(abs(a-b));
-  }
+
+
+

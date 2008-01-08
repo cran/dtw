@@ -7,8 +7,6 @@ R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
 Type 'license()' or 'licence()' for distribution details.
 
-  Natural language support but running in an English locale
-
 R is a collaborative project with many contributors.
 Type 'contributors()' for more information and
 'citation()' on how to cite R or R packages in publications.
@@ -18,6 +16,16 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 Type 'q()' to quit R.
 
 > library(dtw);
+Loading required package: proxy
+
+Attaching package: 'proxy'
+
+
+	The following object(s) are masked from package:stats :
+
+	 as.dist,
+	 dist 
+
 > 
 > ### Synthetic example: check indexes, distance
 > ldist<-matrix(1,nrow=6,ncol=6);  # Matrix of ones
@@ -40,11 +48,20 @@ Type 'q()' to quit R.
 > da$index2			 # 1 3 5 5 5 6
 [1] 1 3 5 5 5 6
 > 
-> ###  Synthetic example: verify native output
-> ds<- globalCostMatrix(ldist) 
-> dsn<- globalCostNative(ldist)
-> all.equal(ds,dsn)		 # TRUE
-[1] TRUE
+> da<-dtw(ldist,step=asymmetricP0);	 # The strange aP0 alignment
+> da$distance			 # 1
+[1] 1
+> da$index1			 # 1 2 2 2 2 3 4 5 6 6
+ [1] 1 2 2 2 2 3 4 5 6 6
+> da$index2			 # 1 1 2 3 4 5 5 5 5 6
+ [1] 1 1 2 3 4 5 5 5 5 6
+> 
+> ds<- globalCostMatrix(ldist)
+> dsn<- globalCostMatrix(ldist,native=FALSE)
+Warning message:
+In globalCostMatrix(ldist, native = FALSE) :
+  Native dtw implementation not available: using (slow) interpreted fallback
+> stopifnot(all.equal(ds,dsn))		 # TRUE
 > 
 > 
 > ###  Sine/cosine example: verify native output
@@ -52,9 +69,12 @@ Type 'q()' to quit R.
 > idx<-seq(0,6.28,len=100);
 > query<-sin(idx)+runif(100)/10;	
 > template<-cos(idx)
-> ldist<-outer(query,template,FUN=euclideanSquared)
+> ldist<-outer(query,template,FUN=function(x,y){(x-y)^2})
 > ds<- globalCostMatrix(ldist)
-> dsn<- globalCostNative(ldist)
+> dsn<- globalCostMatrix(ldist,native=FALSE)
+Warning message:
+In globalCostMatrix(ldist, native = FALSE) :
+  Native dtw implementation not available: using (slow) interpreted fallback
 > all.equal(ds,dsn)		# TRUE
 [1] TRUE
 > 

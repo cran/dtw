@@ -35,6 +35,7 @@ dtwWindow.plot(fun,query.size=200,template.size=220,...);
   \item{fun}{ a windowing function }
   \item{...}{additional arguments passed to windowing functions}
 }
+
 \details{
 
   Windowing functions can be passed to the
@@ -44,30 +45,19 @@ dtwWindow.plot(fun,query.size=200,template.size=220,...);
   \code{TRUE} if the coordinates fall within the allowed region 
   for warping paths, \code{FALSE} otherwise.
 
-  \code{dtwWindow.plot} can be used to visualize a chosen windowing 
-  function. Some functions take parameters which must be set (e.g. 
-  window.size). \code{dtwWindow.plot}  plots a 200 x 220  rectangular
-  region by default, which can be changed passing \code{template.size} 
-  and  \code{query.size} arguments.
-  
   User-defined functions can read variables \code{template.size},
-  \code{query.size} and \code{window.size}; these are pre-set upon invocation.
-  User-defined functions are free to implement any window
-  shape, as long as at least one path is allowed between the initial and
-  final alignment points, i.e., they are compatible with the DTW
-  constraints.
+  \code{query.size} and \code{window.size}; these are pre-set upon
+  invocation.  Some functions require additional parameters which must
+  be set (e.g. \code{window.size}).  User-defined functions are free to
+  implement any window shape, as long as at least one path is allowed
+  between the initial and final alignment points, i.e., they are
+  compatible with the DTW constraints.
 
-  The Sakoe-Chiba band is a band of \code{window.size} elements
-  around the main diagonal. If the window size is too small, i.e. 
-  $\code{template.size}-\code{query.size}
-  > \code{window.size}$,  warping becomes
-  impossible.
-
-  A widely held misconception is that the "Itakura parallelogram" (as
-  described in reference [2]) is a \emph{global} constraint, i.e. a
-  window.  To the author's knowledge, it instead arises from the local
-  slope restrictions imposed to the warping path, such as the one
-  implemented by the \code{\link{asymmetricItakura}} step pattern.
+  The \code{sakoeChibaWindow} function implements the Sakoe-Chiba band,
+  i.e. \code{window.size} elements around the \code{main} diagonal. If the
+  window size is too small, i.e. if
+  $\code{template.size}-\code{query.size} > \code{window.size}$, warping
+  becomes impossible.
 
   An \code{itakuraWindow}  global constraint is still provided with this
   package.    See example below for a demonstration of
@@ -80,11 +70,22 @@ dtwWindow.plot(fun,query.size=200,template.size=220,...);
   from one corner to the other of the possibly rectangular cost matrix,
   therefore having a slope of \code{M/N}, not 1.
 
+    \code{dtwWindow.plot} visualizes a windowing function. By default
+  it plots a 200 x 220 rectangular region, which can
+  be changed via \code{template.size} and \code{query.size} arguments.
+
+  
 }
 
 \note{
   Although  \code{dtwWindow.plot} resembles object-oriented notation,
   there is not a such a dtwWindow class currently.
+
+    A widely held misconception is that the "Itakura parallelogram" (as
+  described in reference [2]) is a \emph{global} constraint, i.e. a
+  window.  To the author's knowledge, it instead arises from the local
+  slope restrictions imposed to the warping path, such as the one
+  implemented by the \code{\link{asymmetricItakura}} step pattern.
 }
 
 \value{

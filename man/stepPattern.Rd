@@ -21,6 +21,22 @@
 \alias{asymmetricP2}
 
 
+\alias{typeIa}
+\alias{typeIas}
+\alias{typeIb}
+\alias{typeIbs} 
+\alias{typeIc}
+\alias{typeIcs}
+\alias{typeId}
+\alias{typeIds}
+\alias{typeIIa}
+\alias{typeIIb}
+\alias{typeIIc}
+\alias{typeIId}
+\alias{typeIIIc} 
+\alias{typeIVc}
+
+
 
 
 \title{Local constraints and step patterns for DTW}
@@ -43,6 +59,13 @@
   symmetricP05; asymmetricP05
   symmetricP1;  asymmetricP1
   symmetricP2;  asymmetricP2 
+
+## Step patterns classified as per Rabiner-Myers
+  typeIa;   typeIb;   typeIc;   typeId;
+  typeIas;  typeIbs;  typeIcs;  typeIds;  # smoothed
+  typeIIa;  typeIIb;  typeIIc;  typeIId;
+  typeIIIc; typeIVc;
+
 
 
 \method{print}{stepPattern}(x,...)
@@ -91,18 +114,39 @@ is.stepPattern(x)
 
 %    \item{\code{symmetricVelichkoZagoruyko}}{symmetric, reproduced from [1]. Use distance matrix \code{1-d}}
 
-    \item{\code{symmetricPx}}{symmetric, slope contraint $P=x$;}
+    \item{\code{symmetricPx}}{Sakoe's symmetric, slope contraint \code{x};}
 
-    \item{\code{asymmetricPx}}{asymmetric, slope contraint $P=x$.}
+    \item{\code{asymmetricPx}}{Sakoe's asymmetric, slope contraint \code{x}.}
+
+    \item{\code{typeNNw}}{Rabiner-Myers classification (see details).}
 
 
   }
 
   The \code{symmetricPx} and \code{asymmetricPx} slope-constrained
   patterns are discussed in Sakoe-Chiba [1], and reproduced as shown in
-  page 47, table I. Values available for \emph{P} are accordingly: \code{0}
-  (no constraint), \code{1}, \code{05} (half) and \code{2}. See [1] for
-  details. They are also known as type V (Rabiner and Huang) [3].
+  page 47, table I. Values available for \emph{P} (\code{x}) are
+  accordingly: \code{0} (no constraint), \code{1}, \code{05} (one half)
+  and \code{2}. See [1] for details. % They are also known as type V (Rabiner and Huang) [3].
+
+  The \code{typeNNw} steps follow Rabiner and Myers' classification
+  given in [3-4]. \code{NN} is a roman numeral specifying the shape of
+  the transitions; \code{w} is a letter in the range \code{a-d}
+  according the type of weighting used per step (see table below for
+  meaning); \code{type2} patterns also have a version ending in \code{s}
+  meaning the path smoothing is used (which does not permit skipping
+  points). The \code{type1d, type2d} and \code{type2ds} are unbiased and
+  symmetric.
+
+  \preformatted{
+        rule       norm   unbiased
+    --------------------------------
+     a  min step   ~N     NO
+     b  max step   ~N     NO
+     c  x step     N      YES
+     d  x+y step   N+M    YES
+    }
+  
   
   The \code{stepPattern} constructor is currently not well
   documented. Please see the example below, implementing Sakoe's
@@ -132,17 +176,21 @@ is.stepPattern(x)
 \references{ 
 [1] Sakoe, H.; Chiba, S., \emph{Dynamic programming algorithm optimization for spoken word recognition,}
  Acoustics, Speech, and Signal Processing [see also IEEE Transactions on Signal Processing], IEEE Transactions on , 
-vol.26, no.1, pp. 43-49, Feb 1978 URL: \url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=1163055} \cr
-\cr
+vol.26, no.1, pp. 43-49, Feb 1978 URL: \url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=1163055} 
+\cr \cr
 [2] Itakura, F., \emph{Minimum prediction residual principle applied to speech
 recognition,} Acoustics, Speech, and Signal Processing [see also IEEE
 Transactions on Signal Processing], IEEE Transactions on , vol.23, no.1, pp.
 67-72, Feb 1975. URL:
-\url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=1162641} \cr
-\cr
+\url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=1162641} 
+\cr \cr
 [3] Rabiner, L. R., & Juang, B.-H. (1993). \emph{Fundamentals of speech
 recognition.} Englewood Cliffs, NJ: Prentice Hall.
- 
+\cr \cr
+[4] Myers, C. S.  \emph{A Comparative Study Of Several Dynamic  Time Warping
+  Algorithms For Speech           Recognition}, MS and BS thesis, MIT Jun 20
+1980,   \url{dspace.mit.edu/bitstream/1721.1/27909/1/07888629.pdf}
+
 }
 
 
@@ -152,6 +200,8 @@ recognition.} Englewood Cliffs, NJ: Prentice Hall.
 
 \examples{
 
+#########
+##
 ## The usual (normalizable) symmetric step pattern
 ## Step pattern recursion, defined as:
 ## g[i,j] = min(
@@ -164,6 +214,8 @@ print.stepPattern(symmetric2)   # or just "symmetric2"
 
 
 
+#########
+##
 ## Same example seen in ?dtw , now with asymmetric step pattern
 
 idx<-seq(0,6.28,len=100);
@@ -174,6 +226,18 @@ template<-cos(idx);
 asy<-dtw(query,template,keep=TRUE,step=asymmetric);
 
 dtwPlot(asy,type="density",main="Sine and cosine, asymmetric step")
+
+
+#########
+##
+##  Hand-checkable example given in [4] p 61
+##
+
+`tm` <-
+structure(c(1, 3, 4, 4, 5, 2, 2, 3, 3, 4, 3, 1, 1, 1, 3, 4, 2,
+3, 3, 2, 5, 3, 4, 4, 1), .Dim = c(5L, 5L))
+
+
 
 }
 
@@ -190,4 +254,3 @@ dtwPlot(asy,type="density",main="Sine and cosine, asymmetric step")
 
 
 \keyword{ ts }
-    

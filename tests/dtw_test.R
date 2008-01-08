@@ -15,10 +15,14 @@ da$distance			 # 2
 da$index1			 # 1 2 3 4 5 6
 da$index2			 # 1 3 5 5 5 6
 
-###  Synthetic example: verify native output
-ds<- globalCostMatrix(ldist) 
-dsn<- globalCostNative(ldist)
-all.equal(ds,dsn)		 # TRUE
+da<-dtw(ldist,step=asymmetricP0);	 # The strange aP0 alignment
+da$distance			 # 1
+da$index1			 # 1 2 2 2 2 3 4 5 6 6
+da$index2			 # 1 1 2 3 4 5 5 5 5 6
+
+ds<- globalCostMatrix(ldist)
+dsn<- globalCostMatrix(ldist,native=FALSE)
+stopifnot(all.equal(ds,dsn))		 # TRUE
 
 
 ###  Sine/cosine example: verify native output
@@ -26,8 +30,8 @@ all.equal(ds,dsn)		 # TRUE
 idx<-seq(0,6.28,len=100);
 query<-sin(idx)+runif(100)/10;	
 template<-cos(idx)
-ldist<-outer(query,template,FUN=euclideanSquared)
+ldist<-outer(query,template,FUN=function(x,y){(x-y)^2})
 ds<- globalCostMatrix(ldist)
-dsn<- globalCostNative(ldist)
+dsn<- globalCostMatrix(ldist,native=FALSE)
 all.equal(ds,dsn)		# TRUE
 

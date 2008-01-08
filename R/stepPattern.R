@@ -5,7 +5,7 @@
 #       University of Pavia - Italy                           #
 #       www.labmedinfo.org                                    #
 #                                                             #
-#   $Id: stepPattern.R 51 2007-12-11 10:59:08Z tonig $
+#   $Id: stepPattern.R 87 2008-01-07 13:59:07Z tonig $
 #                                                             #
 ###############################################################
 
@@ -23,6 +23,7 @@ stepPattern <- function(v) {
 
   obj<-matrix(v,ncol=4,byrow=TRUE);
   class(obj)<-"stepPattern";
+  attr(obj,"npat") <- max(obj[,1]);
   return(obj);
 }
 
@@ -114,18 +115,12 @@ print.stepPattern <-function(x,...) {
 
 .extractpattern <- function(sp,sn) {
 	sbs<-sp[,1]==sn;	# pick only rows beginning by sn
-	spl<-sp[sbs,-1];	# of those: take only column Di, Dj, cost
-                                # (drop pattern no. column)
+	spl<-sp[sbs,-1,drop=FALSE];
+                                # of those: take only column Di, Dj, cost
+                                # (drop first - pattern no. column)
 
-
-        ## make sure it stays a matrix
-        spl <- matrix(spl,ncol=3);
-
-	nr<-dim(spl)[1];	# how many are left
-        spl<-spl[nr:1,];	# invert row order
-
-        ## make sure it stays a matrix
-        spl <- matrix(spl,ncol=3);
+	nr<-nrow(spl);	# how many are left
+        spl<-spl[nr:1,,drop=FALSE];	# invert row order
 
 	return(spl);
 }
@@ -342,6 +337,9 @@ asymmetricP2 <- stepPattern(c(
 
 
 
+
+
+
 ################################
 ## Taken from Table III, page 49.
 ## Four varieties of DP-algorithm compared
@@ -353,3 +351,200 @@ asymmetricP2 <- stepPattern(c(
 ## 3rd row:  symmetric1
 
 ## 4th row:  asymmetricItakura
+
+
+
+
+#############################
+## Classified according to Rabiner
+##
+## Taken from chapter 2, Myers' thesis [4]. Letter is
+## the weighting function:
+##
+##      rule       norm   unbiased
+##   a  min step   ~N     NO
+##   b  max step   ~N     NO
+##   c  x step     N      YES
+##   d  x+y step   N+M    YES
+##
+## Mostly unchecked
+
+
+typeIa <-  stepPattern(c(
+                         1, 2, 1, -1,
+                         1, 1, 0,  1,
+                         1, 0, 0,  0,
+                         2, 1, 1, -1,
+                         2, 0, 0,  1,
+                         3, 1, 2, -1,
+                         3, 0, 1,  1,
+                         3, 0, 0,  0
+ ));
+
+typeIb <-  stepPattern(c(
+                         1, 2, 1, -1,
+                         1, 1, 0,  1,
+                         1, 0, 0,  1,
+                         2, 1, 1, -1,
+                         2, 0, 0,  1,
+                         3, 1, 2, -1,
+                         3, 0, 1,  1,
+                         3, 0, 0,  1
+ ));
+
+typeIc <-  stepPattern(c(
+                         1, 2, 1, -1,
+                         1, 1, 0,  1,
+                         1, 0, 0,  1,
+                         2, 1, 1, -1,
+                         2, 0, 0,  1,
+                         3, 1, 2, -1,
+                         3, 0, 1,  1,
+                         3, 0, 0,  0
+ ));
+
+typeId <-  stepPattern(c(
+                         1, 2, 1, -1,
+                         1, 1, 0,  2,
+                         1, 0, 0,  1,
+                         2, 1, 1, -1,
+                         2, 0, 0,  2,
+                         3, 1, 2, -1,
+                         3, 0, 1,  2,
+                         3, 0, 0,  1
+ ));
+
+## ----------
+## smoothed variants of above
+
+typeIas <-  stepPattern(c(
+                         1, 2, 1, -1,
+                         1, 1, 0, .5,
+                         1, 0, 0, .5,
+                         2, 1, 1, -1,
+                         2, 0, 0,  1,
+                         3, 1, 2, -1,
+                         3, 0, 1, .5,
+                         3, 0, 0, .5
+ ));
+
+
+typeIbs <-  stepPattern(c(
+                         1, 2, 1, -1,
+                         1, 1, 0,  1,
+                         1, 0, 0,  1,
+                         2, 1, 1, -1,
+                         2, 0, 0,  1,
+                         3, 1, 2, -1,
+                         3, 0, 1,  1,
+                         3, 0, 0,  1
+ ));
+
+
+typeIcs <-  stepPattern(c(
+                         1, 2, 1, -1,
+                         1, 1, 0,  1,
+                         1, 0, 0,  1,
+                         2, 1, 1, -1,
+                         2, 0, 0,  1,
+                         3, 1, 2, -1,
+                         3, 0, 1, .5,
+                         3, 0, 0, .5
+ ));
+
+
+typeIds <-  stepPattern(c(
+                         1, 2, 1, -1,
+                         1, 1, 0, 1.5,
+                         1, 0, 0, 1.5,
+                         2, 1, 1, -1,
+                         2, 0, 0,  2,
+                         3, 1, 2, -1,
+                         3, 0, 1, 1.5,
+                         3, 0, 0, 1.5
+ ));
+
+
+
+
+
+
+## ----------
+
+typeIIa <- stepPattern(c(
+                        1,  1,  1, -1,
+                        1,  0,  0, 1,
+                        2,  1,  2, -1,
+                        2,  0,  0, 1,
+                        3,  2,  1, -1,
+                        3,  0,  0, 1
+                        ));
+
+typeIIb <- stepPattern(c(
+                        1,  1,  1, -1,
+                        1,  0,  0, 1,
+                        2,  1,  2, -1,
+                        2,  0,  0, 2,
+                        3,  2,  1, -1,
+                        3,  0,  0, 2
+                        ));
+
+typeIIc <- stepPattern(c(
+                        1,  1,  1, -1,
+                        1,  0,  0, 1,
+                        2,  1,  2, -1,
+                        2,  0,  0, 1,
+                        3,  2,  1, -1,
+                        3,  0,  0, 2
+                        ));
+
+typeIId <- stepPattern(c(
+                        1,  1,  1, -1,
+                        1,  0,  0, 2,
+                        2,  1,  2, -1,
+                        2,  0,  0, 3,
+                        3,  2,  1, -1,
+                        3,  0,  0, 3
+                        ));
+
+## ----------
+
+## Myers (p. 56) claims this rule is not exaclty equal to Itakura's,
+## but I am not convinced.
+
+typeIIIc <- asymmetricItakura;
+
+
+## ----------
+
+## numbers follow as production rules in fig 2.16
+
+typeIVc <-  stepPattern(c(
+                          1,  1,  1,  -1,
+                          1,  0,  0,   1,
+                          2,  1,  2,  -1,
+                          2,  0,  0,   1,
+                          3,  1,  3,  -1,
+                          3,  0,  0,   1,
+                          4,  2,  1,  -1,
+                          4,  1,  0,   1,
+                          4,  0,  0,   1,
+                          5,  2,  2,  -1,
+                          5,  1,  0,   1,
+                          5,  0,  0,   1,
+                          6,  2,  3,  -1,
+                          6,  1,  0,   1,
+                          6,  0,  0,   1,
+                          7,  3,  1,  -1,
+                          7,  2,  0,   1,
+                          7,  1,  0,   1,
+                          7,  0,  0,   1,
+                          8,  3,  2,  -1,
+                          8,  2,  0,   1,
+                          8,  1,  0,   1,
+                          8,  0,  0,   1,
+                          9,  3,  3,  -1,
+                          9,  2,  0,   1,
+                          9,  1,  0,   1,
+                          9,  0,  0,   1
+ ));
