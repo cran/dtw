@@ -5,7 +5,7 @@
 #       University of Pavia - Italy                           #
 #       www.labmedinfo.org                                    #
 #                                                             #
-#   $Id: backtrack.R 72 2007-12-31 16:40:44Z tonig $
+#   $Id: backtrack.R 126 2008-05-29 12:44:37Z tonig $
 #                                                             #
 ###############################################################
 
@@ -14,7 +14,7 @@
 ## Backtrack the steps taken - internal
 
 `backtrack` <-
-function(jmin, gcm) {
+function(gcm) {
 
   dir<-gcm$stepPatterns;
   npat <- attr(dir,"npat");
@@ -23,7 +23,7 @@ function(jmin, gcm) {
   m <- ncol(gcm$costMatrix);
 
   i <- n;
-  j <- jmin;
+  j <- gcm$jmin;
 
 
 
@@ -39,8 +39,8 @@ function(jmin, gcm) {
 
   
   ## mapping lists
-  ii<-c(n);
-  jj<-c(m);
+  ii<-c(i);
+  jj<-c(j);
 
 
 

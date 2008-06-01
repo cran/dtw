@@ -1,8 +1,8 @@
 Package: dtw
 Type: Package
 Title: Dynamic Time Warping algorithms
-Version: 1.5-3
-Date: 2008-1-8
+Version: 1.6-2
+Date: 2008-6-1
 Depends: proxy
 Enhances: proxy
 Author: Toni Giorgino <toni.giorgino@unipv.it>,
@@ -16,4 +16,4 @@ Description: Comprehensive implementation of Dynamic Time Warping
  cumulative distance, warping functions, plots, etc.
 License: GPL (>=2)
 URL: http://dtw.r-forge.r-project.org/
-Packaged: Fri Feb 22 17:27:21 2008; toni
+Packaged: Thu May 29 16:00:52 2008; toni

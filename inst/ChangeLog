@@ -1,4 +1,8 @@
-
+1.6-1
+	Fix plotting of three-way: reverse axis, partial
+	Implement & document partial option
+	Handle ts, mts objects
+	
 1.5-3
 	Fix malloc.h for OSX build
 	

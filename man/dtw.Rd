@@ -16,6 +16,7 @@ dtw(x, y=NULL,
          window.type="none",
          keep.internals=FALSE,
          distance.only=FALSE,
+         partial=FALSE,
          ... )
 
 is.dtw(d)
@@ -34,6 +35,7 @@ is.dtw(d)
   \item{window.type}{ windowing function. Character: "none",
     "itakura", "sakoechiba", "slantedband", or a  function
     (see details).}
+  \item{partial}{perform open-ended alignment}
   \item{keep.internals}{don't discard the cumulative cost matrix and other
     internal structures}
   \item{distance.only}{only compute distance (no backtrack, faster)}
@@ -59,15 +61,21 @@ is.dtw(d)
   local-distance matrix is understood as the distance between element
   \code{x[i]} and \code{y[j]}. The distance matrix has therefore
   \code{n=length(x)} rows and \code{m=length(y)} columns (see note
-  below). 
+  below).
+
+  Open-ended alignment can be selected via the \code{partial}
+  argument.  Open-end DTW computes the alignment which best matches
+  the full query with a \emph{leading part} of the template. This is
+  proposed in (Mori, 2006), (Sakoe, 1979) and others.
 
   Several common variants of DTW are supported via the
   \code{step.pattern} argument, which defaults to \code{symmetric1}
   (White-Neely). Most common step patterns are pre-defined, plus the
   user can write their own. See \code{\link{stepPattern}} for details.
 
-  Windowing is supported by supplying a name into the \code{window.type}
-  argument (abbreviations allowed)  between the built-in types:
+  Windowing (enforcing a global constraint) is supported by passing a
+  string or function \code{window.type} argument. Commonly used windows
+  are (abbreviations allowed):
 
   \itemize{
 	\item{\code{"none"}}{No windowing (default)}
@@ -105,6 +113,7 @@ is.dtw(d)
   \item{stepPatterns}{the \code{stepPattern} object used for the computation}
   \item{costMatrix}{if \code{keep.internals=TRUE}, the cumulative
     cost matrix}
+  \item{jmin}{last element of template matched, if \code{partial=TRUE}}
   \item{directionMatrix}{if \code{keep.internals=TRUE}, the
     directions of steps that would be taken at each alignment pair
     (integers indexing step patterns)}
@@ -114,8 +123,18 @@ is.dtw(d)
   \references{
   Sakoe, H.; Chiba, S., \emph{Dynamic programming algorithm optimization for spoken word recognition,}
  Acoustics, Speech, and Signal Processing [see also IEEE Transactions on Signal Processing], IEEE Transactions on , 
-vol.26, no.1, pp. 43-49, Feb 1978 URL: \url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=1163055} \cr
-  }
+vol.26, no.1, pp. 43-49, Feb 1978 URL:
+\url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=1163055} \cr
+  Mori, A.; Uchida, S.; Kurazume, R.; Taniguchi, R.; Hasegawa, T. &
+  Sakoe, H. \emph{Early Recognition and Prediction of Gestures} Proc. 18th
+  International Conference on Pattern Recognition ICPR 2006, 2006, 3,
+  560-563 \cr
+  Sakoe, H. \emph{Two-level DP-matching--A dynamic programming-based pattern
+  matching algorithm for connected word recognition} Acoustics, Speech,
+  and Signal Processing [see also IEEE Transactions on Signal
+  Processing], IEEE Transactions on, 1979, 27, 588-595
+}
+
 \author{Toni Giorgino }
 
 \note{Cost matrices (both input and output) have query elements row-wise

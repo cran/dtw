@@ -43,9 +43,10 @@
 \title{Local constraints and step patterns for DTW}
 
 \description{ DTW variants are implemented through step pattern objects.
-  A \code{stepPattern} instance lists the transitions allowed by the
-  \code{\link{dtw}} function in the search for the minimum-distance
-  path.  }
+ A \code{stepPattern} object lists the transitions allowed by the
+ \code{\link{dtw}} function in the search for the minimum-distance path.
+ The user can use one of the objects described in this page for the
+ \code{stepPattern} argument of the dtw call.  }
 
 \usage{
 ## Well-known step patterns
@@ -103,12 +104,12 @@ is.stepPattern(x)
 
   \itemize{
 
-    \item{\code{symmetric1}}{quasi-symmetric, no slope constraint
-    (favours oblique steps);}
+    \item{\code{symmetric1}}{quasi-symmetric, no local constraint
+      (biased in favor of oblique steps);}
 
-    \item{\code{symmetric2}}{properly symmetric, no slope constraint:
-    one diagonal step costs as much as the sum of the equivalent steps
-    along the sides; }
+    \item{\code{symmetric2}}{normalizable symmetric, no local constraint:
+      unbiased one diagonal step costs as much as the two  equivalent steps
+      along the sides; }
 
     \item{\code{asymmetric}}{asymmetric, slope constrained between 0 and
       2. Matches each element of the query time series exactly once, so
@@ -121,12 +122,11 @@ is.stepPattern(x)
 
 %    \item{\code{symmetricVelichkoZagoruyko}}{symmetric, reproduced from [1]. Use distance matrix \code{1-d}}
 
-    \item{\code{symmetricPx}}{Sakoe's symmetric, slope contraint \code{x};}
+    \item{\code{symmetricPx}}{Sakoe's symmetric [1], slope contraint \code{x};}
 
-    \item{\code{asymmetricPx}}{Sakoe's asymmetric, slope contraint \code{x}.}
+    \item{\code{asymmetricPx}}{Sakoe's asymmetric [1], slope contraint \code{x}.}
 
-    \item{\code{typeNNw}}{Rabiner-Myers classification (see details).}
-
+    \item{\code{typeNNw}}{Rabiner-Myers classification [4] (see details).}
 
   }
 
@@ -148,8 +148,8 @@ is.stepPattern(x)
   \preformatted{
         rule       norm   unbiased
     --------------------------------
-     a  min step   ~N     NO
-     b  max step   ~N     NO
+     a  min step   --     NO
+     b  max step   --     NO
      c  x step     N      YES
      d  x+y step   N+M    YES
     }
