@@ -1,19 +1,36 @@
  
 citHeader("To cite package 'dtw' in publications use (subject to change):")
 
-citEntry(entry="Manual",
-        title ="dtw: Dynamic Time Warping algorithms in R",
-        author = personList(as.person("Toni Giorgino")),
-        year = 2007,
-	url = "http://dtw.r-forge.r-project.org",
-        note = paste("R package version", packageDescription("dtw")$Version),
+# citEntry(entry="Manual",
+#         title ="dtw: Dynamic Time Warping algorithms in R",
+#         author = personList(as.person("Toni Giorgino")),
+#         year = 2007,
+# 	url = "http://dtw.r-forge.r-project.org",
+#         note = paste("R package version", packageDescription("dtw")$Version),
+#         textVersion =
+#         paste("T. Giorgino (2007). ",
+#         "dtw: Dynamic Time Warping algorithms in R",
+#         packageDescription("dtw")$Version,
+# 	"http://dtw.r-forge.r-project.org",
+#         ".", sep=" ")
+# )
+
+
+
+
+citEntry(entry="Article",
+        title ="Matching incomplete time series with dynamic time warping: an algorithm
+	and an application to post-stroke rehabilitation",
+        author = personList(
+		as.person("Paolo Tormene"),
+		as.person("Toni Giorgino"),
+		as.person("Silvana Quaglini"),
+		as.person("Mario Stefanelli")
+	),
+        year = 2008,
+	doi = "doi:10.1016/j.artmed.2008.11.007",
+	pmid = 19111449,
+	journal = "Artificial Intelligence in Medicine",
         textVersion =
-        paste("T. Giorgino (2007). ",
-        "dtw: Dynamic Time Warping algorithms in R",
-        packageDescription("dtw")$Version,
-	"http://dtw.r-forge.r-project.org",
-        ".", sep=" ")
+		"Tormene, P.; Giorgino, T.; Quaglini, S. & Stefanelli, M. Matching incomplete time series with dynamic time warping: an algorithm and an application to post-stroke rehabilitation. Artificial Intelligence in Medicine, 2008, (In press), doi:10.1016/j.artmed.2008.11.007"
 )
-
-
-

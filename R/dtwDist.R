@@ -15,12 +15,12 @@
 
 
 ## Apply FUN to all row pairs
-dtwDist <- function(m,...) {
+dtwDist <- function(mx,my=mx,...) {
   mye<-function(y,x,FUN,...) {
     apply(x,1,FUN,y,...);
   }
 
-  apply(m,1,mye,m,dtwpairdist,...);
+  apply(my,1,mye,mx,dtwpairdist,...);
 }
 
 

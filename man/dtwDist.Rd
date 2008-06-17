@@ -6,39 +6,49 @@
   a set of single-variate timeseries.  }
 
 \usage{
-dtwDist(m,...)
-# dist(m,y,method="DTW",...)
+dtwDist(mx,my=mx,...)
+# dist(mx,my=mx,method="DTW",...)
 }
 \arguments{
-  \item{m}{numeric matrix, containing timeseries as rows}
-  \item{y}{numeric matrix, containing timeseries as rows (for cross-distance)}
+  \item{mx}{numeric matrix, containing timeseries as rows}
+  \item{my}{numeric matrix, containing timeseries as rows (for cross-distance)}
   \item{...}{arguments passed to the \code{\link{dtw}} call}
 }
+
 \value{
-  A square matrix whose element \code{[i,j]} holds the Dynamic Time Warp
+ A square matrix whose element \code{[i,j]} holds the Dynamic Time Warp
  distance between row \code{i} (query) and \code{j} (reference) of
- \code{m}, i.e.  \code{dtw(m[i,],m[j,])$distance}.
+ \code{mx} and \code{my}, i.e.  \code{dtw(mx[i,],my[j,])$distance}.
 }
+
 \details{
-
-  The \code{dtwDist} command is obsolete and has been superseded by the
-  \code{\link[pkg:proxy]{dist}} function of package \pkg{proxy}; the DTW
-  distance is registered as \code{method="DTW"} (see examples below).
-
-  For asymmetric variants, make a \code{crossdist} object with the
-  two-arguments version of \code{dist}.
 
   \code{dtwDist} computes a dissimilarity matrix, akin to
   \code{\link{dist}}, based on the Dynamic Time Warping definition of a
   distance between single-variate timeseries.
 
-  The function returns a
-  square matrix, whereas the \code{dist} object is
-  lower-triangular. This makes sense because in general the DTW
-  "distance" is not symmetric (see e.g.  asymmetric step patterns).
-  If a proper \code{\link{dist}} object is desired, a suitable
-  conversion strategy has to be chosen (see examples).
- 
+
+  The \code{dtwDist} command is a synonym for the
+  \code{\link[pkg:proxy]{dist}} function of package \pkg{proxy}; the DTW
+  distance is registered as \code{method="DTW"} (see examples below).
+
+  The timeseries are stored as rows in the matrix argument \code{m}. In
+  other words, if \code{m} is an N * T matrix, \code{dtwDist} will build
+  N*N ordered pairs of timeseries, perform the corresponding N*N
+  \code{dtw} alignments, and return all of the results in a matrix. Each
+  of the timeseries is T elements long.
+
+  \code{dtwDist} returns a square matrix, whereas the \code{dist} object
+  is lower-triangular. This makes sense because in general the DTW
+  "distance" is not symmetric (see e.g.  asymmetric step patterns).  To
+  make a square matrix with the \code{\link[pkg:proxy]{dist}} function
+  sematics, use the two-arguments call as \code{dist(m,m)}. This will
+  return a square \code{crossdist} object.  }
+
+\note{
+  To convert a square cross-distance matrix (\code{crossdist} object) to
+  a symmetric \code{\link{dist}} object, use a suitable conversion
+  strategy (see examples).
 }
 
 
@@ -59,6 +69,35 @@ dist(m,method="DTW");
 # Old-fashioned call style would be:
 #   dtwDist(m)
 #   as.dist(dtwDist(m))
+
+
+
+## Find the optimal warping _and_ scale factor at the same time.
+## (There may be a better, analytic way)
+
+# Prepare a query and a reference
+
+query<-sin(seq(0,4*pi,len=100))
+reference<-cos(seq(0,4*pi,len=100))
+
+# Make a set of several references, scaled from 0 to 3 in .1 increments.
+# Put them in a matrix, in rows
+
+scaleSet <- seq(0.1,3,by=.1)
+referenceSet<-outer(1/scaleSet,reference)
+
+# The query has to be made into a 1-row matrix.
+# Perform all of the alignments at once, and normalize the result.
+
+dist(t(query),referenceSet,meth="DTW")->distanceSet
+
+# The optimal scale for the reference is 1.0
+plot(scaleSet,scaleSet*distanceSet,
+  xlab="Reference scale factor (denominator)",
+  ylab="DTW distance",type="o",
+  main="Sine vs scaled cosine alignment, 0 to 4 pi")
+
+
 
 
 

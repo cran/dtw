@@ -1,4 +1,4 @@
-## $Id: dtw.R 51 2007-12-11 10:59:08Z tonig $
+## $Id: dtw.R 218 2008-12-18 11:30:00Z tonig $
 
 
 ## Show off some dtw capabilities on a sine/cosine
@@ -48,7 +48,7 @@ dtwPlot(ita,type="density",main="Symmetric step with Itakura parallelogram windo
 ## Asymmetric step with slope constraint
 ## The "Itakura parallelogram" arises from the local constraint
 ## plus the boundary condition. Three sides of the parallelogram are seen
-dtw(query,template,keep=TRUE,step=asymmetricItakura)->ita;
+dtw(query,template,keep=TRUE,step=typeIIIc)->ita;
 dtwPlot(ita,type="density",main="Slope-limited asymmetric step (Itakura)");
 
 

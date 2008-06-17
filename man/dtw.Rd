@@ -168,9 +168,8 @@ is.dtw(d)
   matrices according to plot-like conventions, i.e.  reference index
   growing upwards. This may be confusing.
 
-  The \code{partial} argument has been renamed \code{open.end} as of
-  version 1.12.
-}
+  The \code{partial} argument has been deprecated and renamed
+  \code{open.end} as of version 1.12.  }
 
 \seealso{
   \code{\link{dtwDist}}, for iterating dtw over a set of timeseries;

@@ -66,7 +66,9 @@ To get the latest stable version from CRAN, use
   timeseries and custom distance functions. }
 
 \references{
-   TODO
+  Rabiner, L. R., & Juang, B.-H. (1993). Chapter 4 in
+  \emph{Fundamentals of speech
+  recognition.} Englewood Cliffs, NJ: Prentice Hall.
 }
 
 \examples{
