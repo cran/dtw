@@ -5,7 +5,7 @@
 #       University of Pavia - Italy                           #
 #       www.labmedinfo.org                                    #
 #                                                             #
-#   $Id: stepPattern.R 108 2008-02-15 21:35:13Z tonig $
+#   $Id: stepPattern.R 154 2008-06-17 20:45:26Z tonig $
 #                                                             #
 ###############################################################
 
@@ -17,13 +17,17 @@
 ## Methods for accessing and creating step.patterns
 
 stepPattern <- function(v) {
-  if(!is.vector(v)) {
-    stop("stepPattern creation only supported from vectors");
+  obj <- NULL;
+  if(is.vector(v)) {
+    obj <- matrix(v,ncol=4,byrow=TRUE);
+  } else if(is.matrix(v)) {
+    obj <- v;
+  } else {
+    stop("stepPattern constructor only supports vector or matrix");
   }
-
-  obj<-matrix(v,ncol=4,byrow=TRUE);
   class(obj)<-"stepPattern";
   attr(obj,"npat") <- max(obj[,1]);
+  attr(obj,"norm") <- NA;
   return(obj);
 }
 
@@ -34,12 +38,34 @@ is.stepPattern <- function(x) {
 
 
 
+## Transpose - exchange role of query and template
+t.stepPattern <- function(x) {
+
+  # exchange dx <-> dy
+  tsp <- x[,c(1,3,2,4)];
+  tsp <- stepPattern(tsp);
+
+  # fix normalization, if available
+  on <- attr(x,"norm");
+  if(! is.na(on) ) {
+    if(on == "N") {
+      attr(tsp,"norm") <- "M";
+    } else if(on == "M") {
+      attr(tsp,"norm") <- "N";
+    }
+  }
+
+  return(tsp);
+}
+
+
 ## plot the step pattern
 
 plot.stepPattern <- function(x,...) {
   pats <- unique(x[,1]);                #list of patterns
   xr <- max(x[,2]);
   yr <- max(x[,3]);
+  fudge <- .05;
 
   ## dummy plot to fix the plot limits
   plot(-x[,2],-x[,3],type="n",
@@ -50,7 +76,14 @@ plot.stepPattern <- function(x,...) {
   for(i in pats) {
     ss <- x[,1]==i;
     lines(-x[ss,2],-x[ss,3],type="o");
+
+    xh <- (head(x[ss,2],-1) + x[ss,2][-1] ) / 2;
+    yh <- (head(x[ss,3],-1) + x[ss,3][-1] ) / 2;
+    text(-xh-fudge,-yh+fudge,labels=round(x[ss,4][-1],2));
   }
+
+  endpts <- x[,4]==-1;
+  points(-x[endpts,2],-x[endpts,3],pch=16);
 }
 
 
@@ -105,7 +138,10 @@ print.stepPattern <-function(x,...) {
 
   tail<-")\n\n";
 
-  rv<-paste(head,body,tail);
+  norm <- attr(x,"norm");
+  ntxt <- sprintf("Normalization hint: %s\n",norm);
+
+  rv<-paste(head,body,tail,ntxt);
 
   cat("Step pattern recursion:\n");
   cat(rv);
@@ -143,6 +179,341 @@ print.stepPattern <-function(x,...) {
 
 	return(spl);
 }
+
+
+
+
+
+##################################################
+##################################################
+
+
+## Utility inner functions to manipulate
+## step patterns. Could be implemented as
+## a grammar, a'la ggplot2
+
+.Pnew <- function(p,subt,smoo) {
+  sp <- list();
+  sp$i <- 0;
+  sp$j <- 0;
+  sp$p <- p;
+  sp$subt <- subt;
+  sp$smoo <- smoo;
+  return(sp);
+}
+
+.Pstep <- function(sp,di,dj) {
+  sp$i <- c(sp$i,di);
+  sp$j <- c(sp$j,dj);
+  return(sp);
+}
+
+.Pend <- function(sp,subt,smoo) {
+  sp$si <- cumsum(sp$i);
+  sp$sj <- cumsum(sp$j);
+  sp$ni <- max(sp$si)-sp$si;
+  sp$nj <- max(sp$sj)-sp$sj;
+
+  w <- NULL;
+
+  # smallest of i,j jumps
+  if(sp$subt=="a") {
+    w <- pmin(sp$i,sp$j);
+  } else if(sp$subt=="b") {
+    # largest of Di, Dj
+    w <- pmax(sp$i,sp$j);
+  } else if(sp$subt=="c") {
+    # Di exactly
+    w <- sp$i;
+  } else if(sp$subt=="d") {
+    # Di+Dj
+    w <- sp$i+sp$j;
+  } else {
+    stop("Unsupported subtype");
+  }
+
+                                        # drop first element in w
+  w <- w[-1];
+  
+  if(sp$smoo)
+    w <- rep(mean(w),length(w));
+
+                                        # prepend -1
+  w <- c(-1,w);
+  sp$w <- w;
+
+  return(sp);
+}
+
+.PtoMx <- function(sp) {
+  nr <- length(sp$i);
+  mx <- matrix(nrow=nr,ncol=4)
+  mx[,1] <- sp$p;
+  mx[,2] <- sp$ni;
+  mx[,3] <- sp$nj;
+  mx[,4] <- sp$w;
+  return(mx);
+}
+
+
+
+rabinerJuangStepPattern <- function(type,slope.weighting="d",smoothed=FALSE) {
+
+  sw <- slope.weighting;
+  sm <- smoothed;
+  
+  ## Actually build the step
+  r <- switch(type,
+              .RJtypeI(sw,sm),
+              .RJtypeII(sw,sm),
+              .RJtypeIII(sw,sm),
+              .RJtypeIV(sw,sm),
+              .RJtypeV(sw,sm),
+              .RJtypeVI(sw,sm),
+              .RJtypeVII(sw,sm)
+              );
+
+  norm <- NA;
+  if(sw=="c") {
+    norm <- "N";
+  } else if(sw=="d") {
+    norm <- "N+M";
+  }
+
+  # brain-damaged legacy
+  rv <- as.vector(t(r));                
+  rs <- stepPattern(rv);
+  attr(rs,"norm") <- norm;
+  attr(rs,"call") <- match.call();
+  return(rs);
+}
+
+
+
+.RJtypeI <- function(s,m) {
+  t <- .Pnew(1,s,m)
+  t <- .Pstep(t,1,0)
+  t <- .Pend(t);
+  m1 <- .PtoMx(t);
+
+  t <- .Pnew(2,s,m)
+  t <- .Pstep(t,1,1)
+  t <- .Pend(t);
+  m2 <- .PtoMx(t);
+
+  t <- .Pnew(3,s,m)
+  t <- .Pstep(t,0,1)
+  t <- .Pend(t);
+  m3 <- .PtoMx(t)
+
+  return(rbind(m1,m2,m3));
+}
+
+
+.RJtypeII <- function(s,m) {
+  t <- .Pnew(1,s,m)
+  t <- .Pstep(t,1,1)
+  t <- .Pstep(t,1,0)
+  t <- .Pend(t);
+  m1 <- .PtoMx(t);
+
+  t <- .Pnew(2,s,m)
+  t <- .Pstep(t,1,1)
+  t <- .Pend(t);
+  m2 <- .PtoMx(t);
+
+  t <- .Pnew(3,s,m)
+  t <- .Pstep(t,1,1)
+  t <- .Pstep(t,0,1)
+  t <- .Pend(t);
+  m3 <- .PtoMx(t)
+
+  return(rbind(m1,m2,m3));
+}
+
+
+
+.RJtypeIII <- function(s,m) {
+  t <- .Pnew(1,s,m)
+  t <- .Pstep(t,2,1)
+  t <- .Pend(t);
+  m1 <- .PtoMx(t);
+
+  t <- .Pnew(2,s,m)
+  t <- .Pstep(t,1,1)
+  t <- .Pend(t);
+  m2 <- .PtoMx(t);
+
+  t <- .Pnew(3,s,m)
+  t <- .Pstep(t,1,2)
+  t <- .Pend(t);
+  m3 <- .PtoMx(t)
+
+  return(rbind(m1,m2,m3));
+}
+
+
+
+.RJtypeIV <- function(s,m) {
+  t <- .Pnew(1,s,m)
+  t <- .Pstep(t,1,1)
+  t <- .Pstep(t,1,0)
+  t <- .Pend(t);
+  m1 <- .PtoMx(t);
+
+  t <- .Pnew(2,s,m)
+  t <- .Pstep(t,1,2)
+  t <- .Pstep(t,1,0)
+  t <- .Pend(t);
+  m2 <- .PtoMx(t);
+
+  t <- .Pnew(3,s,m)
+  t <- .Pstep(t,1,1)
+  t <- .Pend(t);
+  m3 <- .PtoMx(t)
+
+  t <- .Pnew(4,s,m)
+  t <- .Pstep(t,1,2)
+  t <- .Pend(t);
+  m4 <- .PtoMx(t)
+
+  return(rbind(m1,m2,m3,m4));
+}
+
+
+
+.RJtypeV <- function(s,m) {
+  t <- .Pnew(1,s,m)
+  t <- .Pstep(t,1,1)
+  t <- .Pstep(t,1,0)
+  t <- .Pstep(t,1,0)
+  t <- .Pend(t);
+  m1 <- .PtoMx(t);
+
+  t <- .Pnew(2,s,m)
+  t <- .Pstep(t,1,1)
+  t <- .Pstep(t,1,0)
+  t <- .Pend(t);
+  m2 <- .PtoMx(t);
+
+  t <- .Pnew(3,s,m)
+  t <- .Pstep(t,1,1)
+  t <- .Pend(t);
+  m3 <- .PtoMx(t)
+
+  t <- .Pnew(4,s,m)
+  t <- .Pstep(t,1,1)
+  t <- .Pstep(t,0,1)
+  t <- .Pend(t);
+  m4 <- .PtoMx(t)
+
+  t <- .Pnew(5,s,m)
+  t <- .Pstep(t,1,1)
+  t <- .Pstep(t,0,1)
+  t <- .Pstep(t,0,1)
+  t <- .Pend(t);
+  m5 <- .PtoMx(t)
+
+  return(rbind(m1,m2,m3,m4,m5));
+}
+
+
+
+.RJtypeVI <- function(s,m) {
+  t <- .Pnew(1,s,m)
+  t <- .Pstep(t,1,1)
+  t <- .Pstep(t,1,1)
+  t <- .Pstep(t,1,0)
+  t <- .Pend(t);
+  m1 <- .PtoMx(t);
+
+  t <- .Pnew(2,s,m)
+  t <- .Pstep(t,1,1)
+  t <- .Pend(t);
+  m2 <- .PtoMx(t);
+
+  t <- .Pnew(3,s,m)
+  t <- .Pstep(t,1,1)
+  t <- .Pstep(t,1,1)
+  t <- .Pstep(t,0,1)
+  t <- .Pend(t);
+  m3 <- .PtoMx(t)
+
+  return(rbind(m1,m2,m3));
+}
+
+
+
+
+.RJtypeVII <- function(s,m) {
+  t <- .Pnew(1,s,m)
+  t <- .Pstep(t,1,1)
+  t <- .Pstep(t,1,0)
+  t <- .Pstep(t,1,0)
+  t <- .Pend(t);
+  m1 <- .PtoMx(t);
+
+  t <- .Pnew(2,s,m)
+  t <- .Pstep(t,1,2)
+  t <- .Pstep(t,1,0)
+  t <- .Pstep(t,1,0)
+  t <- .Pend(t);
+  m2 <- .PtoMx(t);
+
+  t <- .Pnew(3,s,m)
+  t <- .Pstep(t,1,3)
+  t <- .Pstep(t,1,0)
+  t <- .Pstep(t,1,0)
+  t <- .Pend(t);
+  m3 <- .PtoMx(t)
+
+  t <- .Pnew(4,s,m)
+  t <- .Pstep(t,1,1)
+  t <- .Pstep(t,1,0)
+  t <- .Pend(t);
+  m4 <- .PtoMx(t)
+
+  t <- .Pnew(5,s,m)
+  t <- .Pstep(t,1,2)
+  t <- .Pstep(t,1,0)
+  t <- .Pend(t);
+  m5 <- .PtoMx(t)
+
+  t <- .Pnew(6,s,m)
+  t <- .Pstep(t,1,3)
+  t <- .Pstep(t,1,0)
+  t <- .Pend(t);
+  m6 <- .PtoMx(t);
+
+  t <- .Pnew(7,s,m)
+  t <- .Pstep(t,1,1)
+  t <- .Pend(t);
+  m7 <- .PtoMx(t)
+
+  t <- .Pnew(8,s,m)
+  t <- .Pstep(t,1,2)
+  t <- .Pend(t);
+  m8 <- .PtoMx(t)
+
+  t <- .Pnew(9,s,m)
+  t <- .Pstep(t,1,3)
+  t <- .Pend(t);
+  m9 <- .PtoMx(t)
+
+  return(rbind(m1,m2,m3,m4,m5,m6,m7,m8,m9));
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ##################################################
@@ -187,6 +558,7 @@ symmetric2 <- stepPattern(c(
                             3,1,0,-1,
                             3,0,0,1
                             ));
+attr(symmetric2,"norm") <- "N+M";
 
 
 ## classic asymmetric pattern: max slope 2, min slope 0
@@ -199,6 +571,7 @@ asymmetric <-  stepPattern(c(
                              3,1,2,-1,
                              3,0,0,1
                            ));
+attr(asymmetric,"norm") <- "N";
 
 
 ## normalization: max[N,M]
@@ -215,7 +588,7 @@ asymmetric <-  stepPattern(c(
 ## Itakura slope-limited asymmetric \cite{Itakura1975}
 ## Max slope: 2; min slope: 1/2
 ## normalization: N
-asymmetricItakura <-  stepPattern(c(
+.asymmetricItakura <-  stepPattern(c(
                         1, 1, 2, -1,
 			1, 0, 0, 1,
 			2, 1, 1, -1,
@@ -388,6 +761,12 @@ asymmetricP2 <- stepPattern(c(
 ##
 ## Mostly unchecked
 
+# R-Myers     R-Juang
+# type I      type II   
+# type II     type III
+# type III    type IV
+# type IV     type VII
+
 
 typeIa <-  stepPattern(c(
                          1, 2, 1, -1,
@@ -528,10 +907,21 @@ typeIId <- stepPattern(c(
 
 ## ----------
 
-## Myers (p. 56) claims this rule is not exaclty equal to Itakura's,
-## but I am not convinced.
+## Rabiner [3] discusses why this is not equivalent to Itakura's
 
-typeIIIc <- asymmetricItakura;
+typeIIIc <-  stepPattern(c(
+                        1, 1, 2, -1,
+			1, 0, 0, 1,
+			2, 1, 1, -1,
+			2, 0, 0, 1,
+			3, 2, 1, -1,
+			3, 1, 0, 1,
+			3, 0, 0, 1,
+			4, 2, 2, -1,
+			4, 1, 0, 1,
+			4, 0, 0, 1
+                       ));
+
 
 
 ## ----------
@@ -567,3 +957,33 @@ typeIVc <-  stepPattern(c(
                           9,  1,  0,   1,
                           9,  0,  0,   1
  ));
+
+
+
+
+
+
+#############################
+## 
+## Mori's asymmetric step-constrained pattern. Normalized in the
+## template length.
+##
+## Mori, A.; Uchida, S.; Kurazume, R.; Taniguchi, R.; Hasegawa, T. &
+## Sakoe, H. Early Recognition and Prediction of Gestures Proc. 18th
+## International Conference on Pattern Recognition ICPR 2006, 2006, 3,
+## 560-563
+##
+
+mori2006 <-  stepPattern(c(
+                           1, 2, 1, -1,
+                           1, 1, 0,  2,
+                           1, 0, 0,  1,
+                           2, 1, 1, -1,
+                           2, 0, 0,  3,
+                           3, 1, 2, -1,
+                           3, 0, 1,  3,
+                           3, 0, 0,  3
+ ));
+attr(mori2006,"norm") <- "M";
+
+

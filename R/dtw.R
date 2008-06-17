@@ -5,7 +5,7 @@
 #       University of Pavia - Italy                           #
 #       www.labmedinfo.org                                    #
 #                                                             #
-#   $Id: dtw.R 126 2008-05-29 12:44:37Z tonig $
+#   $Id: dtw.R 155 2008-06-19 15:12:04Z tonig $
 #                                                             #
 ###############################################################
 
@@ -61,46 +61,81 @@ function(x, y=NULL,
                           window.function=wfun, ...);
 
 
-  ## for complete alignment
-  gcm$jmin <- m;
-  ## for partial alignment
-  if (partial) {
-    gcm$jmin <- which.min(gcm$costMatrix[n,]);
-  }
-
   ## remember size
   gcm$N <- n;
   gcm$M <- m;
 
-  ## store call
+  ## remember  call
   gcm$call <- match.call();
 
-  ## result: distance (add to existing list gcm?)
+
+
+  ## last column, normalized
+  norm <- attr(dir,"norm");
+  lastcol <- gcm$costMatrix[n,];
+
+  if(is.na(norm)) {
+      # NO-OP
+  } else if(norm == "N+M") {
+      lastcol <- lastcol/(n+(1:m));
+  } else if(norm == "N") {
+      lastcol <- lastcol/n;
+  } else if(norm == "M") {
+      lastcol <- lastcol/m;
+  }
+
+  
+  ## for complete alignment
+  gcm$jmin <- m;
+
+  ## for partial alignment: normalize
+  if (partial) {
+    if(is.na(norm)) {
+        warning("Unknown normalization with partial=TRUE: using N+M");
+        lastcol <- lastcol/(n+(1:m));
+    }
+    gcm$jmin <- which.min(lastcol);
+  }
+
+  ## result: distance 
   gcm$distance <- gcm$costMatrix[n,gcm$jmin];
 
   ## alignment valid?
-  if(is.na(gcm$distance))
+  if(is.na(gcm$distance)) {
     stop("No warping paths exists that is allowed by costraints"); 
+  }
+  
+  
+  ## normalized distance
+  if(! is.na(norm)) {
+      gcm$normalizedDistance <- lastcol[gcm$jmin];
+  } else {
+      gcm$normalizedDistance <- NA;
+  }
 
   
   if(!distance.only) {
     ## perform the backtrack
     mapping <- backtrack(gcm);
 
-    ## append to existing list gcm, for now
-    ## perhaps replace by attr()
     gcm$index1 <- mapping$index1;
     gcm$index2 <- mapping$index2;
   }
 
 
-  ## delete sizey intermediate steps 
+  ## don't keep internals: delete sizey intermediate steps 
   if(!keep.internals) {
       gcm$costMatrix<-NULL;
       gcm$directionMatrix<-NULL;
   } else {
+  ## keep internals: add data
       gcm$localCostMatrix <- lm;
+      if(! is.null(y)) {
+          gcm$query <- x;
+          gcm$template <- y;
+      }
   }
+
 
   ## if a dtw object is to be sponsored:
   class(gcm) <- "dtw";

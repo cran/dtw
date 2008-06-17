@@ -36,7 +36,7 @@ is.dtw(d)
     "itakura", "sakoechiba", "slantedband", or a  function
     (see details).}
   \item{partial}{perform open-ended alignment}
-  \item{keep.internals}{don't discard the cumulative cost matrix and other
+  \item{keep.internals}{preserve the  cumulative cost matrix, inputs, and other
     internal structures}
   \item{distance.only}{only compute distance (no backtrack, faster)}
   \item{d}{an arbitrary R object}
@@ -61,11 +61,11 @@ is.dtw(d)
   local-distance matrix is understood as the distance between element
   \code{x[i]} and \code{y[j]}. The distance matrix has therefore
   \code{n=length(x)} rows and \code{m=length(y)} columns (see note
-  below).
-
+  below)
+.
   Open-ended alignment can be selected via the \code{partial}
   argument.  Open-end DTW computes the alignment which best matches
-  the full query with a \emph{leading part} of the template. This is
+  all of the query with a \emph{leading part} of the template. This is
   proposed in (Mori, 2006), (Sakoe, 1979) and others.
 
   Several common variants of DTW are supported via the
@@ -104,31 +104,37 @@ is.dtw(d)
 
 \value{
   An object of class \code{dtw} with the following items:
-  \item{distance}{the computed distance \emph{not normalized}. Normalization 
-    depends on the chosen step pattern.}
+  \item{distance}{the minimum global distance computed, \emph{not} normalized.}
+  \item{normalizedDistance}{distance computed, \emph{normalized} for
+    path length, if normalization is known for chosen step pattern.}
   \item{N,M}{query and template length}
   \item{call}{the function call that created the object}
   \item{index1}{matched elements: indices in \code{x}}
   \item{index2}{corresponding mapped indices in \code{y}}
-  \item{stepPatterns}{the \code{stepPattern} object used for the computation}
-  \item{costMatrix}{if \code{keep.internals=TRUE}, the cumulative
-    cost matrix}
+  \item{stepPattern}{the \code{stepPattern} object used for the computation}
   \item{jmin}{last element of template matched, if \code{partial=TRUE}}
   \item{directionMatrix}{if \code{keep.internals=TRUE}, the
     directions of steps that would be taken at each alignment pair
     (integers indexing step patterns)}
+  \item{costMatrix}{if \code{keep.internals=TRUE}, the cumulative
+    cost matrix}
+  \item{query, template}{if \code{keep.internals=TRUE} and passed as the \code{x}
+    and \code{y} arguments, the query and template timeseries.}
 }
 
 
-  \references{
-  Sakoe, H.; Chiba, S., \emph{Dynamic programming algorithm optimization for spoken word recognition,}
- Acoustics, Speech, and Signal Processing [see also IEEE Transactions on Signal Processing], IEEE Transactions on , 
-vol.26, no.1, pp. 43-49, Feb 1978 URL:
-\url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=1163055} \cr
+\references{
+  Sakoe, H.; Chiba, S., \emph{Dynamic programming algorithm optimization
+  for spoken word recognition,} Acoustics, Speech, and Signal Processing
+  [see also IEEE Transactions on Signal Processing], IEEE Transactions
+  on , vol.26, no.1, pp. 43-49, Feb 1978 URL:
+  \url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=1163055}
+\cr \cr
   Mori, A.; Uchida, S.; Kurazume, R.; Taniguchi, R.; Hasegawa, T. &
-  Sakoe, H. \emph{Early Recognition and Prediction of Gestures} Proc. 18th
-  International Conference on Pattern Recognition ICPR 2006, 2006, 3,
-  560-563 \cr
+  Sakoe, H. \emph{Early Recognition and Prediction of Gestures}
+  Proc. 18th International Conference on Pattern Recognition ICPR 2006,
+  2006, 3, 560-563
+\cr \cr
   Sakoe, H. \emph{Two-level DP-matching--A dynamic programming-based pattern
   matching algorithm for connected word recognition} Acoustics, Speech,
   and Signal Processing [see also IEEE Transactions on Signal

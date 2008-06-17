@@ -30,7 +30,8 @@ Supports windowing: none, "Itakura" parallelogram, Sakoe-Chiba band,
 custom (see \code{\link{dtwWindowingFunctions}}).  Handles query and
 template of arbitrary lengths. Multivariate matching and arbitrary
 definition for a distance function are supported via user-supplied local
-distance matrix.
+distance matrix. The Minimum Variance Matching algorithm is also
+supported, as a special case of DTW.
 
 Package provides minimum cumulative distance, warping function, plots,
 etc. A fast, compiled version of the algorithm is normally used.  Should

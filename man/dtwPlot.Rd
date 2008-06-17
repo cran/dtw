@@ -20,7 +20,7 @@
 dtwPlot(x, type="alignment", ...)
 
 dtwPlotAlignment(d, xlab="Query index", ylab="Template index", ...)
-dtwPlotDensity(d, normalize="no",
+dtwPlotDensity(d, normalize=FALSE,
 		  xlab="Query index", ylab="Template index",
                   ...)
 
@@ -45,12 +45,11 @@ dtwPlotDensity(d, normalize="no",
   \code{type} argument (may be abbreviated):
 
   \itemize{
-    \item{\code{alignment}}{plot of the warping curve (may be
-      multi-valued unless the \code{asymmetric}-like step pattern is used)}
-    \item{\code{twoway}}{Point-by-point comparison with matching lines}
-    \item{\code{threeway}}{vis-a-vis visual inspection of the
-       original timeseries and their alignment }
-    \item{\code{density}}{show the cumulative cost landscape with the
+    \item{\code{alignment}}{plots the warping curve in \code{d}}
+    \item{\code{twoway}}{plots a point-by-point comparison, with matching lines}
+    \item{\code{threeway}}{vis-a-vis inspection of the
+        timeseries and their warping curve }
+    \item{\code{density}}{displays the cumulative cost landscape with the
       warping path overimposed}
   }
 
@@ -62,12 +61,9 @@ dtwPlotDensity(d, normalize="no",
   \code{\link{dtwPlotThreeWay}}.
 
 
-  \code{normalize} can be one of \code{"N"} of \code{"N+M"}.  If set,
-  \emph{average} cost per step is plotted instead of the cumulative
-  one. Step averaging depends on the step pattern chosen. \code{N} is
-  suitable for asymmetric patterns and divides the distance by the index
-  in query; \code{N+M} is for (normalizable) symmetric patterns, and
-  divides by the Manhattan distance from the origin.
+  If \code{normalize} is \code{TRUE}, the \emph{average} cost per step
+  is plotted instead of the cumulative one. Step averaging depends on
+  the \code{\link{stepPattern}} used.
   
   Additional  parameters are carried on to the plotting
   functions: use with care.
@@ -121,7 +117,7 @@ dtwPlotDensity(alignment,
 
 ## The local constraint: three sides of the parallelogram are seen
 
-dtw(query,template,keep=TRUE,step=asymmetricItakura)->ita;
+dtw(query,template,keep=TRUE,step=typeIIIc)->ita;
 dtwPlot(ita,type="density",
         main="Slope-limited asymmetric step (Itakura)")
 

@@ -5,7 +5,7 @@
 #       University of Pavia - Italy                           #
 #       www.labmedinfo.org                                    #
 #                                                             #
-#   $Id: plot.dtw.R 128 2008-05-29 14:00:10Z tonig $
+#   $Id: plot.dtw.R 156 2008-06-19 15:21:22Z tonig $
 #                                                             #
 ###############################################################
 
@@ -45,7 +45,7 @@ dtwPlotAlignment <- function(d, xlab="Query index", ylab="Template index", ...) 
 ## Normalization plots the average cost per step instead of
 ## the cumulative cost
 
-dtwPlotDensity <- function(d, normalize="no",
+dtwPlotDensity <- function(d, normalize=FALSE,
                            xlab="Query index", ylab="Template index", ...) {
 
     cm<-d$costMatrix;
@@ -54,12 +54,18 @@ dtwPlotDensity <- function(d, normalize="no",
       stop("dtwPlotDensity requires dtw internals (set keep.internals=TRUE on dtw() call)");
 
     ## We can safely modify cm locally
-    nt<-pmatch(normalize,c("N","N+M"));
+    if(normalize) {
+        norm <- attr(d$stepPattern,"norm");
+        if(is.na(norm))
+          step("No normalization known for step pattern used");
 
-    if(!is.na(nt)) {
-        cm <- cm / switch(nt,
-                          row(cm),
-                          row(cm)+col(cm));
+        if(norm=="N") {
+            cm <- cm / row(cm);
+        } else if(norm=="N+M") {
+            cm <- cm / (row(cm)+col(cm));
+        } else if(norm=="M") {
+            cm <- cm / col(cm);
+        }
     }
 
     xd<-dim(cm)[1];
@@ -77,13 +83,20 @@ dtwPlotDensity <- function(d, normalize="no",
 ## Well-known and much-copied pairwise matching
 
 dtwPlotTwoWay <- function(d,xts=NULL,yts=NULL, offset=0,
-			type="o",pch=21, 
-			xlab="Index", ylab="Query value", 
+			ts.type="l",pch=21, 
+                        match.indices=NULL,
 			match.col="gray70",
+			xlab="Index", ylab="Query value", 
 			... ) {
 
-	if(is.null(xts) || is.null(yts))
+	if(is.null(xts) || is.null(yts))  {
+            xts <- d$query;
+            yts <- d$template;
+        }
+    
+	if(is.null(xts) || is.null(yts)) 
 		stop("Original timeseries are required");
+
         ytso<-yts+offset;
 
         ## pad to longest
@@ -97,7 +110,7 @@ dtwPlotTwoWay <- function(d,xts=NULL,yts=NULL, offset=0,
 
 	## plot q+t
 	matplot(cbind(xts,ytso),
-			type=type,pch=pch, 
+			type=ts.type,pch=pch, 
 			xlab=xlab, ylab=ylab,
 			...);
 
@@ -110,14 +123,18 @@ dtwPlotTwoWay <- function(d,xts=NULL,yts=NULL, offset=0,
 
 	## plot the matching 
 	# par(par.match);
-	ml<-length(d$index1);
-	idx<-1:ml;
+        if(is.null(match.indices)) {
+          ml<-length(d$index1);
+          idx<-1:ml;
+        } else {
+          idx <- match.indices;
+        }
 
 	## x0, y0 	coordinates of points from which to draw.
 	## x1, y1 	coordinates of points to which to draw.
 	segments(d$index1[idx],xts[d$index1[idx]],
 		 d$index2[idx],ytso[d$index2[idx]],
-		 col=match.col);
+		 col=match.col,lty=3);
 
 	
 	par(def.par)#- reset to default
@@ -133,11 +150,20 @@ dtwPlotTwoWay <- function(d,xts=NULL,yts=NULL, offset=0,
 ## ##################################################
 ## Global distance density plot
 
+# for each plot, we should set: color, width, style, type
+# for match lines: color, width, style
 
-dtwPlotThreeWay <- function(d,xts=NULL,yts=NULL,type.align="p",type.ts="l",
-			margin=4, inner.margin=0.2, title.margin=1.5,
-			xlab="Query index",ylab="Template index",main="Timeseries alignment",
-			... ) {
+dtwPlotThreeWay <- function(d,xts=NULL,yts=NULL,
+                            type.align="l",type.ts="l",
+                            match.indices=NULL,
+                            margin=4, inner.margin=0.2, title.margin=1.5,
+                            xlab="Query index",ylab="Template index",main="Timeseries alignment",
+                            ... ) {
+
+     if(is.null(xts) || is.null(yts))  {
+         xts <- d$query;
+         yts <- d$template;
+     }
 
      # Sanity check
      if(is.null(xts) || is.null(yts))
@@ -170,27 +196,50 @@ dtwPlotThreeWay <- function(d,xts=NULL,yts=NULL,type.align="p",type.ts="l",
      nn<-length(xts);
      mm<-length(yts);
 
+     
      # Plot the warping function
      par(mar=c(imar,imar,tmar,rmar));
-     plot(d$index1,d$index2,,type=type.align,
+
+     # todo: plot over segments
+
+     plot(d$index1,d$index2,type=type.align,
           xlim=c(1,nn),ylim=c(1,mm),
-          ax=FALSE,main=main); # fake a diagonal, to set the axes
-     # lines(d$index1,d$index2);
+          ax=FALSE,main=main, ...
+          ); # fake a diagonal, to set the axes
+
+     if(! is.null(match.indices) ) {      # vertical match segments
+       idx <- match.indices;
+       segments(d$index1[idx],0,
+                d$index1[idx],d$index2[idx],
+                col="grey60",lty=3);
+                                        # horz.
+       segments(0,d$index2[idx],
+                d$index1[idx],d$index2[idx],
+                col="grey60",lty=3);
+     }
+
+     
      box();
 
+     
      # axis are 1- bot; 2- left; 3- top; 4- right
      # Plot query (horizontal, bottom)
      par(mar=c(bmar,imar,imar,rmar));
-     plot(xts ~ c(1:nn) , type=type.ts ,xlab=xlab ,mgp=c(mlab,mtex,0) ,ax=FALSE );
+
+     plot(xts ~ c(1:nn), type=type.ts,
+          xlab=xlab ,mgp=c(mlab,mtex,0) ,ax=FALSE,
+          );
      axis(1);
      axis(2);
      box();
 
      # Plot template (vertical, left)
      par(mar=c(imar,lmar,tmar,imar));
+
      # reverse the horiz. axis so that rotation is more natural
-     plot(c(1:mm) ~ yts , xlim=rev(range(yts)), type=type.ts,
-          ylab=ylab, mgp=c(mlab,mtex,0) , ax=FALSE );
+     plot(c(1:mm) ~ yts, xlim=rev(range(yts)), type=type.ts,
+          ylab=ylab, mgp=c(mlab,mtex,0) , ax=FALSE,
+          );
      axis(3);
      axis(2);
      box();

@@ -5,7 +5,7 @@
 #       University of Pavia - Italy                           #
 #       www.labmedinfo.org                                    #
 #                                                             #
-#   $Id: globalCostMatrix.R 83 2008-01-04 00:25:00Z tonig $
+#   $Id: globalCostMatrix.R 142 2008-06-09 13:30:53Z tonig $
 #                                                             #
 ###############################################################
 
@@ -128,7 +128,7 @@ function(lm,
   out<-list();
   out$costMatrix<-cm;                   # to get distance
   out$directionMatrix<-sm;              # to backtrack
-  out$stepPatterns<-step.matrix;        # to backtrack
+  out$stepPattern<-step.matrix;        # to backtrack
 
   return(out);
 }

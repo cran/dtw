@@ -1,4 +1,6 @@
 
+
+
 === Old style (3-col) step patterns: last in revision 17 ==
 
 
@@ -6,14 +8,19 @@ IMPLEMENTATION
 * plot OK
 * windowing  OK
 * allow ts objects OK
-* preserve TS names 
 * test OK
 * move plot elsewhere OK
 * dtw OO OK
 * two-way plot OK
-* 2w: interesting
-* fix 2w lenghts
-* legends in plots
+* fix 2w lenghts OK
+* include/use ts data in dtw object for plots when keep OK
+* add normalized distance OK
+- 2w: interesting
+- legends in plots
+- preserve TS names 
+- Itakura
+-- rabiner-myers as constructor
+-- add normalization as constructor
 
 
 DOCUMENTATION
@@ -24,9 +31,19 @@ DOCUMENTATION
 STUDY
 * binary OK
 * skip computation of distance for elements outside-window OK
-* its
+- its
 
 
 EXAMPLES
 * density plot OK
 * put example of passing a distance matrix OK
+- Rabiner's worked out exercises
+
+
+TEST CASE for Itakura
+1  0  1  1
+1  1 10 10
+1  1 10 10
+
+Type IV: 3 ?
+Itakura: 13 ?

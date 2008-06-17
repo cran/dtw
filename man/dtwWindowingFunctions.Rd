@@ -54,9 +54,9 @@ dtwWindow.plot(fun,query.size=200,template.size=220,...);
   compatible with the DTW constraints.
 
   The \code{sakoeChibaWindow} function implements the Sakoe-Chiba band,
-  i.e. \code{window.size} elements around the \code{main} diagonal. If the
-  window size is too small, i.e. if
-  $\code{template.size}-\code{query.size} > \code{window.size}$, warping
+  i.e. \code{window.size} elements around the \code{main} diagonal. If
+  the window size is too small, i.e. if
+  \code{template.size}-\code{query.size} > \code{window.size}, warping
   becomes impossible.
 
   An \code{itakuraWindow}  global constraint is still provided with this
@@ -85,7 +85,7 @@ dtwWindow.plot(fun,query.size=200,template.size=220,...);
   described in reference [2]) is a \emph{global} constraint, i.e. a
   window.  To the author's knowledge, it instead arises from the local
   slope restrictions imposed to the warping path, such as the one
-  implemented by the \code{\link{asymmetricItakura}} step pattern.
+  implemented by the \code{\link{typeIIIc}} step pattern.
 }
 
 \value{

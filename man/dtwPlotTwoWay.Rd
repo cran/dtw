@@ -6,14 +6,16 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Plotting of dynamic time warp results: pointwise comparison}
 \description{
-  Plot a DTW results for visual inspection.
+  Display the query and template time series and their alignment,
+  arranged for visual inspection.
 }
 
 \usage{
 dtwPlotTwoWay(d,xts=NULL,yts=NULL, offset=0,
-			type="o",pch=21, 
-			xlab="Index", ylab="Query value", 
+			ts.type="l",pch=21, 
+                        match.indices=NULL,
 			match.col="gray70",
+			xlab="Index", ylab="Query value", 
 			... )
 }
 
@@ -25,22 +27,28 @@ dtwPlotTwoWay(d,xts=NULL,yts=NULL, offset=0,
   \item{xlab,ylab}{axis labels}
   \item{offset}{displacement between the timeseries, summed to template}
   \item{match.col}{color of the match lines}
-  \item{type,pch}{graphical parameters for timeseries plotting, passed to \code{matplot}}
+  \item{match.indices}{indices for which to draw a visual
+    guide}
+  \item{ts.type,pch}{graphical parameters for timeseries plotting, passed to \code{matplot}}
   \item{...}{additional arguments, passed to \code{matplot}}
 }
 
 \details{
 
-  Display the query and template time series and their alignment,
-  arranged so that alignment can be visually inspected.
-
-  The two vectors are displayed via the \code{\link{matplot}} functions,
-  and their appearance can be customized via \code{type} and \code{pch}
+  The two vectors are displayed via the \code{\link{matplot}} functions;
+  their appearance can be customized via the \code{type} and \code{pch}
   arguments (constants or vectors of two elements).  If \code{offset} is
-  set, the template is offset by the given amount; this will be
-  reflected by the \emph{right-hand} axis.
+  set, the template is shifted vertically by the given amount; this will
+  be reflected by the \emph{right-hand} axis.
 
-  Only single-variate time series can be plotted this way.
+  If a vector of integers \code{match.indices} is provided, a visual
+  guide is only drawn for the corresponding indices in the warping curve
+  (match lines).
+
+  If \code{xts} and \code{yts} are not supplied, they will be recovered
+  from \code{d}, as long as it was created with the two-argument call of
+  \code{\link{dtw}}  with \code{keep.internals=T}.  Only
+  single-variate time series can be plotted this way.
   
 }
 
@@ -48,13 +56,13 @@ dtwPlotTwoWay(d,xts=NULL,yts=NULL, offset=0,
 \author{Toni Giorgino }
 
 \note{
-Values on the left  axis do not reflect the template if \code{offset}
-is set.
+  When \code{offset} is set values on the left axis only apply to
+  the query.
 }
 
-\section{Warning}{ These functions are incompatible with 
-     mechanisms for arranging plots on a device: \code{par(mfrow)},
-     \code{layout} and \code{split.screen}.}
+\section{Warning}{ The function is incompatible with mechanisms for
+     arranging plots on a device: \code{par(mfrow)}, \code{layout} and
+     \code{split.screen}.}
 
 
 \seealso{ \code{\link{dtwPlot}} for other dtw plotting functions,

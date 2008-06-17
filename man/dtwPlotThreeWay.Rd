@@ -6,14 +6,17 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Plotting of dynamic time warp results: annotated warping function}
 \description{
-  Plot a DTW results for visual inspection.
+  Display the query and template time series and their warping curve,
+  arranged for visual inspection. 
 }
 
 \usage{
 
-dtwPlotThreeWay(d,xts=NULL,yts=NULL,type.align="p",type.ts="l",
-	       margin=4, inner.margin=0.2, title.margin=1.5,
-	       xlab="Query index",ylab="Template index",main="Timeseries alignment",
+dtwPlotThreeWay(d,xts=NULL,yts=NULL,
+                type.align="l",type.ts="l",
+                match.indices=NULL,
+	        margin=4, inner.margin=0.2, title.margin=1.5,
+	        xlab="Query index",ylab="Template index",main="Timeseries alignment",
 			... )
 
 }
@@ -25,37 +28,46 @@ dtwPlotThreeWay(d,xts=NULL,yts=NULL,type.align="p",type.ts="l",
   \item{xlab}{ label for the query axis}
   \item{ylab}{label for the template axis}
   \item{main}{main title}
-  \item{type.align}{line style for alignment path plot}
+  \item{type.align}{line style for warping curve plot}
   \item{type.ts}{line style for timeseries plot}
+  \item{match.indices}{indices for which to draw a visual
+    guide}
   \item{margin}{outer figure margin }
   \item{inner.margin}{inner figure margin }
   \item{title.margin}{space on the top of figure}
   
-  \item{...}{additional arguments, passed to plotting functions}
+  \item{...}{additional arguments, used for the warping curve}
 }
 
 \details{
 
-  Display the query and template time series and their alignment,
-  arranged so that alignment can be visually inspected.
+  The query time series is plotted in the bottom panel, with indices
+  growing rightwards and values upwards. Template is in the left panel,
+  indices growing upwards and values leftwards. The warping curve panel
+  matches indices, and therefore element (1,1) will be at the lower
+  left, (N,M) at the upper right.
 
-  Only single-variate time series are supported, and they must be passed
-  to the \code{xts} and \code{yts} arguments (query and template are not
-  stored in the \code{dtw} object).
+  If a vector of integers \code{match.indices} is provided, a visual
+  guide is drawn for the corresponding indices in the warping curve
+  (match lines).
+
+  If \code{xts} and \code{yts} are not supplied, they will be recovered
+  from \code{d}, as long as it was created with the two-argument call of
+  \code{\link{dtw}} with \code{keep.internals=T}.  Only single-variate
+  time series can be plotted.
+
   
 }
 
 
+
 \author{Toni Giorgino }
 
-\note{
-  The value axis for the template time series grows rightwards.
-  This may be counter-intuitive.
-}
 
-\section{Warning}{ These functions are incompatible with mechanisms for
+\section{Warning}{ The function is incompatible with mechanisms for
      arranging plots on a device: \code{par(mfrow)}, \code{layout} and
-     \code{split.screen}.}
+     \code{split.screen}. Appearance of the match lines and timeseries
+     currently  can not be customized. }
 
 \examples{
 
