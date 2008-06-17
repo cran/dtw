@@ -5,7 +5,7 @@
 #       University of Pavia - Italy                           #
 #       www.labmedinfo.org                                    #
 #                                                             #
-#   $Id: window.R 51 2007-12-11 10:59:08Z tonig $
+#   $Id: window.R 171 2008-09-01 07:31:02Z tonig $
 #                                                             #
 ###############################################################
 
@@ -35,12 +35,12 @@ function(iw,jw,window.size,...) {
 
 
 ## A band around the diagonal. The band includes the segment
-## connecting [1,1] to [query.size,template.size] window.size,
+## connecting [1,1] to [query.size,reference.size] window.size,
 ## measured along the second index (columns)
 
 `slantedBandWindow` <-
-function(iw,jw,query.size,template.size,window.size,...) {
-  diagj<-(iw*template.size/query.size);
+function(iw,jw,query.size,reference.size,window.size,...) {
+  diagj<-(iw*reference.size/query.size);
   return(abs(jw-diagj)<=window.size);
 }
 
@@ -50,10 +50,10 @@ function(iw,jw,query.size,template.size,window.size,...) {
 ## 
 
 `itakuraWindow` <- 
-function(iw,jw,query.size,template.size,...) {
+function(iw,jw,query.size,reference.size,...) {
 	## Shorthands
   	n<-query.size; 	
-  	m<-template.size;
+  	m<-reference.size;
 
 	ok<- 	(jw <  2*iw) &
  		(iw <= 2*jw) &
@@ -66,18 +66,18 @@ function(iw,jw,query.size,template.size,...) {
 
 ## Plot a sample of the windowing function
 
-dtwWindow.plot <- function(fun,query.size=200,template.size=220,...) {
+dtwWindow.plot <- function(fun,query.size=200,reference.size=220,...) {
 	n<-query.size;
-  	m<-template.size;
+  	m<-reference.size;
 
 	mm<-matrix(0,n,m);
-	mm[fun(row(mm),col(mm),query.size=n,template.size=m,...)]<-1;
+	mm[fun(row(mm),col(mm),query.size=n,reference.size=m,...)]<-1;
 
 	image(  z=mm,
 		x=1:n,
 		y=1:m,
 		xlab=sprintf("Query: samples 1..%d",n),
-		ylab=sprintf("Template: samples 1..%d",m), 
+		ylab=sprintf("Reference: samples 1..%d",m), 
 		...
 	 );
 }

@@ -67,7 +67,7 @@ warpArea <- function(d) {
     id1 <- d$index1;
     id2 <- d$index2;
 
-    ## remap template indices to a square alignment
+    ## remap reference indices to a square alignment
     id2 <- id2*d$N/d$M;
 
     ## return the local distance from the diagonal

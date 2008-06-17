@@ -19,9 +19,9 @@
 # an alias for dtw.plot
 dtwPlot(x, type="alignment", ...)
 
-dtwPlotAlignment(d, xlab="Query index", ylab="Template index", ...)
+dtwPlotAlignment(d, xlab="Query index", ylab="Reference index", ...)
 dtwPlotDensity(d, normalize=FALSE,
-		  xlab="Query index", ylab="Template index",
+		  xlab="Query index", ylab="Reference index",
                   ...)
 
 
@@ -30,7 +30,7 @@ dtwPlotDensity(d, normalize=FALSE,
 \arguments{
   \item{x,d}{ \code{dtw} object, usually result of call to \code{\link{dtw}}}
   \item{xlab}{ label for the query axis}
-  \item{ylab}{label for the template axis}
+  \item{ylab}{label for the reference axis}
   \item{type}{alignment plot style}
   \item{normalize}{show per-step average cost instead of cumulative cost}
   
@@ -92,9 +92,9 @@ dtwPlotDensity(d, normalize=FALSE,
 
 idx<-seq(0,6.28,len=100);
 query<-sin(idx)+runif(100)/10;
-template<-cos(idx)
+reference<-cos(idx)
 
-alignment<-dtw(query,template,keep=TRUE);
+alignment<-dtw(query,reference,keep=TRUE);
 
 
 ## A profile of the cumulative distance matrix
@@ -117,14 +117,14 @@ dtwPlotDensity(alignment,
 
 ## The local constraint: three sides of the parallelogram are seen
 
-dtw(query,template,keep=TRUE,step=typeIIIc)->ita;
+dtw(query,reference,keep=TRUE,step=typeIIIc)->ita;
 dtwPlot(ita,type="density",
         main="Slope-limited asymmetric step (Itakura)")
 
 ## Symmetric step with global parallelogram-shaped constraint. Note how
 ## long (>2 steps) horizontal stretches are allowed within the window.
 
-dtw(query,template,keep=TRUE,window=itakuraWindow)->ita;
+dtw(query,reference,keep=TRUE,window=itakuraWindow)->ita;
 dtwPlot(ita,type="density",
         main="Symmetric step with Itakura parallelogram window")
 

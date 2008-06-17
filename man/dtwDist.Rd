@@ -16,7 +16,7 @@ dtwDist(m,...)
 }
 \value{
   A square matrix whose element \code{[i,j]} holds the Dynamic Time Warp
- distance between row \code{i} (query) and \code{j} (template) of
+ distance between row \code{i} (query) and \code{j} (reference) of
  \code{m}, i.e.  \code{dtw(m[i,],m[j,])$distance}.
 }
 \details{
@@ -66,7 +66,7 @@ dist(m,method="DTW");
 ## (as.dist), or average with the transpose
 
 mm <- matrix(runif(12),ncol=3)
-dm <- dist(mm,mm,method="DTW",step="asymmetric"); # a crossdist object
+dm <- dist(mm,mm,method="DTW",step=asymmetric); # a crossdist object
 
 # Old-fashioned call style would be:
 #   dm <- dtwDist(mm,step=asymmetric)

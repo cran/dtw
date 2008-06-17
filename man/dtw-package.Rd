@@ -22,13 +22,13 @@ Comprehensive implementation of Dynamic Time Warping (DTW) algorithms in
 R.
 
 DTW finds the optimal (least cumulative distance) mapping between a
-given query into a given template time series.
+given query into a given reference time series.
 
 Most variants of the algorithm are supported: symmetric, asymmetric and
 custom step patterns, with weighting (see \code{\link{stepPattern}}).
 Supports windowing: none, "Itakura" parallelogram, Sakoe-Chiba band,
 custom (see \code{\link{dtwWindowingFunctions}}).  Handles query and
-template of arbitrary lengths. Multivariate matching and arbitrary
+reference of arbitrary lengths. Multivariate matching and arbitrary
 definition for a distance function are supported via user-supplied local
 distance matrix. The Minimum Variance Matching algorithm is also
 supported, as a special case of DTW.

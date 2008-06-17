@@ -1,7 +1,7 @@
 Package: dtw
 Type: Package
 Title: Dynamic Time Warping algorithms
-Version: 1.9-1
+Version: 1.12-3
 Date: 2008-06-17
 Depends: proxy
 Enhances: proxy
@@ -16,4 +16,4 @@ Description: Comprehensive implementation of Dynamic Time Warping
  distance, warping functions, plots, normalizations, etc.
 License: GPL (>=2)
 URL: http://dtw.r-forge.r-project.org/
-Packaged: Fri Jun 20 14:13:17 2008; toni
+Packaged: Sun Sep 28 20:22:59 2008; toni

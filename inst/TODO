@@ -20,7 +20,7 @@ IMPLEMENTATION
 - preserve TS names 
 - Itakura
 -- rabiner-myers as constructor
--- add normalization as constructor
+* add normalization as constructor OK
 
 
 DOCUMENTATION

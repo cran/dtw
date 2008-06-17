@@ -5,7 +5,7 @@
 #       University of Pavia - Italy                           #
 #       www.labmedinfo.org                                    #
 #                                                             #
-#   $Id: globalCostMatrix.R 142 2008-06-09 13:30:53Z tonig $
+#   $Id: globalCostMatrix.R 171 2008-09-01 07:31:02Z tonig $
 #                                                             #
 ###############################################################
 
@@ -24,6 +24,7 @@ function(lm,
          step.matrix=symmetric1,
          window.function=noWindow,
          native=TRUE,
+         seed=NULL,
          ...) {
 
 
@@ -34,8 +35,8 @@ function(lm,
 
 
   # i = 1 .. n in query sequence, on first index, ie rows
-  # j = 1 .. m on template sequence, on second index, ie columns
-  #   Note:  template is usually drawn vertically, up-wise
+  # j = 1 .. m on reference sequence, on second index, ie columns
+  #   Note:  reference is usually drawn vertically, up-wise
 
   n <- nrow(lm);
   m <- ncol(lm);
@@ -47,19 +48,25 @@ function(lm,
 
   # clear the cost and step matrix
   # these will be the outputs of the binary
-  cm <- matrix(NA,nrow=n,ncol=m);
+  # for  cm use  seed if given
+
+  if(!is.null(seed)) {
+    cm <- seed;
+  } else {
+    cm <- matrix(NA,nrow=n,ncol=m);
+    cm[1,1] <- lm[1,1];
+  }
+
   sm <- matrix(NA,nrow=n,ncol=m);
 
 
   
-  # initializer
-  cm[1,1] <- lm[1,1];
 
   if(is.loaded("computeCM") && native){
     ## precompute windowing
     wm <- matrix(FALSE,nrow=n,ncol=m);
     wm[window.function(row(wm),col(wm),
-                       query.size=n, template.size=m,
+                       query.size=n, reference.size=m,
                        ...)]<-TRUE;
 
     ## this call could be optimized
@@ -89,7 +96,10 @@ function(lm,
     for (j in 1:m) {
       for (i in 1:n) {
         ## It is ok to window on the arrival point (?)
-        if(!window.function(i,j, query.size=n, template.size=m, ...)) { next; }
+        if(!window.function(i,j, query.size=n, reference.size=m, ...)) { next; }
+
+        ## Skip if already initialized
+        if(!is.na(cm[i,j])) { next; }
 
         clist<-numeric(npats)+NA;
         for (s in 1:nsteps) {

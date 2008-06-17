@@ -6,7 +6,7 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Plotting of dynamic time warp results: annotated warping function}
 \description{
-  Display the query and template time series and their warping curve,
+  Display the query and reference time series and their warping curve,
   arranged for visual inspection. 
 }
 
@@ -16,7 +16,7 @@ dtwPlotThreeWay(d,xts=NULL,yts=NULL,
                 type.align="l",type.ts="l",
                 match.indices=NULL,
 	        margin=4, inner.margin=0.2, title.margin=1.5,
-	        xlab="Query index",ylab="Template index",main="Timeseries alignment",
+	        xlab="Query index",ylab="Reference index",main="Timeseries alignment",
 			... )
 
 }
@@ -24,9 +24,9 @@ dtwPlotThreeWay(d,xts=NULL,yts=NULL,
 \arguments{
   \item{d}{ an alignment result, object of class \code{dtw}}
   \item{xts}{ query vector }
-  \item{yts}{  template vector }
+  \item{yts}{  reference vector }
   \item{xlab}{ label for the query axis}
-  \item{ylab}{label for the template axis}
+  \item{ylab}{label for the reference axis}
   \item{main}{main title}
   \item{type.align}{line style for warping curve plot}
   \item{type.ts}{line style for timeseries plot}
@@ -42,14 +42,16 @@ dtwPlotThreeWay(d,xts=NULL,yts=NULL,
 \details{
 
   The query time series is plotted in the bottom panel, with indices
-  growing rightwards and values upwards. Template is in the left panel,
+  growing rightwards and values upwards. Reference is in the left panel,
   indices growing upwards and values leftwards. The warping curve panel
   matches indices, and therefore element (1,1) will be at the lower
   left, (N,M) at the upper right.
 
-  If a vector of integers \code{match.indices} is provided, a visual
-  guide is drawn for the corresponding indices in the warping curve
-  (match lines).
+  Argument \code{match.indices} is used to draw a visual guide to
+  matches; if a vector is given, guides are drawn for the corresponding
+  indices in the warping curve (match lines). If integer, it is used as
+  the number of guides to be plotted. The corresponding style is
+  customized via the \code{match.col} and \code{match.lty} arguments.
 
   If \code{xts} and \code{yts} are not supplied, they will be recovered
   from \code{d}, as long as it was created with the two-argument call of
@@ -72,20 +74,30 @@ dtwPlotThreeWay(d,xts=NULL,yts=NULL,
 \examples{
 
 ## A noisy sine wave as query
-## A cosine is for template; sin and cos are offset by 25 samples
+## A cosine is for reference; sin and cos are offset by 25 samples
 
 idx<-seq(0,6.28,len=100);
 query<-sin(idx)+runif(100)/10;
-template<-cos(idx)
-dtw(query,template,keep=TRUE)->alignment;
+reference<-cos(idx)
+dtw(query,reference,keep=TRUE)->alignment;
 
 
-## Beware of the template's y axis, may be confusing
-## Equivalent to plot(alignment,xts=query,yts=template,type="three");
-dtwPlotThreeWay(alignment,xts=query,yts=template);
+## Beware of the reference's y axis, may be confusing
+## Equivalent to plot(alignment,type="three");
+dtwPlotThreeWay(alignment);
 
 
+## Highlight matches of chosen QUERY indices. We will do some index
+## arithmetics to recover the corresponding indices along the warping
+## curve
 
+hq <- (0:8)/8              
+hq <- round(hq*100)      #  indices in query for  pi/4 .. 7/4 pi
+
+hw <- (alignment$index1 \%in\% hq)   # where are they on the w. curve?
+hi <- (1:length(alignment$index1))[hw];   # get the indices of TRUE elems
+
+dtwPlotThreeWay(alignment,match.indices=hi);
 
 }
 

@@ -5,7 +5,7 @@
 #       University of Pavia - Italy                           #
 #       www.labmedinfo.org                                    #
 #                                                             #
-#   $Id: plot.dtw.R 156 2008-06-19 15:21:22Z tonig $
+#   $Id: plot.dtw.R 175 2008-09-12 17:39:21Z tonig $
 #                                                             #
 ###############################################################
 
@@ -34,7 +34,7 @@ dtwPlot <- plot.dtw;
 
 
 
-dtwPlotAlignment <- function(d, xlab="Query index", ylab="Template index", ...) {
+dtwPlotAlignment <- function(d, xlab="Query index", ylab="Reference index", ...) {
   plot( d$index1,d$index2,
         xlim=c(1,d$N),ylim=c(1,d$M),
 	xlab=xlab,ylab=ylab, ...
@@ -46,7 +46,7 @@ dtwPlotAlignment <- function(d, xlab="Query index", ylab="Template index", ...) 
 ## the cumulative cost
 
 dtwPlotDensity <- function(d, normalize=FALSE,
-                           xlab="Query index", ylab="Template index", ...) {
+                           xlab="Query index", ylab="Reference index", ...) {
 
     cm<-d$costMatrix;
 
@@ -57,7 +57,7 @@ dtwPlotDensity <- function(d, normalize=FALSE,
     if(normalize) {
         norm <- attr(d$stepPattern,"norm");
         if(is.na(norm))
-          step("No normalization known for step pattern used");
+          stop("No normalization known for step pattern used");
 
         if(norm=="N") {
             cm <- cm / row(cm);
@@ -85,13 +85,13 @@ dtwPlotDensity <- function(d, normalize=FALSE,
 dtwPlotTwoWay <- function(d,xts=NULL,yts=NULL, offset=0,
 			ts.type="l",pch=21, 
                         match.indices=NULL,
-			match.col="gray70",
+			match.col="gray70", match.lty=3,
 			xlab="Index", ylab="Query value", 
 			... ) {
 
 	if(is.null(xts) || is.null(yts))  {
             xts <- d$query;
-            yts <- d$template;
+            yts <- d$reference;
         }
     
 	if(is.null(xts) || is.null(yts)) 
@@ -103,21 +103,33 @@ dtwPlotTwoWay <- function(d,xts=NULL,yts=NULL, offset=0,
         maxlen<-max(length(xts),length(ytso));
         length(xts)<-maxlen;
         length(ytso)<-maxlen;
+
 	
 	## save default, for resetting...
 	def.par <- par(no.readonly = TRUE);
 
+        ## make room for secondary axis, if any
+        if(offset!=0) {
+          par(mar=c(5,4,4,4)+.1);
+        }
 
 	## plot q+t
 	matplot(cbind(xts,ytso),
-			type=ts.type,pch=pch, 
-			xlab=xlab, ylab=ylab,
-			...);
+                type=ts.type,pch=pch, 
+                xlab=xlab, ylab=ylab,
+                axes=FALSE,
+                ...);
+
+        ## box and main axis
+        ## compute range covering all values
+        box();
+        axis(1);
+        axis(2,at=pretty(xts));
 
         ## display secondary axis if offset
         if(offset!=0) {
-          axt<-axTicks(2);
-          axis(4,at=axt+offset,labels=axt);
+          rightTicks <- pretty(yts);
+          axis(4,at=rightTicks+offset,labels=rightTicks);
         }
 
 
@@ -126,6 +138,10 @@ dtwPlotTwoWay <- function(d,xts=NULL,yts=NULL, offset=0,
         if(is.null(match.indices)) {
           ml<-length(d$index1);
           idx<-1:ml;
+        } else if(length(match.indices)==1) {
+          idx <- seq(from=1,
+                     to=length(d$index1),
+                     length.out=match.indices);
         } else {
           idx <- match.indices;
         }
@@ -134,7 +150,7 @@ dtwPlotTwoWay <- function(d,xts=NULL,yts=NULL, offset=0,
 	## x1, y1 	coordinates of points to which to draw.
 	segments(d$index1[idx],xts[d$index1[idx]],
 		 d$index2[idx],ytso[d$index2[idx]],
-		 col=match.col,lty=3);
+		 col=match.col,lty=match.lty);
 
 	
 	par(def.par)#- reset to default
@@ -157,12 +173,12 @@ dtwPlotThreeWay <- function(d,xts=NULL,yts=NULL,
                             type.align="l",type.ts="l",
                             match.indices=NULL,
                             margin=4, inner.margin=0.2, title.margin=1.5,
-                            xlab="Query index",ylab="Template index",main="Timeseries alignment",
+                            xlab="Query index",ylab="Reference index",main="Timeseries alignment",
                             ... ) {
 
      if(is.null(xts) || is.null(yts))  {
          xts <- d$query;
-         yts <- d$template;
+         yts <- d$reference;
      }
 
      # Sanity check
@@ -207,6 +223,16 @@ dtwPlotThreeWay <- function(d,xts=NULL,yts=NULL,
           ax=FALSE,main=main, ...
           ); # fake a diagonal, to set the axes
 
+
+     # vertical match segments
+     #  1 value: plot total of N elements
+     if(length(match.indices)==1) {
+       match.indices <- seq(from=1,
+                            to=length(d$index1),
+                            length.out=match.indices);
+     }
+
+     #  vector: use specified indices
      if(! is.null(match.indices) ) {      # vertical match segments
        idx <- match.indices;
        segments(d$index1[idx],0,
@@ -233,7 +259,7 @@ dtwPlotThreeWay <- function(d,xts=NULL,yts=NULL,
      axis(2);
      box();
 
-     # Plot template (vertical, left)
+     # Plot reference (vertical, left)
      par(mar=c(imar,lmar,tmar,imar));
 
      # reverse the horiz. axis so that rotation is more natural

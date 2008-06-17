@@ -85,7 +85,7 @@
 \method{plot}{stepPattern}(x,...)
 \method{t}{stepPattern}(x)
 
-stepPattern(v)
+stepPattern(v,norm=NA)
 is.stepPattern(x)
 
 }
@@ -98,6 +98,7 @@ is.stepPattern(x)
   \item{smoothed}{logical, whether to use smoothing (see [3],
   fig. 4.44) }
   \item{v}{a vector defining the stepPattern structure}
+  \item{norm}{normalization hint (character)}
   \item{...}{additional arguments to \code{\link{print}}.}
 }
 
@@ -116,7 +117,7 @@ is.stepPattern(x)
   shown along the step leading to the corresponding element.
 
   \code{t.stepPattern} transposes the productions and normalization hint
-  so that roles of query and template become reversed.
+  so that roles of query and reference become reversed.
   
 
   A variety of classifications have been proposed for step patterns,
@@ -141,10 +142,10 @@ is.stepPattern(x)
   quasi-symmetric, no local constraint, non-normalizable. It is biased
   in favor of oblique steps.
   
-  \code{symmetric2} is normalizable, symmetric, with no local constraint.
-  Since one diagonal step costs as much as the two  equivalent steps
-  along the sides, it can be normalized dividing by \code{N+M}
-  (query+template lengths).
+  \code{symmetric2} is normalizable, symmetric, with no local slope
+  constraints.  Since one diagonal step costs as much as the two
+  equivalent steps along the sides, it can be normalized dividing by
+  \code{N+M} (query+reference lengths).
 
   \code{asymmetric} is asymmetric, slope constrained between 0 and
   2. Matches each element of the query time series exactly once, so
@@ -217,7 +218,7 @@ is.stepPattern(x)
 \strong{5. Other}
 
   Mori's [6] asymmetric step-constrained pattern is
-  \code{mori2006}. Normalized in the template length.
+  \code{mori2006}. Normalized in the reference length.
 
 
 }
@@ -296,10 +297,10 @@ plot.stepPattern(symmetricP2,main="Sakoe's Symmetric P=2 recursion")
 
 idx<-seq(0,6.28,len=100);
 query<-sin(idx)+runif(100)/10;
-template<-cos(idx);
+reference<-cos(idx);
 
 ## Do the computation 
-asy<-dtw(query,template,keep=TRUE,step=asymmetric);
+asy<-dtw(query,reference,keep=TRUE,step=asymmetric);
 
 dtwPlot(asy,type="density",main="Sine and cosine, asymmetric step")
 

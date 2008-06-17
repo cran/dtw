@@ -5,7 +5,7 @@
 #       University of Pavia - Italy                           #
 #       www.labmedinfo.org                                    #
 #                                                             #
-#   $Id: stepPattern.R 154 2008-06-17 20:45:26Z tonig $
+#   $Id: stepPattern.R 175 2008-09-12 17:39:21Z tonig $
 #                                                             #
 ###############################################################
 
@@ -15,8 +15,9 @@
 
 #############################
 ## Methods for accessing and creating step.patterns
+## TODO: validate norm
 
-stepPattern <- function(v) {
+stepPattern <- function(v,norm=NA) {
   obj <- NULL;
   if(is.vector(v)) {
     obj <- matrix(v,ncol=4,byrow=TRUE);
@@ -27,7 +28,7 @@ stepPattern <- function(v) {
   }
   class(obj)<-"stepPattern";
   attr(obj,"npat") <- max(obj[,1]);
-  attr(obj,"norm") <- NA;
+  attr(obj,"norm") <- norm;
   return(obj);
 }
 
@@ -38,7 +39,7 @@ is.stepPattern <- function(x) {
 
 
 
-## Transpose - exchange role of query and template
+## Transpose - exchange role of query and reference
 t.stepPattern <- function(x) {
 
   # exchange dx <-> dy
@@ -65,25 +66,41 @@ plot.stepPattern <- function(x,...) {
   pats <- unique(x[,1]);                #list of patterns
   xr <- max(x[,2]);
   yr <- max(x[,3]);
-  fudge <- .05;
+
+  #for weight labels
+  fudge <- c(-.5,1.2);                         
+  alpha <- .5;                          # 1 start, 0 end
 
   ## dummy plot to fix the plot limits
   plot(-x[,2],-x[,3],type="n",
-       xlab="Query index",ylab="Template index",
+       xlab="Query index",ylab="Reference index",
        asp=1,lab=c(xr+1,yr+1,1),
+       ax=FALSE,
        ...);
 
   for(i in pats) {
     ss <- x[,1]==i;
-    lines(-x[ss,2],-x[ss,3],type="o");
+    lines(-x[ss,2],-x[ss,3],type="o", ...);
 
-    xh <- (head(x[ss,2],-1) + x[ss,2][-1] ) / 2;
-    yh <- (head(x[ss,3],-1) + x[ss,3][-1] ) / 2;
-    text(-xh-fudge,-yh+fudge,labels=round(x[ss,4][-1],2));
+    if(sum(ss)==1) {
+      next;                         
+    }                               
+    
+
+    xh <- alpha*head(x[ss,2],-1) + (1-alpha)*x[ss,2][-1];
+    yh <- alpha*head(x[ss,3],-1) + (1-alpha)*x[ss,3][-1];
+
+    text(-xh,-yh,
+         labels=round(x[ss,4][-1],2),
+         adj=fudge,
+         ...);
   }
 
+  axis(1,at=c(-xr:0), ...)
+  axis(2,at=c(-yr:0), ...)
+
   endpts <- x[,4]==-1;
-  points(-x[endpts,2],-x[endpts,3],pch=16);
+  points(-x[endpts,2],-x[endpts,3],pch=16, ...);
 }
 
 
@@ -525,7 +542,7 @@ rabinerJuangStepPattern <- function(type,slope.weighting="d",smoothed=FALSE) {
 ##
 ## First column: enumerates step patterns.
 ## Second   	 step in query index
-## Third	 step in template index
+## Third	 step in reference index
 ## Fourth	 weight if positive, or -1 if starting point
 ##
 ## For \cite{} see dtw.bib in the package
@@ -557,8 +574,7 @@ symmetric2 <- stepPattern(c(
                             2,0,0,2,
                             3,1,0,-1,
                             3,0,0,1
-                            ));
-attr(symmetric2,"norm") <- "N+M";
+                            ),"N+M");
 
 
 ## classic asymmetric pattern: max slope 2, min slope 0
@@ -570,8 +586,8 @@ asymmetric <-  stepPattern(c(
                              2,0,0,1,
                              3,1,2,-1,
                              3,0,0,1
-                           ));
-attr(asymmetric,"norm") <- "N";
+                           ),"N");
+
 
 
 ## normalization: max[N,M]
@@ -622,15 +638,26 @@ attr(asymmetric,"norm") <- "N";
 ## Row P=0
 symmetricP0 <- symmetric2;
 
-## uhmmmm......
 ## normalization: N ?
 asymmetricP0 <- stepPattern(c(
+                                  1,0,1,-1,
+                                  1,0,0,0,
+                                  2,1,1,-1,
+                                  2,0,0,1,
+                                  3,1,0,-1,
+                                  3,0,0,1
+                                ),"N");
+
+
+## alternative implementation
+.asymmetricP0b <- stepPattern(c(
                                   1,0,1,-1,
                                   2,1,1,-1,
                                   2,0,0,1,
                                   3,1,0,-1,
                                   3,0,0,1
-                                ));
+                                ),"N");
+
 
 
 ## Row P=1/2
@@ -651,7 +678,7 @@ symmetricP05 <-  stepPattern(c(
                         5  ,  2, 0 ,  2,
                         5  ,  1, 0 ,  1,
                         5  ,  0, 0 ,  1
-                               ));
+                               ),"N+M");
 
 asymmetricP05 <-  stepPattern(c(
                         1  , 1 , 3 , -1,
@@ -670,7 +697,7 @@ asymmetricP05 <-  stepPattern(c(
                         5  , 2 , 0 , 1 ,
                         5  , 1 , 0 , 1 ,
                         5  , 0 , 0 , 1
-                               ));
+                               ),"N");
 
 
 
@@ -686,7 +713,7 @@ symmetricP1 <- stepPattern(c(
                               3,2,1,-1,	# Third branch: g(i-2,j-1)+
                               3,1,0,2,	#            + 2d(i-1,j)
                               3,0,0,1	#            +  d(  i,j)
-                        ));
+                        ),"N+M");
 
 asymmetricP1 <- stepPattern(c(
                               1, 1 , 2 , -1 ,
@@ -697,7 +724,7 @@ asymmetricP1 <- stepPattern(c(
                               3, 2 , 1 , -1 ,
                               3, 1 , 0 ,  1 ,
                               3, 0 , 0 ,  1
-                              ));
+                              ),"N");
 
 
 ## Row P=2
@@ -712,7 +739,7 @@ symmetricP2 <- stepPattern(c(
 	3, 2, 1, 2,
 	3, 1, 0, 2,
 	3, 0, 0, 1
-));
+),"N+M");
 
 asymmetricP2 <- stepPattern(c(
 	1, 2 , 3  , -1,
@@ -725,7 +752,7 @@ asymmetricP2 <- stepPattern(c(
 	3, 2 , 1  ,1  ,
 	3, 1 , 0  ,1  ,
 	3, 0 , 0  ,1
-));
+),"N");
 
 
 
@@ -799,7 +826,7 @@ typeIc <-  stepPattern(c(
                          3, 1, 2, -1,
                          3, 0, 1,  1,
                          3, 0, 0,  0
- ));
+ ),"N");
 
 typeId <-  stepPattern(c(
                          1, 2, 1, -1,
@@ -810,7 +837,7 @@ typeId <-  stepPattern(c(
                          3, 1, 2, -1,
                          3, 0, 1,  2,
                          3, 0, 0,  1
- ));
+ ),"N+M");
 
 ## ----------
 ## smoothed variants of above
@@ -848,7 +875,7 @@ typeIcs <-  stepPattern(c(
                          3, 1, 2, -1,
                          3, 0, 1, .5,
                          3, 0, 0, .5
- ));
+ ),"N");
 
 
 typeIds <-  stepPattern(c(
@@ -860,7 +887,7 @@ typeIds <-  stepPattern(c(
                          3, 1, 2, -1,
                          3, 0, 1, 1.5,
                          3, 0, 0, 1.5
- ));
+ ),"N+M");
 
 
 
@@ -894,7 +921,7 @@ typeIIc <- stepPattern(c(
                         2,  0,  0, 1,
                         3,  2,  1, -1,
                         3,  0,  0, 2
-                        ));
+                        ),"N");
 
 typeIId <- stepPattern(c(
                         1,  1,  1, -1,
@@ -903,7 +930,7 @@ typeIId <- stepPattern(c(
                         2,  0,  0, 3,
                         3,  2,  1, -1,
                         3,  0,  0, 3
-                        ));
+                        ),"N+M");
 
 ## ----------
 
@@ -920,7 +947,7 @@ typeIIIc <-  stepPattern(c(
 			4, 2, 2, -1,
 			4, 1, 0, 1,
 			4, 0, 0, 1
-                       ));
+                       ),"N");
 
 
 
@@ -956,7 +983,7 @@ typeIVc <-  stepPattern(c(
                           9,  2,  0,   1,
                           9,  1,  0,   1,
                           9,  0,  0,   1
- ));
+ ),"N");
 
 
 
@@ -966,7 +993,7 @@ typeIVc <-  stepPattern(c(
 #############################
 ## 
 ## Mori's asymmetric step-constrained pattern. Normalized in the
-## template length.
+## reference length.
 ##
 ## Mori, A.; Uchida, S.; Kurazume, R.; Taniguchi, R.; Hasegawa, T. &
 ## Sakoe, H. Early Recognition and Prediction of Gestures Proc. 18th
@@ -983,7 +1010,7 @@ mori2006 <-  stepPattern(c(
                            3, 1, 2, -1,
                            3, 0, 1,  3,
                            3, 0, 0,  3
- ));
-attr(mori2006,"norm") <- "M";
+ ),"M");
+
 
 

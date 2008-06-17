@@ -4,7 +4,7 @@
  * (c) Toni Giorgino  2007-8
  * Distributed under GPL-2 with NO WARRANTY.
  *
- * $Id: computeCM.c 117 2008-02-22 16:27:03Z tonig $
+ * $Id: computeCM.c 168 2008-07-11 05:52:05Z tonig $
  *  
  */
 
@@ -99,8 +99,10 @@ void computeCM(			/* IN */
     malloc(npats*sizeof(double));
 
 
-  /* initialize the seed */
-  cm[0]=lm[0];
+  /* we do not initialize the seed - the caller is supposed
+     to do so
+     cm[0]=lm[0];
+   */
 
 
   /* lets go */
@@ -110,6 +112,10 @@ void computeCM(			/* IN */
       /* out of window? */
       if(!wm[EM(i,j)])
 	continue;
+
+      /* already initialized? */
+      if(!isnan(cm[EM(i,j)]))
+	  continue;
 
       CLEARCLIST;
       for(int s=0; s<nsteps; s++) {

@@ -4,17 +4,17 @@
 \description{
 
   Returns the indexing required to apply the optimal warping curve to a
-  given timeseries (warps either into a query or into a template).
+  given timeseries (warps either into a query or into a reference).
 
 
 }
 \usage{
-warp(d,index.template=FALSE)
+warp(d,index.reference=FALSE)
 }
 \arguments{
   \item{d}{\code{dtw} object specifying the warping curve to apply}
 
-  \item{index.template}{\code{TRUE} to warp a template, \code{FALSE}
+  \item{index.reference}{\code{TRUE} to warp a reference, \code{FALSE}
 to warp a query}
 }
 \details{
@@ -43,23 +43,23 @@ to warp a query}
 \examples{
 idx<-seq(0,6.28,len=100);
 query<-sin(idx)+runif(100)/10;
-template<-cos(idx)
+reference<-cos(idx)
 
-alignment<-dtw(query,template);
+alignment<-dtw(query,reference);
 
 
-wq<-warp(alignment,index.template=FALSE);
-wt<-warp(alignment,index.template=TRUE);
+wq<-warp(alignment,index.reference=FALSE);
+wt<-warp(alignment,index.reference=TRUE);
 
 old.par <- par(no.readonly = TRUE);
 par(mfrow=c(2,1));
 
-plot(template,main="Warping query");
+plot(reference,main="Warping query");
   lines(query[wq],col="blue");
 
 plot(query,type="l",col="blue",
-  main="Warping template");
-  points(template[wt]);
+  main="Warping reference");
+  points(reference[wt]);
 
 par(old.par);
 
@@ -67,16 +67,16 @@ par(old.par);
 ##############
 ##
 ## Asymmetric step makes it "natural" to warp
-## the template, because every query index has
+## the reference, because every query index has
 ## exactly one image (q->t is a function)
 ##
 
-alignment<-dtw(query,template,step="a")
-wt<-warp(alignment,index.template=TRUE);
+alignment<-dtw(query,reference,step=asymmetric)
+wt<-warp(alignment,index.reference=TRUE);
 
 plot(query,type="l",col="blue",
-  main="Warping template, asymmetric step");
-  points(template[wt]);
+  main="Warping reference, asymmetric step");
+  points(reference[wt]);
 
 
 

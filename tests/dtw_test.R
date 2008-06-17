@@ -10,7 +10,7 @@ ds$distance			 # 2
 ds$index1			 # 1 2 2 2 2 3 4 5 6 6
 ds$index2			 # 1 1 2 3 4 5 5 5 5 6
 
-da<-dtw(ldist,step="a");	 # Also compute the asymmetric
+da<-dtw(ldist,step=asymmetric);	 # Also compute the asymmetric
 da$distance			 # 2
 da$index1			 # 1 2 3 4 5 6
 da$index2			 # 1 3 5 5 5 6

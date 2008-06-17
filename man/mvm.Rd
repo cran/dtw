@@ -11,7 +11,7 @@
   mvmStepPattern(elasticity=20);
 }
 \arguments{
-  \item{elasticity}{integer: maximum consecutive template elements skippable}
+  \item{elasticity}{integer: maximum consecutive reference elements skippable}
 }
 \value{
   A step pattern object.
@@ -20,10 +20,10 @@
 \details{
 
   The Minimum Variance Matching algorithm [1] finds the non-contiguous
-  parts of template which best match the query, allowing for arbitrarily
-  long "stretches" of template to be excluded from the match. All
+  parts of reference which best match the query, allowing for arbitrarily
+  long "stretches" of reference to be excluded from the match. All
   elements of the query have to be matched. First and last elements of
-  the query are anchored at the boundaries of the template.
+  the query are anchored at the boundaries of the reference.
 
   The \code{mvmStepPattern} function creates a \code{stepPattern} object
   which implements this behavior, to be used with the usual
@@ -31,8 +31,8 @@
   case of DTW, with a very large, asymmetric-like step pattern.
 
   The \code{elasticity} argument limits the maximum run length of
-  template which can be skipped at once. If no limit is desired, set
-  \code{elasticity} to an integer at least as large as the template
+  reference which can be skipped at once. If no limit is desired, set
+  \code{elasticity} to an integer at least as large as the reference
   (computation time grows linearly).
  
 }

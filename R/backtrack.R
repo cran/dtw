@@ -5,7 +5,7 @@
 #       University of Pavia - Italy                           #
 #       www.labmedinfo.org                                    #
 #                                                             #
-#   $Id: backtrack.R 142 2008-06-09 13:30:53Z tonig $
+#   $Id: backtrack.R 168 2008-07-11 05:52:05Z tonig $
 #                                                             #
 ###############################################################
 
@@ -52,6 +52,10 @@ function(gcm) {
 
     ## direction taken
     s<-gcm$directionMatrix[i,j];
+
+    if(is.na(s)) {
+      break;
+    }
 
     ## undo the steps
 

@@ -19,18 +19,18 @@
 \usage{
 noWindow(iw, jw, ...);
 sakoeChibaWindow(iw,jw,  window.size,...);
-slantedBandWindow(iw,jw,query.size,template.size,  window.size,...);
-itakuraWindow(iw,jw,query.size,template.size,  ...); 
+slantedBandWindow(iw,jw,query.size,reference.size,  window.size,...);
+itakuraWindow(iw,jw,query.size,reference.size,  ...); 
 
-dtwWindow.plot(fun,query.size=200,template.size=220,...);
+dtwWindow.plot(fun,query.size=200,reference.size=220,...);
 
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{iw}{ index in the query (row) -- automatically set }
-  \item{jw}{ index in the template (column) -- automatically set }
+  \item{jw}{ index in the reference (column) -- automatically set }
   \item{query.size}{ size of the query time series -- automatically set }
-  \item{template.size}{ size of the template time series -- automatically set }
+  \item{reference.size}{ size of the reference time series -- automatically set }
   \item{window.size}{ window size, used by some windowing functions -- must be set}
   \item{fun}{ a windowing function }
   \item{...}{additional arguments passed to windowing functions}
@@ -45,7 +45,7 @@ dtwWindow.plot(fun,query.size=200,template.size=220,...);
   \code{TRUE} if the coordinates fall within the allowed region 
   for warping paths, \code{FALSE} otherwise.
 
-  User-defined functions can read variables \code{template.size},
+  User-defined functions can read variables \code{reference.size},
   \code{query.size} and \code{window.size}; these are pre-set upon
   invocation.  Some functions require additional parameters which must
   be set (e.g. \code{window.size}).  User-defined functions are free to
@@ -56,7 +56,7 @@ dtwWindow.plot(fun,query.size=200,template.size=220,...);
   The \code{sakoeChibaWindow} function implements the Sakoe-Chiba band,
   i.e. \code{window.size} elements around the \code{main} diagonal. If
   the window size is too small, i.e. if
-  \code{template.size}-\code{query.size} > \code{window.size}, warping
+  \code{reference.size}-\code{query.size} > \code{window.size}, warping
   becomes impossible.
 
   An \code{itakuraWindow}  global constraint is still provided with this
@@ -65,14 +65,14 @@ dtwWindow.plot(fun,query.size=200,template.size=220,...);
 
   The \code{slantedBandWindow} (package-specific) is a band centered
   around the (jagged) line segment which joins element \code{[1,1]} to
-  element \code{[query.size,template.size]}, and will be
+  element \code{[query.size,reference.size]}, and will be
   \code{window.size} columns wide. In other words, the "diagonal" goes
   from one corner to the other of the possibly rectangular cost matrix,
   therefore having a slope of \code{M/N}, not 1.
 
     \code{dtwWindow.plot} visualizes a windowing function. By default
   it plots a 200 x 220 rectangular region, which can
-  be changed via \code{template.size} and \code{query.size} arguments.
+  be changed via \code{reference.size} and \code{query.size} arguments.
 
   
 }
@@ -114,16 +114,16 @@ Transactions on Signal Processing], IEEE Transactions on , vol.23, no.1, pp.
 ## Display some windowing functions
 dtwWindow.plot(itakuraWindow, main="So-called Itakura parallelogram window")
 dtwWindow.plot(slantedBandWindow, window.size=2,
-  template=13, query=17, main="The slantedBandWindow at window.size=2")
+  reference=13, query=17, main="The slantedBandWindow at window.size=2")
 
 
 ## Asymmetric step with Sakoe-Chiba band
 
 idx<-seq(0,6.28,len=100); 
 query<-sin(idx)+runif(100)/10;
-template<-cos(idx);
+reference<-cos(idx);
 
-asyband<-dtw(query,template,keep=TRUE,
+asyband<-dtw(query,reference,keep=TRUE,
              step=asymmetric,
              window.type=sakoeChibaWindow,
              window.size=30                  );
