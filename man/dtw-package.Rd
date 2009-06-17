@@ -13,8 +13,8 @@ Dynamic Time Warp algorithms in R
 \tabular{ll}{
 Package: \tab dtw\cr
 Type: \tab Package\cr
-Version: \tab 1.0\cr
-Date: \tab 2007-12-10\cr
+Version: \tab 1.13\cr
+Date: \tab 2009-6-30\cr
 License: \tab GPL-2\cr
 }
 
@@ -53,9 +53,9 @@ To get the latest stable version from CRAN, use
 
 }
 \author{
-  Toni Giorgino, Copyright (c) 2007 
+  Toni Giorgino, Copyright (c) 2007-2009 
 
-  Maintainer:  toni.giorgino@unipv.it
+  Maintainer:  toni.giorgino@gmail.com
 }
 
 \seealso{ \code{\link{dtw}} for the main entry point to the package;

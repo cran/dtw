@@ -56,10 +56,10 @@ Attaching package: 'proxy'
 > da$index2			 # 1 1 2 3 4 5 5 5 5 6
  [1] 1 1 2 3 4 5 5 5 5 6
 > 
-> ds<- globalCostMatrix(ldist)
-> dsn<- globalCostMatrix(ldist,native=FALSE)
+> ds<- dtw:::globalCostMatrix(ldist)
+> dsn<- dtw:::globalCostMatrix(ldist,native=FALSE)
 Warning message:
-In globalCostMatrix(ldist, native = FALSE) :
+In dtw:::globalCostMatrix(ldist, native = FALSE) :
   Native dtw implementation not available: using (slow) interpreted fallback
 > stopifnot(all.equal(ds,dsn))		 # TRUE
 > 
@@ -70,12 +70,25 @@ In globalCostMatrix(ldist, native = FALSE) :
 > query<-sin(idx)+runif(100)/10;	
 > template<-cos(idx)
 > ldist<-outer(query,template,FUN=function(x,y){(x-y)^2})
-> ds<- globalCostMatrix(ldist)
-> dsn<- globalCostMatrix(ldist,native=FALSE)
+> ds<- dtw:::globalCostMatrix(ldist)
+> dsn<- dtw:::globalCostMatrix(ldist,native=FALSE)
 Warning message:
-In globalCostMatrix(ldist, native = FALSE) :
+In dtw:::globalCostMatrix(ldist, native = FALSE) :
   Native dtw implementation not available: using (slow) interpreted fallback
 > all.equal(ds,dsn)		# TRUE
 [1] TRUE
+> 
+> ### Use proxy::dist
+> query <- cbind(1:10,1)
+> ref <- cbind(11:15,2)
+> cxdist <- proxy::dist(query,ref,method="Manhattan")
+> d1 <- dtw(query,ref,dist.method="Manhattan")$distance
+> d2 <- dtw(cxdist)$distance
+> stopifnot(d1==d2)
+> 
+> 
+> ### See if DTW is registered in proxy::dist
+> lambda <- dist(query,ref,method="DTW")
+> stopifnot(sum(lambda)==470)
 > 
 > 

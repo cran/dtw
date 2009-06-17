@@ -19,7 +19,8 @@
 # an alias for dtw.plot
 dtwPlot(x, type="alignment", ...)
 
-dtwPlotAlignment(d, xlab="Query index", ylab="Reference index", ...)
+dtwPlotAlignment(d, xlab="Query index", ylab="Reference index",
+                    plot.type="l", ...)
 dtwPlotDensity(d, normalize=FALSE,
 		  xlab="Query index", ylab="Reference index",
                   ...)
@@ -29,9 +30,11 @@ dtwPlotDensity(d, normalize=FALSE,
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x,d}{ \code{dtw} object, usually result of call to \code{\link{dtw}}}
-  \item{xlab}{ label for the query axis}
+  \item{xlab}{label for the query axis}
   \item{ylab}{label for the reference axis}
-  \item{type}{alignment plot style}
+  \item{type}{general style for the alignment plot}
+  \item{plot.type}{type of line to be drawn, used as the \code{type}
+    argument in the underlying \code{plot} call}
   \item{normalize}{show per-step average cost instead of cumulative cost}
   
   \item{...}{additional arguments, passed to plotting functions}
@@ -65,8 +68,8 @@ dtwPlotDensity(d, normalize=FALSE,
   is plotted instead of the cumulative one. Step averaging depends on
   the \code{\link{stepPattern}} used.
   
-  Additional  parameters are carried on to the plotting
-  functions: use with care.
+  Additional parameters are carried on to the plotting functions: use
+  with care.
 
 }
 

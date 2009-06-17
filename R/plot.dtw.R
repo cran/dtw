@@ -5,7 +5,7 @@
 #       University of Pavia - Italy                           #
 #       www.labmedinfo.org                                    #
 #                                                             #
-#   $Id: plot.dtw.R 175 2008-09-12 17:39:21Z tonig $
+#   $Id: plot.dtw.R 234 2009-06-30 13:07:37Z tonig $
 #                                                             #
 ###############################################################
 
@@ -34,10 +34,11 @@ dtwPlot <- plot.dtw;
 
 
 
-dtwPlotAlignment <- function(d, xlab="Query index", ylab="Reference index", ...) {
+dtwPlotAlignment <- function(d, xlab="Query index", ylab="Reference index", plot.type="l", ...) {
   plot( d$index1,d$index2,
         xlim=c(1,d$N),ylim=c(1,d$M),
-	xlab=xlab,ylab=ylab, ...
+	xlab=xlab,ylab=ylab,type=plot.type,
+        ...
 	);
 }
 

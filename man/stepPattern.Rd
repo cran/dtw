@@ -279,7 +279,7 @@ is.stepPattern(x)
 ##      g[i-1,j] + d[i,j] ,
 ##   )
 
-print.stepPattern(symmetric2)   # or just "symmetric2"
+print(symmetric2)   # or just "symmetric2"
 
 
 
@@ -287,8 +287,8 @@ print.stepPattern(symmetric2)   # or just "symmetric2"
 ##
 ## The well-known plotting style for step patterns
 
-plot.stepPattern(symmetricP2,main="Sakoe's Symmetric P=2 recursion")
-   # or just "plot(symmetricP2)"
+plot(symmetricP2,main="Sakoe's Symmetric P=2 recursion")
+
 
 
 #########

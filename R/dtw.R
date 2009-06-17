@@ -5,7 +5,7 @@
 #       University of Pavia - Italy                           #
 #       www.labmedinfo.org                                    #
 #                                                             #
-#   $Id: dtw.R 178 2008-09-25 17:35:05Z tonig $
+#   $Id: dtw.R 234 2009-06-30 13:07:37Z tonig $
 #                                                             #
 ###############################################################
 
@@ -201,6 +201,17 @@ function(x, y=NULL,
 ## OO class check
 is.dtw <- function(d) {
     return(inherits(d,"dtw"));
+}
+
+
+
+##############################
+## OO print method
+print.dtw <- function(x,...) {
+  head <- "DTW alignment object\n";
+  size <- sprintf("Alignment size (query x reference): %d x %d\n",x$N,x$M);
+  call <- sprintf("Call: %s\n",deparse(x$call));
+  cat(head,size,call);
 }
 
 

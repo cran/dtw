@@ -1,0 +1,71 @@
+# import(proxy)
+useDynLib(dtw,computeCM)
+importFrom(proxy,dist)
+importFrom(proxy,pr_DB)
+
+# DTW functions
+export(dtw)
+#S3method(is,dtw)
+S3method(print,dtw)
+
+export(dtwDist)
+
+# DTW plot functions
+S3method(plot,dtw)
+export(dtwPlot)
+export(dtwPlotAlignment)
+export(dtwPlotDensity)
+export(dtwPlotThreeWay)
+export(dtwPlotTwoWay)
+
+# Windowing
+export(noWindow)
+export(sakoeChibaWindow)
+export(slantedBandWindow)
+export(itakuraWindow)
+export(dtwWindow.plot)
+
+# Step patterns
+#S3method(is,stepPattern)
+S3method(print,stepPattern)
+S3method(t,stepPattern)
+S3method(plot,stepPattern)
+
+export(mvmStepPattern)
+export(rabinerJuangStepPattern)
+
+export(symmetric1)
+export(symmetric2)
+export(asymmetric)
+#export(.asymmetricItakura)
+#export(.symmetricVelichkoZagoruyko)
+export(symmetricP0)
+export(asymmetricP0)
+export(symmetricP05)
+export(asymmetricP05)
+export(symmetricP1)
+export(asymmetricP1)
+export(symmetricP2)
+export(asymmetricP2)
+export(typeIa)
+export(typeIas)
+export(typeIb)
+export(typeIbs)
+export(typeIc)
+export(typeIcs)
+export(typeId)
+export(typeIds)
+export(typeIIa)
+export(typeIIb)
+export(typeIIc)
+export(typeIId)
+export(typeIIIc)
+export(typeIVc)
+export(mori2006)
+
+# Warp
+export(warp)
+export(warpArea)
+
+# Data
+#export(aami3a,aami3b)

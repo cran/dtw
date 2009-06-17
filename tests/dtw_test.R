@@ -20,8 +20,8 @@ da$distance			 # 1
 da$index1			 # 1 2 2 2 2 3 4 5 6 6
 da$index2			 # 1 1 2 3 4 5 5 5 5 6
 
-ds<- globalCostMatrix(ldist)
-dsn<- globalCostMatrix(ldist,native=FALSE)
+ds<- dtw:::globalCostMatrix(ldist)
+dsn<- dtw:::globalCostMatrix(ldist,native=FALSE)
 stopifnot(all.equal(ds,dsn))		 # TRUE
 
 
@@ -31,7 +31,20 @@ idx<-seq(0,6.28,len=100);
 query<-sin(idx)+runif(100)/10;	
 template<-cos(idx)
 ldist<-outer(query,template,FUN=function(x,y){(x-y)^2})
-ds<- globalCostMatrix(ldist)
-dsn<- globalCostMatrix(ldist,native=FALSE)
+ds<- dtw:::globalCostMatrix(ldist)
+dsn<- dtw:::globalCostMatrix(ldist,native=FALSE)
 all.equal(ds,dsn)		# TRUE
+
+### Use proxy::dist
+query <- cbind(1:10,1)
+ref <- cbind(11:15,2)
+cxdist <- proxy::dist(query,ref,method="Manhattan")
+d1 <- dtw(query,ref,dist.method="Manhattan")$distance
+d2 <- dtw(cxdist)$distance
+stopifnot(d1==d2)
+
+
+### See if DTW is registered in proxy::dist
+lambda <- dist(query,ref,method="DTW")
+stopifnot(sum(lambda)==470)
 

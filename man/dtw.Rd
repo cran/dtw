@@ -1,6 +1,7 @@
 \name{dtw}
 \alias{dtw}
 \alias{is.dtw}
+\alias{print.dtw}
 
 
 
@@ -21,6 +22,7 @@ dtw(x, y=NULL,
          ... )
 
 is.dtw(d)
+\method{print}{dtw}(x,...)
 
 }
 %- maybe also 'usage' for other objects documented here.

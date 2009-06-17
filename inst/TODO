@@ -1,43 +1,19 @@
 
+=== Suggestion from JSS paper ===
+
+* Fix warnings in dtwWindow.plot		DONE
+* Add dtw.print method				DONE  
+* Make type="l" default for dtw.plot		DONE
+* Use NAMESPACE feature				DONE
 
 
-=== Old style (3-col) step patterns: last in revision 17 ==
+=== Other ===
+
+* Optimize memory use (e.g. pass distance.only to the native
+  implementation and avoid returning the two large matrices)
 
 
-IMPLEMENTATION
-* plot OK
-* windowing  OK
-* allow ts objects OK
-* test OK
-* move plot elsewhere OK
-* dtw OO OK
-* two-way plot OK
-* fix 2w lenghts OK
-* include/use ts data in dtw object for plots when keep OK
-* add normalized distance OK
-- 2w: interesting
-- legends in plots
-- preserve TS names 
-- Itakura
--- rabiner-myers as constructor
-* add normalization as constructor OK
 
-
-DOCUMENTATION
-* references OK
-* citation OK
-* demo OK
-
-STUDY
-* binary OK
-* skip computation of distance for elements outside-window OK
-- its
-
-
-EXAMPLES
-* density plot OK
-* put example of passing a distance matrix OK
-- Rabiner's worked out exercises
 
 
 TEST CASE for Itakura

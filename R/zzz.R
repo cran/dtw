@@ -5,20 +5,16 @@
 #       University of Pavia - Italy                           #
 #       www.labmedinfo.org                                    #
 #                                                             #
-#   $Id: zzz.R 98 2008-01-09 14:20:18Z tonig $
+#   $Id: zzz.R 235 2009-06-30 15:13:52Z tonig $
 #                                                             #
 ###############################################################
 
-.First.lib <- function(lib, pkg)  {
-  library(proxy);
+.onLoad <- function(lib, pkg)  {
+  # library(proxy);
 
-  cat(paste("Loaded dtw v",
-            utils::packageDescription("dtw")$Version,
-	    ". See ?dtw for help, citation(\"dtw\") for use in publication.",
-	    "\n",
-            sep=""))
-  library.dynam("dtw");
-
+  cat(sprintf("Loaded dtw v%s. See ?dtw for help, citation(\"dtw\") for use in publication.\n",
+            utils::packageDescription("dtw")$Version ) );
+      
   ## Register DTW as a distance function into package proxy
   pr_DB$set_entry(FUN=dtwpairdist, names="DTW", 
                   loop=TRUE, type="metric",

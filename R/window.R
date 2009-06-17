@@ -5,7 +5,7 @@
 #       University of Pavia - Italy                           #
 #       www.labmedinfo.org                                    #
 #                                                             #
-#   $Id: window.R 171 2008-09-01 07:31:02Z tonig $
+#   $Id: window.R 234 2009-06-30 13:07:37Z tonig $
 #                                                             #
 ###############################################################
 
@@ -77,9 +77,7 @@ dtwWindow.plot <- function(fun,query.size=200,reference.size=220,...) {
 		x=1:n,
 		y=1:m,
 		xlab=sprintf("Query: samples 1..%d",n),
-		ylab=sprintf("Reference: samples 1..%d",m), 
-		...
+		ylab=sprintf("Reference: samples 1..%d",m)
 	 );
 }
-
 

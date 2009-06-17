@@ -5,7 +5,7 @@
 #       University of Pavia - Italy                           #
 #       www.labmedinfo.org                                    #
 #                                                             #
-#   $Id: globalCostMatrix.R 171 2008-09-01 07:31:02Z tonig $
+#   $Id: globalCostMatrix.R 235 2009-06-30 15:13:52Z tonig $
 #                                                             #
 ###############################################################
 
@@ -70,7 +70,7 @@ function(lm,
                        ...)]<-TRUE;
 
     ## this call could be optimized
-    tmp<-.C("computeCM",NAOK=TRUE,PACKAGE="dtw",
+    tmp<-.C(computeCM,NAOK=TRUE,
             as.integer(dim(cm)),               # s
             as.logical(wm),                    #
             as.double(lm),
