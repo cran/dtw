@@ -45,6 +45,10 @@
 [1] Latecki, L. J.; Megalooikonomou, V.; Wang, Q. & Yu, D. \emph{An elastic
 partial shape matching technique} Pattern Recognition, 2007, 40,
 3069-3080 
+\cr \cr
+[2]  Toni Giorgino. \emph{Computing and Visualizing Dynamic Time Warping
+  Alignments in R: The dtw Package.}  Journal of Statistical
+  Software, 31(7), 1-24. \url{http://www.jstatsoft.org/v31/i07/}
   }
 
 \examples{

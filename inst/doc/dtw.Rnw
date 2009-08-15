@@ -1,0 +1,1245 @@
+\documentclass[article,shortnames,nojss]{jss}
+\usepackage[english]{babel}
+\usepackage{array,thumbpdf}
+%% need no \usepackage{Sweave.sty}
+\SweaveOpts{engine=R, eps=FALSE}
+\DefineVerbatimEnvironment{Soutput}{Verbatim}{fontshape=n}
+
+%\VignetteIndexEntry{Computing and Visualizing Dynamic Time Warping Alignments in R: The dtw Package}
+%\VignetteDepends{dtw,proxy}
+%\VignetteKeywords{timeseries, alignment, dynamic programming, dynamic time warping}
+%\VignettePackage{dtw}
+
+\newcommand{\R}{\proglang{R}}
+\newcommand{\dtw}{\pkg{dtw}}
+\newtheorem{example}{Example}
+
+\author{Toni Giorgino\\University of Pavia}
+\Plainauthor{Toni Giorgino}
+
+\title{Computing and Visualizing Dynamic Time Warping Alignments in \proglang{R}: The \pkg{dtw} Package}
+\Plaintitle{Computing and Visualizing Dynamic Time Warping Alignments in R: The dtw Package}
+\Shorttitle{\pkg{dtw}: Computing and Visualizing Dynamic Time Warping Alignments in \proglang{R}}
+
+\Volume{31}
+\Issue{7}
+\Month{August}
+\Year{2009}
+\Submitdate{2008-09-30}
+\Acceptdate{2009-06-26}
+
+\Abstract{
+  This introduction to the \proglang{R} package \pkg{dtw} is a (slightly)
+  modified version of \cite{Giorgino:2009}, published in the
+  \emph{Journal of Statistical Software}.
+
+  Dynamic time warping is a popular technique for
+  comparing time series, providing both a distance measure that is
+  insensitive to local compression and stretches and the warping which
+  optimally deforms one of the two input series onto the other.  A
+  variety of algorithms and constraints have been discussed in the
+  literature.  The \pkg{dtw} package provides an unification of them;
+  it allows \R\ users to compute time series alignments mixing freely a
+  variety of continuity constraints, restriction windows, endpoints,
+  local distance definitions, and so on. The package also provides
+  functions for visualizing alignments and constraints using several
+  classic diagram types.
+}
+
+\Keywords{timeseries, alignment, dynamic programming, dynamic time warping}
+
+\Address{
+  Toni Giorgino\\
+  Laboratory for Biomedical Informatics\\
+  Dipartimento di Informatica e Sistemistica\\
+  Universit\`a di Pavia\\
+  via Ferrata 1\\
+  I-27100, Pavia, Italy\\
+  E-mail: \email{toni.giorgino@gmail.com}\\
+  URL: \url{http://www.labmedinfo.org/people/cv/giorgino.htm} \\
+
+  Currently with:\\
+  Computational Biochemistry and Biophysics Laboratory\\
+  Research Group on Biomedical Informatics (GRIB-IMIM)\\
+  Parc de Recerca Biom\`edica de Barcelona\\
+  c/ Dr.~Aiguader, 88\\
+  E-08003, Barcelona, Spain\\
+}
+
+
+
+\begin{document}
+
+<<init-prompt,echo=FALSE>>=
+options(prompt= "R> ", continue = "+  ")
+@
+
+\section{Introduction}
+
+Dynamic time warping (DTW) is the name of a class of algorithms for
+comparing series of values with each other. The rationale behind DTW
+is, given two time series, to stretch or compress them locally in
+order to make one resemble the other as much as possible. The distance
+between the two is computed, after stretching, by summing the
+distances of individual aligned elements (Figure~\ref{fig:example}).
+DTW algorithms have been proposed around 1970 in the context of speech
+recognition, to account for differences in speaking rates between
+speakers and utterances.  The technique is useful, for example, when
+one is willing to find a low distance score between the sound signals
+corresponding to utterances \emph{now} and \emph{nooow} respectively,
+insensitive to the prolonged duration of the \emph{o} sound.
+
+Various types of DTW algorithms differ for the input feature space,
+the local distance assumed, presence of local and global constraints
+on the alignment, and so on. This freedom makes DTW a very flexible
+alignment approach. As said, it has been popularized in the '70s, when
+it was mainly applied to isolated word recognition \citep{Velichko1970,Sakoe1971};
+since then, it has been employed for clustering and classification in
+countless domains: electro-cardiogram analysis
+\citep{Huang2002,dtw-ecg,Tuzcu2005}, clustering of gene expression
+profiles~\citep{Aach:2001:Bioinformatics:11395426,Hermans:2007:Bioinformatics:17237107},
+biometrics~\citep{Faundez-Zanuy2007,Rath2003}, process
+monitoring~\citep{Gollmer1996}, just to name a few. The term
+\emph{time} series may even be misleading, because the warped
+dimensions can be other than time, e.g., an angle for shape
+recognition~\citep{Kartikeyan1989,WeiKX06,Tak2007}.
+
+This paper describes the \pkg{dtw} package for the \R\ statistical
+software \citep{R}, which provides a comprehensive solution for the
+computation and visualization of DTW alignments, whose theory is
+outlined in Section~\ref{sec:definition-algorithm}. The stable package
+version is available in source and binary form
+on the Comprehensive \proglang{R} Archive Network (CRAN), while development
+versions are hosted at \proglang{R}-Forge \citep{DtwCran}. The package allows
+users to select among a wide variety of algorithms and constraints
+described in the literature, simply passing arguments to a single
+function, \code{dtw}, introduced in Section~\ref{sec:computing-alignments}.
+The following sections discuss how the
+user can customize the classic constraints of the algorithm (local
+slope, endpoints, windowing). Finally, Section
+\ref{sec:plotting-results} describes how the alignment results can be
+conveniently plotted in a variety of ways.
+
+
+
+
+
+
+
+
+\section{Definition of the algorithm}
+\label{sec:definition-algorithm}
+
+
+In the following exposition, the choice of symbols will follow roughly
+the one in Chapter 4 of \citet{Rabiner1993}, which is an excellent
+reference on the subject.  We assume that we want to compare two
+time series: a \emph{test}, or \emph{query}, $X=(x_1, \dots, x_N)$; and
+a \emph{reference} $Y=(y_1, \dots, y_M)$. For clarity, in the
+following we shall reserve the symbol $i=1 \dots N$ for indexing the
+elements in $X$ and $j=1 \dots M$ for those in $Y$.  We also assume
+that a non-negative, \emph{local dissimilarity} function $f$ is
+defined between any pair of elements $x_i$ and $y_j$, with the
+shortcut:
+%
+\begin{equation}
+ d(i,j) = f(x_i,y_j) \ge 0
+  \label{eq:cross-dist}
+\end{equation}
+
+
+Note that $d$, the cross-distance matrix between
+vectors $X$ and $Y$, is the only input to the DTW algorithm: elements
+$x_i$ and $y_j$ only enter the computation through the arguments of
+$f$. Therefore, the following discussion applies, with no loss of
+generality, to cases when $X$ and $Y$ are single- or multi-variate,
+continuous, nominal, or mixed, as long as $f(\cdot,\cdot)$ is suitably
+defined. While the most common choice is to assume the
+Euclidean distance, different definitions
+\citep[e.g., those provided by the \pkg{proxy} package,][]{proxy} may be useful as well. 
+
+% Since $f$ needs not obey the triangle inequality, it is preferably
+% called ``dissimilarity'' rather than ``distance''.
+
+%, e.g., \cite{Gower1971}
+
+At the core of the technique lies the \emph{warping
+curve} $\phi(k), \, k  = 1 \dots T $:
+%
+\begin{eqnarray*}
+  \phi(k) & = & \Big( \phi_x(k),\phi_y(k) \Big) \quad  \mbox{with}\\
+  \phi_x(k) & \in & \{ 1 \dots N \}, \\ 
+  \phi_y(k) & \in & \{ 1 \dots M \} 
+\end{eqnarray*}
+
+The warping \emph{functions} $\phi_x$ and $\phi_y$ remap the time
+indices of $X$ and $Y$ respectively.  Given $\phi$, we compute the
+average accumulated distortion between the warped time series $X$
+and $Y$:
+% 
+$$ d_\phi(X,Y) = \sum_{k=1}^T  d(\phi_x(k),\phi_y(k)) \,
+m_\phi(k) / M_\phi $$
+% 
+where $m_\phi(k)$ is a per-step weighting coefficient and $M_\phi$ is
+the corresponding  normalization constant, which ensures that the accumulated
+distortions are comparable along different paths. 
+To ensure reasonable warps, \emph{constraints} are usually imposed on
+$\phi$. For example, \emph{monotonicity} is imposed to preserve their
+time ordering and avoid meaningless loops:
+%
+\begin{eqnarray*}
+  \phi_x(k+1) \ge \phi_x(k) \\
+  \phi_y(k+1) \ge \phi_y(k) \\
+\end{eqnarray*}
+
+
+The idea underlying DTW is to find the optimal alignment $\phi$ such that
+\begin{equation}
+  D(X,Y) = \min_\phi d_\phi(X,Y) \label{e:dtw}
+\end{equation}
+
+In other words, one picks the deformation of the time axes of $X$ and
+$Y$ which brings the two time series as close as possible to each
+other.  Remarkably, despite of the large search space,
+Equation~\ref{e:dtw} can be computed in $O(N \cdot M)$ time using dynamic
+programming.  Interested readers can find the derivation of the
+solution in several references, e.g., \citet[Section~II.F]{Myers1980}.
+
+The output of the DTW algorithm is quite rich: first of all, the value
+of the function $D(X,Y)$ (minimum global dissimilarity, or ``DTW
+distance'') can be assumed as the stretch-insensitive measure of the
+``inherent difference'' between two given time series. This distance
+has a straightforward application in hierarchical clustering and
+classification (e.g., with $k$-NN classifiers).  The shape of
+the warping curve $\phi$ itself provides information about which point
+matches which, i.e., the pairwise correspondences of time points can
+be easily inspected.  Once obtained, the warping function can be
+applied to any time series, allowing one to inspect post-hoc aligned
+signals or measure time distortions.
+
+
+
+\begin{figure}[t]
+  \centering
+<<plot-visual-explanation,fig=TRUE,echo=FALSE,results=hide>>=
+library("dtw")
+data("aami3a")
+ref <- window(aami3a,start=0,end=2)
+test <- window(aami3a,start=2.7,end=5)
+plot(dtw(test,ref,k=TRUE),type="two",off=1,match.lty=2,match.indices=20)
+@ 
+\caption{Aligning two time series: a simple example. A query (solid,
+  left axis) and a reference (dashed, right axis) ECG time series,
+  excerpted from \code{aami3a}.}
+  \label{fig:example}
+\end{figure}
+
+
+
+
+\begin{figure}
+  \centering
+  \includegraphics[width=.95\textwidth]{object-diagram}
+  \caption{Block diagram of the main functions (rounded boxes) and object
+    classes (rectangles) of the \dtw\ package and their
+    relationship.  Arrows going in functions are arguments, outgoing are
+    returned values.}
+  \label{fig:object-diagram}
+\end{figure}
+
+
+\section{Computing alignments}
+\label{sec:computing-alignments}
+
+After loading the \dtw\ package, alignments can be computed invoking
+the \code{dtw} function.  In its simplest incarnation, the function
+takes two vector arguments representing the input time series,
+performs the minimization, and returns an object of class \code{dtw}
+encapsulating all the alignment information. The elements of the
+result can be retrieved with the usual \code{$} notation (see list in
+Table~\ref{tab:attributes}).
+
+
+By default, the \code{dtw} function computes a global alignment, with
+no windowing, a symmetric local continuity constraint, and the
+Euclidean local distance.  In particular, the symmetric continuity
+constraint implies that arbitrary time compressions and expansions are
+allowed, and that all elements must be matched:
+%
+\begin{eqnarray}
+|\phi_x(k+1)-\phi_x(k)| & \le & 1, \nonumber \\
+|\phi_y(k+1)-\phi_y(k)| & \le & 1. \label{eq:continuity} 
+\end{eqnarray}
+%
+Several alternative forms for local continuity constraints however exist;
+Section~\ref{sec:step-patterns-local} discusses them and how they can
+be selected.
+
+Computing global alignments means that the time series' heads and tails
+are constrained to match each other.  In other words, the following
+endpoint constraints are imposed:
+%
+\begin{eqnarray}
+ & \phi_x(1)=\phi_y(1)=1; &   
+  \label{eq:startpoint} \\
+ & \phi_x(T)=N; \quad \phi_y(T)=M. & 
+  \label{eq:endpoint}
+\end{eqnarray}
+%
+As we shall see in Section~\ref{sec:unconstr-endp-pref}, one or both
+of these constraints can be relaxed in order to compute partial
+time series matches.
+
+
+
+
+% The function computes the alignment and returns the result in a list
+% (instance of class \code{dtw}). 
+
+
+As the example below shows, using \code{dtw} is straightforward.  
+
+
+\begin{example}
+
+  The \code{aami3a} time series included in the package contains a
+  reference electrocardiogram from the PhysioBank
+  dataset \citep{Goldberger2000}.  We extract two non-overlapping
+  windows from it, and compute their optimal alignment with the
+  default \code{dtw} settings. The two extracted segments are shown in
+  Figure~\ref{fig:example}.
+
+<<dtw-simple-example>>=
+library("dtw")
+data("aami3a")
+ref <- window(aami3a,start=0,end=2)
+test <- window(aami3a,start=2.7,end=5)
+alignment <- dtw(test,ref)
+alignment$distance
+@ 
+
+\end{example}
+
+ In \code{alignment\$distance} one finds the cumulative (unnormalized)
+cost for the alignment, i.e., $M_\phi \cdot d_\phi(X,Y)$, while the
+warping functions $\phi_x$ and $\phi_y$ are found in components
+\code{\$index1} and \code{\$index2}.  They are two integer vectors of
+the same length, listing the matching indices in the query and
+reference time series, respectively. Although the two vectors may be
+readily plotted with commands built-in in \R, in
+Section~\ref{sec:plotting-results} we shall show how this is
+accomplished even more easily with dedicated plotting commands.
+
+
+\begin{table}
+  \centering
+  \begin{tabular}{>{\ttfamily}ll>{\itshape}c}
+    \hline
+\rmfamily {Element} & {Description} & \upshape {Remark} \\
+\hline 
+ query              &  Query time series, if given                     & k,p \\
+ reference          &  Reference time series, if given                 & k,p \\
+ localCostMatrix    &  Local distance matrix                          &     \\
+ stepPattern        &  Step pattern instance used                     &     \\
+ N                  &  Length of the query time series                 &     \\
+ M                  &  Length of the reference time series             &     \\
+ call               &  Function call                                  &     \\
+\hline
+ distance           &  Unnormalized minimum cumulative distance       &     \\
+ normalizedDistance &  Normalized cumulative distance                 &  n  \\
+ index1             &  Warping function $\phi_x(k)$ for the query     &  d  \\
+ index2             &  Warping function $\phi_y(k)$ for the reference &  d  \\
+ costMatrix         &  Computed cumulative cost matrix                &  k  \\
+ directionMatrix    &  Transition chosen at  each alignment point     &  k  \\
+ jmin               &  End-point, for partial alignments              &     \\
+ \hline
+  \end{tabular}
+  \caption{Elements in a  \code{dtw} result object, as of package version~1.13-1. Remarks:
+    \emph{k} -- requires \code{keep = TRUE}; 
+    \emph{n} -- requires that the chosen step pattern is normalizable;  
+    \emph{d} -- unless \code{distance.only = TRUE};
+    \emph{p} -- unless a local distance matrix is used as input
+    . } 
+  \label{tab:attributes}
+\end{table}
+
+
+
+
+
+
+
+
+
+\subsection{Step patterns and local slope constraints}
+\label{sec:step-patterns-local}
+
+The elegant formulation of the DTW alignment problem lends itself to a
+variety of extensions. For example, one usually wants to limit the
+number of consecutive elements which are ``skipped'' in either time
+series, i.e., are left unmatched (skipping elements is often entirely
+disallowed by a continuity constraint, indeed).  Alignments are in
+general achieved by \emph{duplicating} elements, i.e., one lets a
+single time point in $X$ match multiple (consecutive) elements in $Y$,
+or vice-versa.  How many repeated elements can be matched
+consecutively, or how many can be skipped, put limits on the local
+slope of the warping curve. This property can be controlled by a very
+flexible scheme called \emph{step patterns}. Step patterns list sets
+of allowed transitions between matched pairs, and the corresponding
+weights.  In other words, step patterns specify the admissible values
+for $\phi(k+1)$ given $\phi(k), \phi(k-1)$, and so on.  It may be
+useful to remark that in DTW there is no additive  penalty for
+duplicating or skipping elements, as with other alignment algorithms
+like Smith-Waterman's or Levenshtein's.
+
+While most authors stay with the simplest recursion types, users of
+\dtw\ have access to almost the full range of step patterns defined in
+the literature, with no programming burden.  Step patterns are
+represented by objects of class \code{stepPattern}. Patterns are
+selected by passing an appropriate instance to the \code{step.pattern}
+argument of the \code{dtw} function call, as in the following example:
+
+\begin{example}
+  Compute the same alignment of the previous example, assuming the
+  well-known \emph{asymmetric} pattern (bottom left of
+  Figure~\ref{fig:step-patterns}).
+<<dtw-normalized-distance>>=
+alignment <- dtw(test,ref,step.pattern=asymmetric)
+alignment$distance
+@ 
+\end{example}
+
+When printed, \code{stepPattern} objects display the corresponding DTW
+recursion in human-readable form; they can also be plotted via the
+\code{plot()} overloaded method, and transposed via
+\code{t()}. Transposing a pattern means that the role of the query and
+reference are interchanged.
+
+\begin{example} Display the recursion formula for the properly symmetric
+  continuity constraint (top right in Figure~\ref{fig:step-patterns}),
+  also known as the {\em symmetric} $P=0$ from \citet{Sakoe1978}.
+%  
+<<symmetric2-step-pattern>>=
+symmetric2
+@ 
+\end{example}
+
+
+
+
+The so-called \emph{symmetric} recursion printed above allows an
+unlimited number of elements of the query to be matched to a single
+element of the reference, and vice-versa; in other words, there is no
+limit in the amount of time expansion or compression allowed at any
+point.  Once the package is loaded, an instance representing this
+recursion is pre-defined under the name \code{symmetric2}, which is
+also the default.  For this recursion, the average cost per-step is
+computed by dividing the cumulative distance by $N+M$, where $N$ is
+the length of the query sequence and $M$ is the length of the
+reference.  Other step patterns require different normalization
+formulas, as we shall see in Section~\ref{sec:normalization}. The
+normalized distance, if defined, is  stored
+in the \code{$normalizedDistance} component of the result.
+
+
+
+Several step patterns have been discussed in the literature.  A classic
+paper by \citet{Sakoe1978} classifies them according to two
+properties: their symmetry (symmetric/asymmetric), and the bounds
+imposed on the slope expressed through a parameter $P$. The eight step
+patterns shown in \citet[Table I]{Sakoe1978} are pre-defined in \dtw,
+with names   \code{symmetricP1}, \code{asymmetricP05}, and so
+on.\footnote{Sakoe's ``asymmetric'' property should not be confused
+  with the \code{asymmetric} step pattern.} All of them are
+normalizable.
+
+\citet[Chapter~4]{Rabiner1993} introduced a different classification with
+three attributes: local continuity constraint type (in Roman numerals,
+I to VII); slope weighting (Latin letters \emph{a} to \emph{d}); and
+their being ``smoothed'' or not (boolean).  All of Rabiner's step
+patterns are available through the three-argument function
+\code{rabinerJuangStepPattern()}. Slope weighting types \emph{c} and
+\emph{d} are normalizable.
+
+Yet another classification (now obsoleted by the previous one) follows
+\citet{Myers1980}; it is similar to Rabiner's, except that only
+four types (I)-(IV) are defined. The corresponding instances are named
+like \code{typeIId}, \code{typeIIIc} and so on. The latter is  a
+good approximation to the slope-limited pattern proposed by
+\citet{Itakura1975}.
+
+
+It should be noted that, in general, step patterns impose a lower
+and/or an upper bound to the \emph{local} slope of the alignment. In
+other words, they limit the maximum amount of time stretch and
+compression allowed at any point of the alignment. For example, the
+\code{asymmetric} step pattern limits time expansion to a factor of
+two; it would therefore be impossible to completely align a query with
+a reference more than twice as long. The Rabiner-Juang type IV,
+instead, generates the so-called Itakura parallelogram
+\citep{Itakura1975}.  
+
+
+
+
+
+
+\begin{figure}
+  \centering
+<<plot-symmetric1-step-pattern,include=false,echo=FALSE,fig=TRUE,width=3.5,height=3.5>>=
+plot(symmetric1)
+@ 
+\includegraphics*[width=0.48\textwidth]{dtw-plot-symmetric1-step-pattern} 
+% ----
+<<plot-symmetric2-step-pattern,include=false,echo=FALSE,fig=TRUE,width=3.5,height=3.5>>=
+plot(symmetric2)
+@ 
+\includegraphics[width=0.48\textwidth]{dtw-plot-symmetric2-step-pattern}
+\\
+<<plot-asymmetric-step-pattern,include=false,echo=FALSE,fig=TRUE,width=3.5,height=3.5>>=
+plot(asymmetric)
+@ 
+\includegraphics[width=0.48\textwidth]{dtw-plot-asymmetric-step-pattern}
+% ----
+<<plot-rj4c-step-pattern,include=false,echo=FALSE,fig=TRUE,width=3.5,height=3.5>>=
+plot(rabinerJuangStepPattern(4,"c",TRUE))
+@ 
+\includegraphics[width=0.48\textwidth]{dtw-plot-rj4c-step-pattern}
+\caption{Four well-known step patterns. Left to right, top to bottom:
+  \code{symmetric1}, \code{symmetric2}, \code{asymmetric},
+  \code{rabinerJuangStepPattern(4, "c", TRUE)} (i.e., Rabiner-Juang's type
+  IV with slope weighting \emph{c}). Numbers on transitions indicate
+  the multiplicative weight $m_\phi$ for the local distance $d(i,j)$,
+  should the corresponding step be followed. See \code{?stepPattern}
+  for the full list.}
+  \label{fig:step-patterns}
+\end{figure}
+
+
+
+
+
+
+
+\subsection{Normalization}
+\label{sec:normalization}
+
+
+Computing the average per-step distance along the warping curve is
+especially important in two cases: (1) when comparing alignments
+between time series of different lengths, to decide the best
+match (e.g., for classification); and (2) when performing partial
+matches. Each step patterns requires a different normalization
+function.  In \dtw, objects of class \code{stepPattern} ``know'' the
+proper normalization formula they require, called ``normalization
+hint''.
+
+
+Not all step patterns are normalizable.  For example, the
+\emph{quasi-symmetric} recursion (top left in Figure
+\ref{fig:step-patterns}, instance name \code{symmetric1}), like the
+symmetric one, does not restrict the slope; however, it favors
+``diagonal'' steps over stair-stepping paths. Since similar warping
+curves have different weights, a path-independent per-step alignment
+cost is not defined. As a consequence, only the cumulative distance
+value is available in the
+\code{$distance} component of the result.  
+
+
+Table~\ref{tab:normalization} lists the currently supported
+normalization rules, grouped by weighting type.  ``R-J'' types
+follow Rabiner's aforementioned slope weight classification (cf.\
+Figure~7 in~\cite{Myers1980}), while ``S-C'' refers to the
+symmetric/asymmetric categories introduced by Sakoe-Chiba (cf.\ Table
+I in~\cite{Sakoe1978}).  Type (c$'$) includes asymmetric patterns
+similar to R-J type (c) with test and reference interchanged. Step
+patterns of this category have been used e.g., by \citet{Mori2006}
+(namely, instance \code{mori2006}), and by \citet{Oka1998}. Values $n$
+and $m$ are the number of elements actually matched in the query and
+reference, respectively, i.e.,
+%
+\begin{eqnarray*}
+  n &=& \phi_x(T)-\phi_x(1)+1 \\
+  m &=& \phi_y(T)-\phi_y(1)+1.
+\end{eqnarray*}
+%
+For global alignments, they are equal to the lengths of the
+input time series, i.e., $n=N$ and $m=M$.
+
+
+\begin{table}
+  \centering
+    \begin{tabular}{ccccc}
+%     \hline
+    {Slope weighting}  & {Symmetry}     & {Formula} &  {Hint}  \\
+    {(Rabiner-Juang)}    & {(Sakoe-Chiba)}  &                  &                 \\
+    \hline
+    R-J type (a)     & ---        &  ---  & \code{NA} \\
+    R-J type (b)     & ---        &  ---  & \code{NA} \\
+    R-J type (c)     & S-C asymmetric &  $n$  & \code{N} \\
+    R-J type (d)     & S-C symmetric  & $n+m$ & \code{N + M} \\
+     Type (c$'$)     & S-C asymmetric &  $m$  & \code{M} \\
+    \multicolumn{2}{c}{(Others)}    &  ---  & \code{NA} 
+%     \hline
+  \end{tabular}
+  \caption{Normalization functions for well-known weighting types. }
+  \label{tab:normalization}
+\end{table}
+
+
+
+\subsection{A note on  indexing conventions and axes}
+\label{sec:note-index-conv}
+
+As a general rule, we stick to the convention that the first argument
+and indices refer to the query time series, and the second to the
+reference.  This implies that when we print alignment-related matrices
+such as $d(i,j)$, the query index grows row-wise towards the
+bottom. The reader should not confuse this layout with plot axes,
+where the query and reference are usually arranged along the abscissa
+and ordinate respectively (Figure~\ref{fig:plotlike}).
+
+
+
+\begin{figure}
+  \centering
+  \includegraphics[width=.9\textwidth]{plot-conventions}
+  \caption{Different conventions for displaying distance matrices:
+    plot-like (left) and matrix (right) arrangements. }
+  \label{fig:plotlike}
+\end{figure}
+
+
+
+\subsection{Windowing and global constraints}
+
+
+A \emph{global} constraint, or \emph{window}, explicitly forbids
+warping curves to enter some region of the $(i,j)$ plane. A global
+constraint translates an a-priori knowledge about the fact that the
+time distortion is limited. For example, the well-known Sakoe-Chiba
+band \citep{Sakoe1978} enforces the additional constraint
+%
+$$| \phi_x(k)-\phi_y(k)| \le T_0$$
+%
+where $T_0$ is the maximum allowable absolute time deviation
+between two matched elements.  Intuitively, the constraint creates an
+allowed band of fixed width about the main diagonal of the alignment
+plane (Figure~\ref{fig:sakoechiba}).
+
+
+In \dtw, windowing constraints are enabled through the
+\code{window.type} argument of the \code{dtw} call; it can be either a
+character string (e.g., \code{"sakoechiba"}) or a function, specifying
+the shape of the allowed window. The window size, $T_0$, is passed
+through the \code{window.size} argument.
+
+It should be remarked that the Sakoe-Chiba band works well when $N
+\sim M$, but is inappropriate when the lengths of the two inputs
+differ significantly. In particular, when $|N-M|>T_0$, the $(N,M)$
+endpoint lies outside of the band, thus violating (\ref{eq:endpoint}),
+and therefore no solution exists for a global alignment.  In general,
+when enforcing global and/or local constraints one should take care
+that they are compatible with each other and with the time series'
+lengths.
+
+The \code{slantedBandWindow} creates a band centered around the jagged
+line segment which joins element $(1,1)$ to element $(N,M)$, and is
+$T_0$ elements wide along the first axis. In other words, the
+``diagonal'' goes from one corner to the other of the possibly
+rectangular cost matrix, therefore having a slope of $M/N$, not 1.
+
+Arbitrary windows can be specified by supplying a function that takes
+(at least) the $i$ and $j$ integer arguments, and returns a boolean
+value specifying whether that match is allowed or not. Arguments
+unused in \code{dtw} are passed to the windowing function. More detail
+on windowing functions, including how to plot them (as in
+Figure~\ref{fig:sakoechiba}), are given in
+\code{?dtwWindowingFunctions}.
+%
+<<plot-sakoechiba-window,fig=TRUE,include=FALSE>>=  
+dtwWindow.plot(sakoeChibaWindow, window.size=2,reference=17, query=13)
+@ 
+
+\begin{figure}
+  \centering
+\includegraphics{dtw-plot-sakoechiba-window}
+\caption{The allowed region for the warping curve under the
+  \code{"sakoechiba"} global constraint. In this degenerate case,
+  element $(N,M)$ at the upper-right is outside of the band, so the
+  endpoint constraint (\ref{eq:endpoint}) can't be satisfied: this
+  band is too narrow to be compatible with any global alignment.
+}\label{fig:sakoechiba}
+\end{figure}
+
+
+
+
+\begin{table}
+  \centering
+  \begin{tabular}{lcl}
+%    \hline \hline
+    {Attribute} & 
+    {Section in R-J} & 
+    {Documentation} \\
+    \hline
+ Local continuity constraints &   4.7.2.3 &  \code{?stepPattern} \\
+ Global path constraints      &   4.7.2.4 &  \code{?dtwWindowingFunctions} \\
+ Slope weighting              &   4.7.2.5 &  \code{?stepPattern} \\
+%    \hline \hline
+  \end{tabular}
+  \caption{Where to find documentation for various DTW parameters. R-J 
+    is the book by \citet{Rabiner1993}. }
+  \label{tab:help}
+\end{table}
+
+
+
+
+
+
+
+\subsection{Unconstrained endpoints: Prefix and subsequence matches}
+\label{sec:unconstr-endp-pref}
+
+Normally, the DTW distance is understood as a \emph{global} alignment,
+i.e., subject to the conditions (\ref{eq:startpoint}) and
+(\ref{eq:endpoint}). In certain applications, \emph{partial} matches
+are useful, and one consequently relaxes one or both the
+constraints. Interested readers can find a review of partial matching
+algorithms, applications, and the interplay with normalization, in a
+paper by \cite{Tormene2008}.
+
+
+The open-end (OE-DTW) or prefix-matching algorithm is defined by
+relaxing the end-point constraint (\ref{eq:endpoint}).  The algorithm
+therefore returns the \emph{prefix} of the reference which best
+matches the query; it has been used e.g., by \citet{Sakoe1979} and
+\citet{Mori2006}. Open-end matching is achieved, in principle, by
+constructing several incomplete versions $Y^{(p)}$ of the reference
+$Y$, each truncated at the index $p=1, \dots, M$. One then computes
+their corresponding DTW distances from $X$, and picks the best match:
+%
+\begin{eqnarray}
+Y^{(p)} &=& (y_1, \dots, y_p) \nonumber \\
+D_{OE}(X,Y) &=& \min_{1 \le j \le M} D(X,Y^{(j)}) \label{eq:dtwoe} 
+\end{eqnarray}
+
+It is worthwhile noting that in Equation~\ref{eq:dtwoe} one compares
+alignments of different lengths with each other. This is only
+meaningful if the \emph{average} per-step distances are considered,
+and it is therefore essential to use  normalizable step patterns.
+
+In \dtw, open-end alignment of time series is achieved simply setting
+the \code{open.end = TRUE} parameter. The element \code{$jmin} in the
+result will hold the size of the prefix matched, i.e., the $j$ that
+minimizes (\ref{eq:dtwoe}). This is the index of the last element
+matched in the reference, which in turn equals $\phi_y(T)$. Accordingly,
+when \code{oc} is a partial alignment result, \code{oc$jmin}  equals 
+\code{max(oc$index2)}.
+
+
+Subsequence match, also called ``unconstrained'' or open-begin-end
+(OBE-DTW), is achieved relaxing \emph{both} the start-point constraint in
+(\ref{eq:startpoint}) and the end-point constraint of
+(\ref{eq:endpoint}). Intuitively, subsequence matching discovers
+the contiguous part of the template which best matches the
+\emph{whole} query (Figure~\ref{fig:partial}).  This form is used
+e.g., by \cite{Rabiner1978} as algorithm UE2-1; by \cite{Sakurai2007};
+and others. Formally, we define $Y^{(p,q)}$ as the subsequence of $Y$
+including elements $y_j$ with $p \le j \le q$; the OBE-DTW problem is
+to minimize the cumulative distance over the initial and final
+reference indices $p$ and $q$ simultaneously:
+%
+\begin{eqnarray}
+Y^{(p,q)} &=& (y_p, \dots, y_q) \nonumber \\
+D_{OBE}(X,Y) &=& \min_{1 \le p \le q \le M} D(X,Y^{(p,q)}) \label{eq:dtwobe} 
+\end{eqnarray}
+
+
+In \dtw, OBE-DTW alignments are computed setting both the
+\code{open.begin} and \code{open.end} arguments to
+\code{TRUE}.\footnote{The reader may wonder about the last remaining
+  combination: constraining the ends of the time series but not their
+  heads. This is also allowed, but not really necessary: a partial
+  alignment with the query sequence reversed achieves the same
+  effect.}  Open-begin alignments are supported for step patterns with
+$n$-type normalization only.
+
+
+
+\begin{figure}
+  \centering
+<<plot-open-begin-end-dtw,fig=TRUE,echo=FALSE,results=hide>>=
+
+idx<-seq(0,6.28,len=100)
+query<-sin(idx)+runif(100)/10
+reference<-cos(idx)
+
+alignmentOBE <-
+  dtw(query[44:88],reference,
+      keep=TRUE,step=asymmetric,
+      open.end=TRUE,open.begin=TRUE)
+plot(alignmentOBE,type="two",off=1)
+
+@
+\caption{A partial alignment with both endpoints free: the whole query
+  (solid line) is warped into a contiguous subsequence of the template
+  (dashed).  Partial alignments are computed setting the
+  \code{open.begin = TRUE} and/or \code{open.end = TRUE} arguments. Code
+  available in \code{example(dtw)}.}
+  \label{fig:partial}
+\end{figure}
+
+
+
+
+\subsection{Dealing with multivariate time series}
+\label{sec:deal-with-mult}
+
+As seen in Section~\ref{sec:definition-algorithm}, the actual
+time series values only enter the DTW algorithm through their
+cross-distance matrix, i.e., matrix $d$ in
+Equation~\ref{eq:cross-dist}. In practice, the choice for the local
+distance function $f$ influences how ``strongly'' the alignment will
+avoid mismatching regions. A variety of dissimilarity functions are
+available, e.g., the Euclidean, squared Euclidean, Manhattan, Gower
+coefficient, and many others.  Each of them takes two arguments, which
+may be multi-variate; for example, in speech recognition it is
+customary to align high-dimensional ``frames'', whose components are
+short-time spectral coefficients, or similar quantities. The
+\pkg{proxy} package maintains a database of distance definitions which
+can be used in cross-distance computations (see
+\code{summary(pr_DB)}).
+
+
+To deal with multivariate time series, one provides \code{dtw} with two
+matrices $X_{ic}$ and $Y_{jc}$, rather than two vectors as for the
+single-variate case. The time indices $i=1 \dots N$ and $j=1 \dots M$
+are arranged along rows, while multivariate dimensions $c = 1 \dots C$
+are arranged in columns.  Multivariate time series objects (\R\ class
+\code{mts}) can be used, as well. 
+
+By default, \code{dtw} assumes
+an Euclidean local distance, i.e.,
+
+$$ d(i,j)^2 = \sum_{c=1}^C (X_{ic}-Y_{jc})^2 $$
+
+Other distance functions can be selected through the
+\code{dist.method} character argument, which is forwarded to the
+\code{proxy::dist} function. 
+
+Alternatively, the user can compute the local distance matrix by
+herself, and supply that instead of the time series. This is achieved
+invoking \code{dtw} with \emph{one} matrix argument rather than
+two. According to the convention in Section~\ref{sec:note-index-conv},
+matrix rows (first index) are understood as the index in the query
+sequence, and matrix columns as the index in the reference. The
+following examples show both the two- and the one-argument call
+styles.
+
+\begin{example}
+  Align two synthetic bivariate time series (a query with 10 time
+  points, and a reference of length 5), assuming the Manhattan local
+  distance for element pairs:
+
+<<dtw-multivariate-example,strip.white=all>>=
+query <- cbind(1:10,1)
+ref <- cbind(11:15,2)
+dtw(query,ref,dist.method="Manhattan")$distance
+@
+or equivalently, pre-computing \code{proxy::dist}
+<<dtw-multivariate-example2,strip.white=all>>=
+cxdist <- proxy::dist(query,ref,method="Manhattan")
+dtw(cxdist)$distance
+@ 
+\end{example}
+
+The optimal alignment of {\em strings}, i.e., discrete values
+or {\em categorial} data, rather than of sequences of real
+values, is an ubiquitous task in bioinformatics, closely related to
+DTW. Functions to perform alignments of strings, like Levenshtein's
+distance or the Needleman-Wunsch algorithm, are implemented,
+e.g., in package \pkg{cba} (cf.\ function
+\code{sdists}), package \pkg{TraMineR} \citep{TraMineR},
+and in \pkg{Bioconductor} \citep{Bioconductor}.
+The DTW algorithm can be used to
+align strings, as well, by defining a local distance function over all
+the pairs of symbols that can be formed in the alphabets considered.
+A cross-distance matrix can then be obtained from this function, and
+used in the single-argument call of \code{dtw}, as in the last
+example.
+
+
+\subsection{Computing several alignments at once}
+
+A common situation, arising e.g., in clustering and classification of
+time series, is to compute several DTW distances between pairs of
+elements in a database.  For instance, we assume to have a database
+$\{ Q_k \}$ of $K$ time series, each of which is a single-variate
+vector $Q_k = ( q_{k1}, \dots, q_{kN} )$. We also assume that all
+$Q_k$ have the same length $N$. The database can therefore be encoded
+as a $K \times N$ matrix, $\{Q_k\}=q_{ki}$. To compute DTW alignments
+between all possible couples, we iterate two indices $h$ and $k$ over
+the rows of $q$, thus obtaining a $K \times K$ self-dissimilarity
+matrix:
+%
+$$\Lambda_{kh}=D(Q_k,Q_h)$$
+%
+\noindent where $D$ is the dynamic time warping distance of
+Equation~\ref{e:dtw}.  It should be noted that, since the DTW distance
+is not in general symmetric, $\Lambda$ will not be, either.
+
+
+As seen above, the \code{dtw} function leverages the \pkg{proxy}
+package for building the local distance matrix. There is, however,
+another important relationship between the two packages. Since dynamic
+time warping itself \emph{is} a dissimilarity function between vectors
+(understood as time series), \pkg{dtw} registers itself as a distance
+function in the database of distances \code{pr_DB}.  This feature
+makes it straightforward to compute many-versus-many alignments. Once
+the package is loaded, if $q_{ki}$ is given as a matrix \code{q}
+(again, time series are arranged in rows), $\Lambda$ can be
+straightforwardly computed through
+\code{proxy::dist(q, q, method = "DTW")}.\footnote{We use the two-argument
+  form because the single-argument form would return a symmetric
+  distance matrix, while DTW is not -- in general -- symmetric.}
+Computing $K \times K$ alignments in this way is faster than iterating
+over the plain \code{dtw} call, because only the numeric value of the
+distance is computed, while the construction of the actual warping
+path is bypassed.
+
+Equally useful is the cross-distance form of \code{dist}, which can be
+used, for instance, to classify $K$ query time series at once (arranged
+in a matrix \code{q}) against a given database of $L$ templates
+(matrix \code{p}). Once the $K \times L$ cross-distance matrix is
+computed by \code{dist(q, p, method = "DTW")}, one could take
+column-wise minima to discover the template best matching each of the
+$K$ query elements.  The dissimilarity matrices resulting from calls
+to \code{dist} can also be fed into the usual clustering functions.
+
+
+
+
+\subsection{Minimal variance matching}
+
+\citet{Latecki2007} proposed the minimal variance matching (MVM)
+algorithm to align a given test to a reference, allowing arbitrary
+portions of the template to be skipped (Figure~\ref{f:mvmsp},
+left-hand side).  Interestingly, MVM may be considered a special case
+of DTW with a large step pattern (Figure~\ref{f:mvmsp}, right-hand
+side).
+
+Like the asymmetric step pattern, the MVM
+algorithm constrains each query element to match exactly one time
+point in the template, so the degenerate empty-to-empty match is not
+allowed. Vice-versa, an arbitrary number of template elements can
+remain unmatched.  Matched reference points must be in strict
+increasing order, although arbitrary gaps are allowed in the
+sequence. This translates into the continuity constraints
+%
+\begin{eqnarray*}
+\phi_x(k) &=& k,  \qquad \mbox{with} \qquad  k=1, \dots, N \\
+\phi_y(k) &<& \phi_y(k+1)
+\end{eqnarray*}
+
+Due to the strictly-increasing requirement of the reference index, the
+minimum local slope of the warping curve is unity, and time
+compression is therefore ruled out.  MVM matching is therefore undefined if the
+query is longer than the reference, and only one alignment exists if
+their lengths are equal.
+
+In \dtw, step pattern instances implementing MVM can be built through
+the function\linebreak
+\code{mvmStepPattern()}.  The \code{elasticity} integer
+argument limits the maximum length of a contiguous subsequence which
+can be skipped in the reference time series. If no limit is desired,
+elasticity should be made at least as large as the reference length.
+
+
+
+
+\begin{figure}
+  \centering
+  % plot(dtw(reference,rep(query,2),keep=TRUE,step=mvmStepPattern(100),p=TRUE),type="three")
+  \includegraphics[width=.7\textwidth]{alignMVM}
+  \includegraphics[width=.27\textwidth]{mvmSP}
+  \caption{Left: MVM alignment of a truncated query; ``jumps'' may
+    occur in the middle of the query, e.g., around time 175. Note that
+    since time compression is not allowed, the valley at query index
+    150 does not match index 125 in the reference.  Right: a type
+    (c) DTW step pattern equivalent to the MVM search algorithm.}
+  \label{f:mvmsp}
+\end{figure}
+
+
+
+
+
+
+\subsection{A worked-out exercise}
+\label{sec:worked-out-exercise}
+
+As an additional example, we  solve Exercise 4.7 in \citet[page
+226]{Rabiner1993}. The first question is to find the best path through
+a $6 \times 6$ local distance matrix that is explicitly given in the
+text.  We enter the given matrix  as follows:
+
+<<rabiner-exercise-prepare,keep.source=TRUE>>=
+lm <- matrix(nrow = 6, ncol = 6, byrow = TRUE, c(
+  1, 1, 2, 2, 3, 3, 
+  1, 1, 1, 2, 2, 2, 
+  3, 1, 2, 2, 3, 3, 
+  3, 1, 2, 1, 1, 2, 
+  3, 2, 1, 2, 1, 2, 
+  3, 3, 3, 2, 1, 2
+))
+@ 
+
+Note that we entered \code{lm} according to matrix conventions: the
+first subscript indexes elements in the query time series, while
+the second indexes the reference (right hand side of
+Figure~\ref{fig:plotlike}). Therefore, the query is understood to grow
+row-wise towards the bottom, while the reference goes column-wise
+towards the right. Conversely, the exercise text displays the table in
+plot-like conventions ($i_x$ growing rightwards and $i_y$ upwards).
+
+
+
+The exercise requires a specific step pattern which is readily
+identified as the \code{asymmetric} recursion (bottom left of
+Figure~\ref{fig:step-patterns}).  To solve the problem and find the
+best \emph{global} path going through the grid, we invoke \code{dtw}
+with one matrix argument.  From the result, we extract the cost matrix
+(see next section) and the normalized distance, 7/6, thus solving the
+problem:
+
+<<rabiner-exercise-1>>=
+alignment <- dtw(lm,step=asymmetric,keep=TRUE)
+alignment$costMatrix
+alignment$normalizedDistance
+@ 
+
+A follow-up question of the same exercise requires the optimal
+alignment between the whole test and any \emph{prefix} of the
+reference; in other words, we lift the constraint on the reference
+end-point. This is achieved with the setting \code{open.end = TRUE}. As
+above, we invoke \code{dtw} in its matrix form; the optimal end-point
+(that is, $\phi_y(T)$) is found in component \code{$jmin} of the
+result.
+
+<<rabiner-exercise-2>>=
+alignmentOE <- dtw(lm,step=asymmetric,keep=TRUE,open.end=TRUE)
+alignmentOE$jmin
+alignmentOE$normalizedDistance
+@ 
+
+The exercise is thus solved.
+
+
+\subsection{Retrieving cost matrices}
+
+If the parameter \code{keep.internals} is \code{TRUE}, the local
+distance matrix and the cumulative cost matrix are preserved after the
+calculation, and stored in the result elements \code{$localCostMatrix}
+and \code{$costMatrix}, respectively. The matrices can be printed and
+manipulated as usual. 
+
+Figure~\ref{fig:exercise-figure}, for example, shows how to display
+them along with the alignment path superimposed. In the left panel one
+can hand-check the result of the exercise solved in the previous
+section: no better warping path exists that passes by $(1,1)$ through
+$(6,6)$ under the constraints of the \code{asymmetric} pattern, and
+the cumulative cost is indeed found in the upper-right element of the
+right panel. An analogous plot style, suitable for larger alignments,
+is presented in Section~\ref{sec:plott-cost-dens}.
+%
+<<costmatrix-figure-code-left, eval=FALSE>>=
+lcm <- alignment$localCostMatrix
+image(x=1:nrow(lcm),y=1:ncol(lcm),lcm)
+text(row(lcm),col(lcm),label=lcm)
+lines(alignment$index1,alignment$index2)
+@ 
+<<costmatrix-figure-code-right, eval=FALSE>>=
+ccm <- alignment$costMatrix
+image(x=1:nrow(ccm),y=1:ncol(ccm),ccm)
+text(row(ccm),col(ccm),label=ccm)
+lines(alignment$index1,alignment$index2)
+@ 
+
+\begin{figure}
+  \centering
+<<costmatrix-figure-plot-left,include=FALSE,echo=FALSE,fig=TRUE,height=4,width=4>>=
+<<costmatrix-figure-code-left>>
+@ 
+<<costmatrix-figure-plot-right,include=FALSE,echo=FALSE,fig=TRUE,height=4,width=4>>=
+<<costmatrix-figure-code-right>>
+@ 
+\includegraphics[width=0.48\textwidth]{dtw-costmatrix-figure-plot-left}
+\includegraphics[width=0.48\textwidth]{dtw-costmatrix-figure-plot-right}
+\caption{The local distance matrix for the exercise in
+  Section~\ref{sec:worked-out-exercise} (left) and the corresponding
+  cumulative distance matrix (right) under the symmetric step
+  pattern. The optimal alignment path is superimposed.}
+  \label{fig:exercise-figure}
+\end{figure}
+
+
+
+\section{Displaying alignments}
+\label{sec:plotting-results}
+
+Plots are valuable tools to inspect time series pairs together with
+their alignments. Several plotting styles are available in \dtw\ for
+producing publication-quality figures. They are achieved through
+the \code{plot} method overloaded for objects of type \code{dtw}.
+
+The first two plot styles discussed below, namely two- and three-way,
+are used to inspect the time series themselves along with their
+alignment. For this reason, the two actual input time series must be
+available, and they have to be single-variate. For convenience,
+time series are retrieved from the alignment object itself, if
+available (elements \code{$query} and \code{$reference}); they can be
+overridden via the \code{xts} and \code{yts} plot arguments.
+
+A \emph{density} plot style is also available to display the relative
+costs of different warping curves. It builds on the global cost matrix
+only, and does not therefore require the knowledge of the two original
+time series.
+
+\subsection{Two-way plotting}
+
+One intuitive alignment visualization style places both time series in
+the same plane, and connects the matching point pairs with segments
+(see e.g., Figure~\ref{fig:example}). This plot style is selected
+passing the argument \code{type = "twoway"} to the plot call.  The
+optional numeric argument \code{offset} can be used to visually
+separate query and reference time series; if set, the scales for the
+reference time series are displayed on the secondary (right-hand)
+vertical axis.  Other options affecting the visual appearance are
+explained in the \code{?dtwPlotTwoWay} manual page.
+
+\begin{example}
+  Generate the plot in Figure~\ref{fig:example}. 
+  
+<<two-way-plot-code>>=
+<<plot-visual-explanation>>
+@ 
+\end{example}
+
+
+
+\subsection{Three-way plotting}
+
+Another effective layout to display alignments places the query
+time series horizontally in a small lower panel, the reference
+time series vertically on the left; a larger inner panel holds the
+warping curve
+(Figure~\ref{f:mvmsp}). In this way, matching points can be recovered
+by tracing indices on the query time series, moving upwards until the
+warping curve is met, and then moving leftwards to discover the index
+of the reference matched. The advantage of this method is that the
+warping curve is directly exposed, so it becomes easy to visualize the
+impact of the local and global constraints.  
+
+Three-way plots can be
+achieved with the \code{type = "threeway"} argument to the
+\code{plot} call. Match lines can also be explicitly visualized, as
+shown in Figure~\ref{fig:three-way};  documentation for 
+all options is available
+in \code{?dtwPlotThreeWay}.
+
+
+\begin{figure}
+  \centering
+<<three-way-plot,echo=FALSE,fig=TRUE>>=
+## A noisy sine wave as query
+## A cosine is for reference; sin and cos are offset by 25 samples
+idx<-seq(0,6.28,len=100)
+query<-sin(idx)+runif(100)/10
+reference<-cos(idx)
+dtw(query,reference,step=asymmetric,keep=TRUE)->alignment
+
+## Beware of the reference's y axis, may be confusing
+## Equivalent to plot(alignment,type="three")
+#dtwPlotThreeWay(alignment)
+
+## Highlight matches of chosen QUERY indices. We will do some index
+## arithmetics to recover the corresponding indices along the warping
+## curve
+hq <- (0:8)/8
+hq <- round(hq*100)      #  indices in query for  pi/4 .. 7/4 pi
+hw <- (alignment$index1 %in% hq)   # where are they on the w. curve?
+hi <- (1:length(alignment$index1))[hw]   # get the indices of TRUE elems
+dtwPlotThreeWay(alignment,match.indices=hi)
+@
+\caption{Three-way plot of the \code{asymmetric} alignment between a
+  noisy sine and a cosine in $[0,2\pi]$, with visual guide lines
+  drawn every $\pi/4$.  Code available in \code{example(dtwPlotThreeWay)}.}
+  \label{fig:three-way}
+\end{figure}
+
+
+
+
+\subsection{Displaying the cost density}
+\label{sec:plott-cost-dens}
+
+
+A third plot style displays the ``cost density'' of alignments, and
+can therefore be useful to inspect qualitatively how much ``slack'' is
+present around the optimal alignment (Figure~\ref{fig:density}).  By
+default, the \emph{cumulative} distance distribution is displayed as a
+density distribution with contours superimposed.  The result is a
+terse display of the cumulative distance matrix, analogous to the
+right panel of Figure~\ref{fig:exercise-figure}.
+
+For normalizable step patterns, a plot of the \emph{per-step} density
+can also be requested with the \code{normalize = TRUE} argument.  Since
+the density plot is based on the cumulative distance matrix,
+\code{keep = TRUE} is required in the \code{dtw} function call. Density
+plotting is selected with the \code{type = "density"} parameter to the
+plot call, and documented in \code{?dtwPlotDensity}. 
+
+
+\begin{figure}
+  \centering
+<<density-plot,fig=TRUE,echo=FALSE>>=
+dtw(query,reference,keep=TRUE,step=asymmetric)->alignment
+dtwPlotDensity(alignment,normalize=TRUE)
+@ 
+\caption{Cost density plot: average per-step cost density of the
+  sine-cosine global alignment. The local constraints and weighting
+  are chosen from the \code{asymmetric} step pattern. Code in
+  \code{example(dtwPlotDensity)}.}
+  \label{fig:density}
+\end{figure}
+
+
+
+\section*{Computational details}
+
+The computing kernel of the \code{dtw} function is written in the
+\proglang{C} programming language for efficiency.  Alignment
+computations are quite fast, as long as the cross-distance matrices
+fit in the machine's RAM.  A standard quad-core Linux x86-64 PC with
+4~GB of RAM and 4~GB of swap computes (using only one core) an
+unconstrained alignment of $100 \times 100$ time points in 7~ms, $6000
+\times 6000$ points in under 10~s, and $8000 \times 8000$ points
+(close to the virtual memory limit) in 10~minutes.  Larger problems
+may be addressed by approximate strategies, e.g., computing a
+preliminary alignment between downsampled time series
+\citep{Salvador2004}; indexing \citep{Keogh2005}; or breaking one of
+the sequences into chunks and then iterating subsequence matches.
+
+
+\section*{Acknowledgments}
+
+I am grateful to P.\ Tormene for testing the package
+extensively. Thanks to M.\ J.\ Harvey and the anonymous reviewers for
+their valuable suggestions.
+
+\bibliography{dtw}
+
+
+\end{document}

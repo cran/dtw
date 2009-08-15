@@ -13,8 +13,8 @@ Dynamic Time Warp algorithms in R
 \tabular{ll}{
 Package: \tab dtw\cr
 Type: \tab Package\cr
-Version: \tab 1.13\cr
-Date: \tab 2009-6-30\cr
+Version: \tab 1.14\cr
+Date: \tab 2009-8-15\cr
 License: \tab GPL-2\cr
 }
 
@@ -66,6 +66,10 @@ To get the latest stable version from CRAN, use
   timeseries and custom distance functions. }
 
 \references{
+  Toni Giorgino. \emph{Computing and Visualizing Dynamic Time Warping
+        Alignments in R: The dtw Package.}  Journal of Statistical
+        Software, 31(7), 1-24. \url{http://www.jstatsoft.org/v31/i07/}
+\cr \cr
   Rabiner, L. R., & Juang, B.-H. (1993). Chapter 4 in
   \emph{Fundamentals of speech
   recognition.} Englewood Cliffs, NJ: Prentice Hall.

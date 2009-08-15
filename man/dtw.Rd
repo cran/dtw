@@ -81,10 +81,11 @@ is.dtw(d)
   part} of the reference. This is proposed e.g. by Mori (2006), Sakoe
   (1979) and others. Similarly, open-begin is enabled via
   \code{open.begin}. Open-begin alignments usually only make sense when
-  \code{open.end} is enabled, as well (subsequence alignment); otherwise,
-  it is just as easy to reverse the query sequence. Subsequence
-  alignments are similar e.g. to UE2-1 algorithm by Rabiner (1978) and
-  others.
+  \code{open.end} is enabled, as well (subsequence alignment);
+  otherwise, it is just as easy to reverse the query
+  sequence. Subsequence alignments are similar e.g. to UE2-1 algorithm
+  by Rabiner (1978) and others. Please find a review in Tormene et
+  al. (2009).
   
 
   Windowing (enforcing a global constraint) is supported by passing a
@@ -138,6 +139,15 @@ is.dtw(d)
 
 
 \references{
+  Toni Giorgino. \emph{Computing and Visualizing Dynamic Time Warping
+  Alignments in R: The dtw Package.}  Journal of Statistical
+  Software, 31(7), 1-24. \url{http://www.jstatsoft.org/v31/i07/}
+\cr \cr
+  Tormene, P.; Giorgino, T.; Quaglini, S. & Stefanelli,
+  M. \emph{Matching incomplete time series with dynamic time warping: an
+  algorithm and an application to post-stroke rehabilitation.} Artif
+  Intell Med, 2009, 45, 11-34
+\cr \cr
   Sakoe, H.; Chiba, S., \emph{Dynamic programming algorithm optimization
   for spoken word recognition,} Acoustics, Speech, and Signal Processing
   [see also IEEE Transactions on Signal Processing], IEEE Transactions

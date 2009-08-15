@@ -1,36 +1,38 @@
- 
-citHeader("To cite package 'dtw' in publications use (subject to change):")
+citHeader("To cite dtw in publications use:")
 
-# citEntry(entry="Manual",
-#         title ="dtw: Dynamic Time Warping algorithms in R",
-#         author = personList(as.person("Toni Giorgino")),
-#         year = 2007,
-# 	url = "http://dtw.r-forge.r-project.org",
-#         note = paste("R package version", packageDescription("dtw")$Version),
-#         textVersion =
-#         paste("T. Giorgino (2007). ",
-#         "dtw: Dynamic Time Warping algorithms in R",
-#         packageDescription("dtw")$Version,
-# 	"http://dtw.r-forge.r-project.org",
-#         ".", sep=" ")
-# )
+citEntry(entry = "Article",
+  title        = "Computing and Visualizing Dynamic Time Warping Alignments in {R}: The {dtw} Package",
+  author       = personList(as.person("Toni Giorgino")),
+  journal      = "Journal of Statistical Software",
+  year         = "2009",
+  volume       = "31",
+  number       = "7",
+  pages        = "1--24",
+  url          = "http://www.jstatsoft.org/v31/i07/",
 
-
-
-
-citEntry(entry="Article",
-        title ="Matching incomplete time series with dynamic time warping: an algorithm
-	and an application to post-stroke rehabilitation",
-        author = personList(
-		as.person("Paolo Tormene"),
-		as.person("Toni Giorgino"),
-		as.person("Silvana Quaglini"),
-		as.person("Mario Stefanelli")
-	),
-        year = 2008,
-	doi = "doi:10.1016/j.artmed.2008.11.007",
-	pmid = 19111449,
-	journal = "Artificial Intelligence in Medicine",
-        textVersion =
-		"Tormene, P.; Giorgino, T.; Quaglini, S. & Stefanelli, M. Matching incomplete time series with dynamic time warping: an algorithm and an application to post-stroke rehabilitation. Artificial Intelligence in Medicine, 2008, (In press), doi:10.1016/j.artmed.2008.11.007"
+  textVersion  =
+  paste("Toni Giorgino (2009).",
+        "Computing and Visualizing Dynamic Time Warping Alignments in R: The dtw Package.",
+        "Journal of Statistical Software, 31(7), 1-24.",
+        "URL http://www.jstatsoft.org/v31/i07/.")
 )
+
+citEntry(entry = "Article",
+  title        = "Matching Incomplete Time Series with Dynamic Time Warping: An Algorithm and an Application to Post-Stroke Rehabilitation",
+  author       = personList(as.person("Paolo Tormene"), as.person("Toni Giorgino"),
+                   as.person("Silvana Quaglini"), as.person("Mario Stefanelli")),
+  journal      = "Artificial Intelligence in Medicine",
+  year         = "2008",
+  volume       = "45",
+  number       = "1",
+  pages        = "11--34",
+  doi          = "10.1016/j.artmed.2008.11.007",
+
+  textVersion  =
+  paste("Paolo Tormene, Toni Giorgino, Silvana Quaglini, Mario Stefanelli (2008).",
+        "Matching Incomplete Time Series with Dynamic Time Warping: An Algorithm and an Application to Post-Stroke Rehabilitation.",
+	"Artificial Intelligence in Medicine, 45(1), 11-34.",
+	"doi:10.1016/j.artmed.2008.11.007."),
+  header = "For partial matching and normalization strategies also cite:"
+)
+

@@ -107,7 +107,7 @@ is.stepPattern(x)
 
   A step pattern characterizes the matching model and slope constraint
   specific of a DTW variant. They also known as local- or
-  slope-constraints, transition types, or production rules.
+  slope-constraints, transition types, or production rules [7].
 
   \code{print.stepPattern} prints an user-readable
   description of the recurrence equation defined by the given pattern.
@@ -130,7 +130,7 @@ is.stepPattern(x)
   
   For convenience, we shall review pre-defined step patterns grouped by
   classification. Note that the same pattern may be listed under
-  different names.
+  different names. Refer to paper [7] for full details.
 
 
   
@@ -204,21 +204,22 @@ is.stepPattern(x)
 
 \strong{4. The Rabiner-Myers set}
   
-  The \code{typeNNw} steps follow Rabiner-Myers' classification given in
-  [4-5]. Note that they are \emph{different} from the Rabiner-Juang
-  [3]. \code{NN} is a roman numeral specifying the shape of the
-  transitions; \code{w} is a letter in the range \code{a-d} according
-  the type of weighting used per step, as above; \code{type2} patterns
+  The \code{typeXXx} step patterns follow the older Rabiner-Myers'
+  classification given in [4-5]. Note that they are a subset of the
+  Rabiner-Juang set [3], which should be preferred to avoid
+  confusion. \code{XX} is a roman numeral specifying the shape of the
+  transitions; \code{x} is a letter in the range \code{a-d} according
+  the type of weighting used per step, as above; \code{typeIIx} patterns
   also have a version ending in \code{s} meaning the path smoothing is
-  used (which does not permit skipping points). The \code{type1d,
-  type2d} and \code{type2ds} are unbiased and symmetric.
+  used (which does not permit skipping points). The \code{typeId,
+  typeIId} and \code{typeIIds} are unbiased and symmetric.
 
 
 
 \strong{5. Other}
 
-  Mori's [6] asymmetric step-constrained pattern is
-  \code{mori2006}. Normalized in the reference length.
+  Mori's [6] asymmetric step-constrained pattern is called
+  \code{mori2006}. It is normalized in the reference length.
 
 
 }
@@ -260,6 +261,10 @@ is.stepPattern(x)
   Sakoe, H. Early Recognition and Prediction of Gestures Proc. 18th
   International Conference on Pattern Recognition ICPR 2006, 2006, 3,
   560-563
+  \cr \cr
+  [7] Toni Giorgino. \emph{Computing and Visualizing Dynamic Time Warping
+  Alignments in R: The dtw Package.}  Journal of Statistical
+  Software, 31(7), 1-24. \url{http://www.jstatsoft.org/v31/i07/}
 }
 
 

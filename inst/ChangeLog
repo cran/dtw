@@ -1,3 +1,6 @@
+1.14-1
+	Added vignette and references to JSS paper
+
 1.13-1 
 	Ported to NAMESPACE
 
@@ -33,6 +36,3 @@
 	
 1.5-3
 	Fix malloc.h for OSX build
-	
-	
-	
