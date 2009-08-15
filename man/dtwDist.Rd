@@ -29,7 +29,7 @@ dtwDist(mx,my=mx,...)
 
 
   The \code{dtwDist} command is a synonym for the
-  \code{\link[pkg:proxy]{dist}} function of package \pkg{proxy}; the DTW
+  \code{\link[proxy]{dist}} function of package \pkg{proxy}; the DTW
   distance is registered as \code{method="DTW"} (see examples below).
 
   The timeseries are stored as rows in the matrix argument \code{m}. In
@@ -41,7 +41,7 @@ dtwDist(mx,my=mx,...)
   \code{dtwDist} returns a square matrix, whereas the \code{dist} object
   is lower-triangular. This makes sense because in general the DTW
   "distance" is not symmetric (see e.g.  asymmetric step patterns).  To
-  make a square matrix with the \code{\link[pkg:proxy]{dist}} function
+  make a square matrix with the \code{\link[proxy]{dist}} function
   sematics, use the two-arguments call as \code{dist(m,m)}. This will
   return a square \code{crossdist} object.  }
 
@@ -53,8 +53,8 @@ dtwDist(mx,my=mx,...)
 
 
 \seealso{Other "distance" functions are: \code{\link{dist}},
-  \code{\link[pkg:vegan]{vegdist}} in package \code{vegan},
-  \code{\link[pkg:analogue]{distance}} in package \code{analogue}, etc.
+  \code{\link[vegan]{vegdist}} in package \code{vegan},
+  \code{\link[analogue]{distance}} in package \code{analogue}, etc.
 }
 
 \examples{

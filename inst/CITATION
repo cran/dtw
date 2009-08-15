@@ -1,4 +1,4 @@
-citHeader("To cite dtw in publications use:")
+citHeader("Publications using results obtained with this package must cite:")
 
 citEntry(entry = "Article",
   title        = "Computing and Visualizing Dynamic Time Warping Alignments in {R}: The {dtw} Package",
@@ -14,7 +14,7 @@ citEntry(entry = "Article",
   paste("Toni Giorgino (2009).",
         "Computing and Visualizing Dynamic Time Warping Alignments in R: The dtw Package.",
         "Journal of Statistical Software, 31(7), 1-24.",
-        "URL http://www.jstatsoft.org/v31/i07/.")
+        "URL http://www.jstatsoft.org/v31/i07/")
 )
 
 citEntry(entry = "Article",
@@ -27,12 +27,13 @@ citEntry(entry = "Article",
   number       = "1",
   pages        = "11--34",
   doi          = "10.1016/j.artmed.2008.11.007",
+  url          = "http://dx.doi.org/10.1016/j.artmed.2008.11.007",
 
   textVersion  =
   paste("Paolo Tormene, Toni Giorgino, Silvana Quaglini, Mario Stefanelli (2008).",
         "Matching Incomplete Time Series with Dynamic Time Warping: An Algorithm and an Application to Post-Stroke Rehabilitation.",
 	"Artificial Intelligence in Medicine, 45(1), 11-34.",
-	"doi:10.1016/j.artmed.2008.11.007."),
-  header = "For partial matching and normalization strategies also cite:"
+	"doi:10.1016/j.artmed.2008.11.007"),
+  header = "If using partial matching and/or normalization, cite additionally:"
 )
 

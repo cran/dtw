@@ -1079,7 +1079,7 @@ lines(alignment$index1,alignment$index2)
 \includegraphics[width=0.48\textwidth]{dtw-costmatrix-figure-plot-right}
 \caption{The local distance matrix for the exercise in
   Section~\ref{sec:worked-out-exercise} (left) and the corresponding
-  cumulative distance matrix (right) under the symmetric step
+  cumulative distance matrix (right) under the \code{asymmetric} step
   pattern. The optimal alignment path is superimposed.}
   \label{fig:exercise-figure}
 \end{figure}

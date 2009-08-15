@@ -30,7 +30,7 @@ is.dtw(d)
   \item{x}{ query vector \emph{or} local cost matrix }
   \item{y}{ reference vector,  unused if \code{x} given as cost matrix }
   \item{dist.method}{ pointwise (local) distance function to use. See
-    \code{\link[pkg:proxy]{dist}} in package \pkg{proxy} }
+    \code{\link[proxy]{dist}} in package \pkg{proxy} }
   \item{step.pattern}{ a stepPattern object describing the 
     local warping steps allowed with their cost (see \code{\link{stepPattern}})}
   \item{window.type}{ windowing function. Character: "none",
@@ -57,7 +57,7 @@ is.dtw(d)
 
   \enumerate{
     \item if \code{dist.method} is a string, \code{x} and
-    \code{y} are passed to the \code{\link[pkg:proxy]{dist}} function in
+    \code{y} are passed to the \code{\link[proxy]{dist}} function in
     package \pkg{proxy} with the method given;
     \item if \code{dist.method} is  a  function of two arguments, it invoked
     repeatedly on all pairs \code{x[i],y[j]} to build the local cost matrix;
@@ -189,8 +189,8 @@ is.dtw(d)
   \code{\link{stepPattern}}, step patterns and local constraints;
   \code{\link{plot.dtw}},  plot methods for DTW objects.
  To generate a local distance matrix, the functions
-  \code{\link[pkg:proxy]{dist}} in package \pkg{proxy},
-  \code{\link[pkg:analogue]{distance}} in package \pkg{analogue},
+  \code{\link[proxy]{dist}} in package \pkg{proxy},
+  \code{\link[analogue]{distance}} in package \pkg{analogue},
   \code{\link{outer}} may come handy.
 }
 

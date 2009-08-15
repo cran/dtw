@@ -12,7 +12,7 @@
 .onLoad <- function(lib, pkg)  {
   # library(proxy);
 
-  cat(sprintf("Loaded dtw v%s. See ?dtw for help, citation(\"dtw\") for use in publication.\n",
+  cat(sprintf("Loaded dtw v%s. See ?dtw for help, citation(\"dtw\") for usage conditions.\n",
             utils::packageDescription("dtw")$Version ) );
       
   ## Register DTW as a distance function into package proxy

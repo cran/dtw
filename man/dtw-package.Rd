@@ -61,7 +61,7 @@ To get the latest stable version from CRAN, use
 \seealso{ \code{\link{dtw}} for the main entry point to the package;
   \code{\link{dtwWindowingFunctions}} for global constraints;
   \code{\link{stepPattern}} for local constraints;
-  \code{\link[pkg:analogue]{distance}},  \code{\link{outer}} for
+  \code{\link[analogue]{distance}},  \code{\link{outer}} for
   building a local cost matrix with multivariate
   timeseries and custom distance functions. }
 
