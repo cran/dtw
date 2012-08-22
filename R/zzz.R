@@ -1,18 +1,17 @@
 ###############################################################
 #                                                             #
-#   Author: Toni Giorgino <toni.giorgino@gmail.com>           #
-#       Laboratory for Biomedical Informatics                 #
-#       University of Pavia - Italy                           #
-#       www.labmedinfo.org                                    #
+#   Author: Toni Giorgino <toni.giorgino,gmail.com>           #
+#       Istituto di Ingegneria Biomedica (ISIB-CNR)           #
+#       Consiglio Nazionale delle Ricerche                   #
+#       www.isib.cnr.it                                       #
 #                                                             #
-#   $Id: zzz.R 235 2009-06-30 15:13:52Z tonig $
+#   $Id: zzz.R 267 2012-08-12 14:37:26Z tonig $
 #                                                             #
 ###############################################################
 
-.onLoad <- function(lib, pkg)  {
-  # library(proxy);
+.onAttach <- function(lib, pkg)  {
 
-  cat(sprintf("Loaded dtw v%s. See ?dtw for help, citation(\"dtw\") for usage conditions.\n",
+  packageStartupMessage(sprintf("Loaded dtw v%s. See ?dtw for help, citation(\"dtw\") for use in publication.\n",
             utils::packageDescription("dtw")$Version ) );
       
   ## Register DTW as a distance function into package proxy
@@ -21,5 +20,5 @@
                   description="Dynamic Time Warping",
                   formula="minimum of sum(x[xw[i]]-y[yw[i]]) over all monotonic xw, yw");
 
-  invisible()
+  # invisible()
 }

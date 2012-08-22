@@ -21,10 +21,11 @@ Loading required package: proxy
 Attaching package: 'proxy'
 
 
-	The following object(s) are masked from package:stats :
+The following object(s) are masked from 'package:stats':
 
-	 as.dist,
-	 dist 
+    as.dist, dist 
+
+Loaded dtw v1.15. See ?dtw for help, citation("dtw") for use in publication.
 
 > 
 > ### Synthetic example: check indexes, distance

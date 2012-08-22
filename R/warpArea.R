@@ -1,9 +1,9 @@
 ###############################################################
 #                                                             #
-#   (c) Toni Giorgino <toni.giorgino@gmail.com>           #
-#       Laboratory for Biomedical Informatics                 #
-#       University of Pavia - Italy                           #
-#       www.labmedinfo.org                                    #
+#   (c) Toni Giorgino <toni.giorgino,gmail.com>           #
+#       Istituto di Ingegneria Biomedica (ISIB-CNR)                 #
+#       Consiglio Nazionale delle Ricerche                           #
+#       www.isib.cnr.it                                    #
 #                                                             #
 #   $Id: plot.dtw.R 55 2007-12-13 12:25:49Z tonig $
 #                                                             #

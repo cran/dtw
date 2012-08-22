@@ -1,22 +1,30 @@
 /* 
  * Compute global cost matrix - companion
  * to the dtw R package
- * (c) Toni Giorgino  2007-8
+ * (c) Toni Giorgino  2007-2012
  * Distributed under GPL-2 with NO WARRANTY.
  *
- * $Id: computeCM.c 168 2008-07-11 05:52:05Z tonig $
+ * $Id: computeCM.c 268 2012-08-12 15:01:18Z tonig $
  *  
  */
-
 
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
 
-#ifdef DMALLOC
-#include "dmalloc.h"
+
+#ifdef TEST_UNIT
+// Define R-like functions - a bad idea
+     #define R_alloc(n,size) malloc((n)*(size))
+     #define my_R_free(ptr) free((ptr))
+     #define error(...) { fprintf (stderr, __VA_ARGS__); exit(-1); }
+#else
+     #include <R.h>
+     #define my_R_free(ptr) 
 #endif
+
+
 
 #include "computeCM.h"
 
@@ -34,20 +42,17 @@
     clist[z]=NAN; }
 
 
-
-
-/* R matrix fastest index is row
- */
-
-
-
-
 /* 
- *  Compute cumulative cost matrix
- *  replaces kernel in globalCostMatrix.R
+ *  Compute cumulative cost matrix: replaces kernel in globalCostMatrix.R
  */
 
 
+/* For now, this code is also valid outside R, as a test unit (the
+   TEST_UNIT will be defined). This means that we have to refrain to
+   use R-specific functions, such as R_malloc, or conditionally
+   provide replacements when TEST_UNIT is defined */
+
+/* R matrix fastest index is row */
 
 void computeCM(			/* IN */
 	       int *s,		/* mtrx dimensions */
@@ -71,10 +76,10 @@ void computeCM(			/* IN */
   int *pn,*di,*dj;
   double *sc;
 
-  pn=(int*) malloc(nsteps*sizeof(int)); /* pattern id */
-  di=(int*) malloc(nsteps*sizeof(int)); /* delta i */
-  dj=(int*) malloc(nsteps*sizeof(int)); /* delta j */
-  sc=(double*) malloc(nsteps*sizeof(double)); /* step cost */
+  pn=(int*) R_alloc(nsteps,sizeof(int)); /* pattern id */
+  di=(int*) R_alloc(nsteps,sizeof(int)); /* delta i */
+  dj=(int*) R_alloc(nsteps,sizeof(int)); /* delta j */
+  sc=(double*) R_alloc(nsteps,sizeof(double)); /* step cost */
 
   for(int i=0; i<nsteps; i++) {
     pn[i]=dir[EP(i,0)];
@@ -83,9 +88,8 @@ void computeCM(			/* IN */
     sc[i]=dir[EP(i,3)];
 
     if(pn[i]<0 || pn[i]>=nsteps) {
-      fprintf(stderr,"error on pattern row %d, pattern number %d out of bounds\n",
+      error("Error on pattern row %d, pattern number %d out of bounds\n",
 	      i,pn[i]);
-      exit(1);
     }
   }
 
@@ -96,7 +100,7 @@ void computeCM(			/* IN */
 
   /* prepare a cost list per pattern */
   double *clist=(double*)
-    malloc(npats*sizeof(double));
+    R_alloc(npats,sizeof(double));
 
 
   /* we do not initialize the seed - the caller is supposed
@@ -142,11 +146,12 @@ void computeCM(			/* IN */
   }
 
 
-  free(clist);
-  free(sc);
-  free(di);
-  free(dj);
-  free(pn);
+  /* Memory alloc'd by R_alloc is automatically freed */
+  my_R_free(clist);
+  my_R_free(sc);
+  my_R_free(di);
+  my_R_free(dj);
+  my_R_free(pn);
 
 
 
@@ -176,42 +181,6 @@ int argmin(double *list, int n) {
 
 
 #ifdef TEST_UNIT
- 
-/*
- * Printout a matrix. 
- * int *s: s[0] - no. of rows
- *         s[1] - no. of columns
- * double *mm: matrix to print
- * double *r: return value
- */
-
-void tm(int *s, double *mm, double *r) {
-  int i,j;
-  int n=s[0],m=s[1];
-  // FILE *f=fopen("pera","w");
-  FILE *f=stdout;
-
-  for(i=0;i<n;i++) {
-    for(j=0;j<m;j++) {
-      double val=mm[j*n+i];
-      if(isnan(val)) {
-	//	printf("NAN %d %d\n",i,j);
-      }
-      fprintf(f,"[%2d,%2d] = %4.2lf    ",i,j,val);
-    }
-    fprintf(f,"\n");
-  }
-  *r=-1;
-  // fclose(f);
-  printf("** tm dump end **\n");
-}
-
-
-
-
-
-
-
 
 /* test main  equivalent to the following
    mylm<-outer(1:10,1:10)
@@ -232,7 +201,6 @@ int main(int argc,char **argv) {
 
   int i,j;
 
-
   twm=malloc(TSS*sizeof(int));
    for( i=0;i<TSS;i++)
     twm[i]=1;
@@ -241,8 +209,6 @@ int main(int argc,char **argv) {
   for( i=0;i<TS;i++)
     for( j=0;j<TS;j++)
       tlm[i*TS+j]=(i+1)*(j+1);
-
-
 
 
   tcm=malloc(TSS*sizeof(double));
@@ -256,22 +222,51 @@ int main(int argc,char **argv) {
 
   double r=-2;
 
-  tm(ts,tlm,&r);
+  tm_print(ts,tlm,&r);
 
   /* pretend we'r R */
   computeCM(ts,twm,tlm,tnstepsp,
 	    tdir,tcm,tsm);
 
-  tm(ts,tcm,&r);
+  tm_print(ts,tcm,&r);
 
   free(twm);
   free(tlm);
   free(tcm);
   free(tsm);
 
-  
 }
 
+
+
+ 
+/*
+ * Printout a matrix. 
+ * int *s: s[0] - no. of rows
+ *         s[1] - no. of columns
+ * double *mm: matrix to print
+ * double *r: return value
+ */
+
+void tm_print(int *s, double *mm, double *r) {
+  int i,j;
+  int n=s[0],m=s[1];
+  FILE *f=stdout;
+
+  for(i=0;i<n;i++) {
+    for(j=0;j<m;j++) {
+      double val=mm[j*n+i];
+      if(isnan(val)) {
+	//	printf("NAN %d %d\n",i,j);
+      }
+      fprintf(f,"[%2d,%2d] = %4.2lf    ",i,j,val);
+    }
+    fprintf(f,"\n");
+  }
+  *r=-1;
+  // fclose(f);
+  printf("** tm dump end **\n");
+}
 
 
  #endif

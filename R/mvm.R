@@ -1,9 +1,9 @@
 ###############################################################
 #                                                             #
-#   Author: Toni Giorgino <toni.giorgino@gmail.com>           #
-#       Laboratory for Biomedical Informatics                 #
-#       University of Pavia - Italy                           #
-#       www.labmedinfo.org                                    #
+#   Author: Toni Giorgino <toni.giorgino,gmail.com>           #
+#       Istituto di Ingegneria Biomedica (ISIB-CNR)                 #
+#       Consiglio Nazionale delle Ricerche                           #
+#       www.isib.cnr.it                                    #
 #                                                             #
 #   $Id: stepPattern.R 146 2008-06-10 15:01:26Z tonig $
 #                                                             #

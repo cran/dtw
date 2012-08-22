@@ -1,16 +1,16 @@
 ###############################################################
 #                                                             #
-#   Author: Toni Giorgino <toni.giorgino@gmail.com>           #
-#       Laboratory for Biomedical Informatics                 #
-#       University of Pavia - Italy                           #
-#       www.labmedinfo.org                                    #
+#   Author: Toni Giorgino <toni.giorgino,gmail.com>           #
+#       Istituto di Ingegneria Biomedica (ISIB-CNR)                 #
+#       Consiglio Nazionale delle Ricerche                           #
+#       www.isib.cnr.it                                    #
 #                                                             #
-#   $Id: dtw-internal.R 94 2008-01-08 16:44:46Z tonig $
+#   $Id: dtw-internal.R 267 2012-08-12 14:37:26Z tonig $
 #                                                             #
 ###############################################################
 
 ##
-## $Id: dtw-internal.R 94 2008-01-08 16:44:46Z tonig $
+## $Id: dtw-internal.R 267 2012-08-12 14:37:26Z tonig $
 ##
 
 ## Internal functions for the dtw package.

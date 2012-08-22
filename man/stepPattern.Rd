@@ -44,13 +44,12 @@
 
 
 
-\title{Local constraints and step patterns for DTW}
+\title{Step patterns for DTW}
 
-\description{ DTW variants are implemented through step pattern objects.
- A \code{stepPattern} object lists the transitions allowed by the
- \code{\link{dtw}} function in the search for the minimum-distance path.
- The user can use one of the objects described in this page for the
- \code{stepPattern} argument of the dtw call.  }
+\description{ A \code{stepPattern} object lists the transitions
+ allowed while searching for the minimum-distance path.  DTW variants
+ are implemented by passing one of the objects described in this page
+ to the \code{stepPattern} argument of the \code{\link{dtw}}  call.  }
 
 \usage{
 ## Well-known step patterns
@@ -107,7 +106,8 @@ is.stepPattern(x)
 
   A step pattern characterizes the matching model and slope constraint
   specific of a DTW variant. They also known as local- or
-  slope-constraints, transition types, or production rules [7].
+  slope-constraints, transition types, production or recursion rules
+  [7].
 
   \code{print.stepPattern} prints an user-readable
   description of the recurrence equation defined by the given pattern.
@@ -239,29 +239,29 @@ is.stepPattern(x)
   Signal Processing [see also IEEE Transactions on Signal Processing],
   IEEE Transactions on , vol.26, no.1, pp. 43-49, Feb 1978 URL:
   \url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=1163055}
-\cr \cr
+
   [2] Itakura, F., \emph{Minimum prediction residual principle applied
   to speech recognition,} Acoustics, Speech, and Signal Processing [see
   also IEEE Transactions on Signal Processing], IEEE Transactions on ,
   vol.23, no.1, pp.  67-72, Feb 1975. URL:
   \url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=1162641}
-\cr \cr
+
   [3] Rabiner, L. R., & Juang, B.-H. (1993). \emph{Fundamentals of speech
   recognition.} Englewood Cliffs, NJ: Prentice Hall.
-\cr \cr
+
   [4] Myers, C. S.  \emph{A Comparative Study Of Several Dynamic Time
   Warping Algorithms For Speech Recognition}, MS and BS thesis, MIT Jun
   20 1980, \url{dspace.mit.edu/bitstream/1721.1/27909/1/07888629.pdf}
-\cr \cr
+
   [5] Myers, C.; Rabiner, L. & Rosenberg, A. \emph{Performance tradeoffs in
   dynamic time warping algorithms for isolated word recognition},
   IEEE Trans. Acoust., Speech, Signal Process., 1980, 28, 623-635
-\cr \cr
+
   [6] Mori, A.; Uchida, S.; Kurazume, R.; Taniguchi, R.; Hasegawa, T. &
   Sakoe, H. Early Recognition and Prediction of Gestures Proc. 18th
   International Conference on Pattern Recognition ICPR 2006, 2006, 3,
   560-563
-  \cr \cr
+  
   [7] Toni Giorgino. \emph{Computing and Visualizing Dynamic Time Warping
   Alignments in R: The dtw Package.}  Journal of Statistical
   Software, 31(7), 1-24. \url{http://www.jstatsoft.org/v31/i07/}

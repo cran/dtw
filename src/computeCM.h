@@ -17,5 +17,10 @@ void computeCM(			/* IN */
 				/* OUT */
 	       double *cm,	/* cost matrix */
 	       int *sm		/* direction mtrx */
+
 				);
 
+
+#ifdef TEST_UNIT
+void tm_print(int *s, double *mm, double *r);
+#endif

@@ -11,32 +11,50 @@ Dynamic Time Warp algorithms in R
 
 \details{
 \tabular{ll}{
-Package: \tab dtw\cr
-Type: \tab Package\cr
-Version: \tab 1.14\cr
-Date: \tab 2009-8-15\cr
-License: \tab GPL-2\cr
+Package: \tab  dtw		\cr
+Type: 	 \tab  Package		\cr
+Version: \tab  1.15		\cr
+Date: 	 \tab  2012-8-22	\cr
+License: \tab  GPL-2		\cr
 }
 
 Comprehensive implementation of Dynamic Time Warping (DTW) algorithms in
 R.
 
-DTW finds the optimal (least cumulative distance) mapping between a
-given query into a given reference time series.
+The basic DTW algorithm computes the time axis stretch which optimally
+maps one timeseries (query) onto another (reference); it outputs the
+remaining cumulative distance between the two. DTW is widely used
+e.g. for classification and clustering tasks in econometrics,
+chemometrics and general timeseries mining.
 
-Most variants of the algorithm are supported: symmetric, asymmetric and
-custom step patterns, with weighting (see \code{\link{stepPattern}}).
-Supports windowing: none, "Itakura" parallelogram, Sakoe-Chiba band,
-custom (see \code{\link{dtwWindowingFunctions}}).  Handles query and
-reference of arbitrary lengths. Multivariate matching and arbitrary
-definition for a distance function are supported via user-supplied local
-distance matrix. The Minimum Variance Matching algorithm is also
-supported, as a special case of DTW.
+The R implementation in dtw provides: 
 
-Package provides minimum cumulative distance, warping function, plots,
-etc. A fast, compiled version of the algorithm is normally used.  Should
-it not be available, a slower pure-R equivalent is automatically used as
-a fall-back.
+\itemize{
+\item    arbitrary windowing functions (global constraints), eg. the Sakoe-Chiba band; see \code{\link{dtwWindowingFunctions}}
+\item    arbitrary transition types (also known as step patterns, slope constraints, local constraints, or DP-recursion rules). This includes dozens of well-known types; see \code{\link{stepPattern}}:
+\itemize{
+ \item        all step patterns classified by Rabiner-Juang, Sakoe-Chiba, and Rabiner-Myers;
+ \item        symmetric and asymmetric;
+ \item        Rabiner's smoothed variants;
+ \item        arbitrary, user-defined slope constraints
+}
+\item    partial matches: open-begin, open-end, substring matches 
+\item    proper, pattern-dependent, normalization (exact average distance per step)
+\item    the Minimum Variance Matching (MVM) algorithm (Latecki et al.)
+}
+
+Multivariate timeseries can be aligned with arbitrary local distance
+definitions, leveraging the \code{\link[proxy]{dist}} function of
+package \pkg{proxy}. DTW itself becomes a distance function with the
+dist semantics.
+
+In addition to computing alignments, the package provides:
+\itemize{
+\item    methods for plotting alignments and warping functions in several classic styles (see plot gallery);
+\item    graphical representation of step patterns;
+\item    functions for applying a warping function, either direct or inverse;
+\item    both fast native (C) and interpreted (R) cores.
+}
 
 
 Please see documentation for function \code{\link{dtw}}, which is the
@@ -53,7 +71,9 @@ To get the latest stable version from CRAN, use
 
 }
 \author{
-  Toni Giorgino, Copyright (c) 2007-2009 
+  Toni Giorgino, Copyright (c) 2007-2012
+  Istituto di Ingegneria Biomedica (ISIB-CNR)
+  National Research Council of Italy
 
   Maintainer:  toni.giorgino@gmail.com
 }
@@ -69,7 +89,7 @@ To get the latest stable version from CRAN, use
   Toni Giorgino. \emph{Computing and Visualizing Dynamic Time Warping
         Alignments in R: The dtw Package.}  Journal of Statistical
         Software, 31(7), 1-24. \url{http://www.jstatsoft.org/v31/i07/}
-\cr \cr
+
   Rabiner, L. R., & Juang, B.-H. (1993). Chapter 4 in
   \emph{Fundamentals of speech
   recognition.} Englewood Cliffs, NJ: Prentice Hall.
