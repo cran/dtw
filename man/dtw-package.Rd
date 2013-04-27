@@ -16,16 +16,21 @@ Type: 	 \tab  Package		\cr
 Version: \tab  1.15		\cr
 Date: 	 \tab  2012-8-22	\cr
 License: \tab  GPL-2		\cr
+URL:     \tab  \url{http://dtw.r-forge.r-project.org} \cr
 }
 
 Comprehensive implementation of Dynamic Time Warping (DTW) algorithms in
 R.
 
-The basic DTW algorithm computes the time axis stretch which optimally
-maps one timeseries (query) onto another (reference); it outputs the
-remaining cumulative distance between the two. DTW is widely used
-e.g. for classification and clustering tasks in econometrics,
-chemometrics and general timeseries mining.
+The DTW algorithm computes the stretch of the time axis which optimally
+maps one given timeseries (query) onto whole or part of another
+(reference). It yields the remaining cumulative distance after the
+alignment and the point-by-point correspondence (warping function). DTW
+is widely used e.g. for classification and clustering tasks in
+econometrics, chemometrics and general timeseries mining.
+
+Please see documentation for function \code{\link{dtw}}, which is the
+main entry point to the package.
 
 The R implementation in dtw provides: 
 
@@ -52,13 +57,10 @@ In addition to computing alignments, the package provides:
 \itemize{
 \item    methods for plotting alignments and warping functions in several classic styles (see plot gallery);
 \item    graphical representation of step patterns;
-\item    functions for applying a warping function, either direct or inverse;
-\item    both fast native (C) and interpreted (R) cores.
+\item    functions for applying a warping function, either direct or
+inverse; and more.
 }
 
-
-Please see documentation for function \code{\link{dtw}}, which is the
-main entry point to the package.
 
 If you use this software, please cite it according to
 \code{citation("dtw")}.  The package home page is at
@@ -71,10 +73,10 @@ To get the latest stable version from CRAN, use
 
 }
 \author{
-  Toni Giorgino, Copyright (c) 2007-2012
-  Istituto di Ingegneria Biomedica (ISIB-CNR)
-  National Research Council of Italy
-
+  Toni Giorgino, Copyright (c) 2007-2013 \cr
+  Istituto di Ingegneria Biomedica (ISIB-CNR) \cr
+  National Research Council of Italy \cr
+  \cr
   Maintainer:  toni.giorgino@gmail.com
 }
 
@@ -89,10 +91,15 @@ To get the latest stable version from CRAN, use
   Toni Giorgino. \emph{Computing and Visualizing Dynamic Time Warping
         Alignments in R: The dtw Package.}  Journal of Statistical
         Software, 31(7), 1-24. \url{http://www.jstatsoft.org/v31/i07/}
-
+\cr \cr
+  Tormene, P.; Giorgino, T.; Quaglini, S. & Stefanelli,
+    M. \emph{Matching incomplete time series with dynamic time warping: an
+    algorithm and an application to post-stroke rehabilitation.} Artif
+    Intell Med, 2009, 45, 11-34
+\cr \cr
   Rabiner, L. R., & Juang, B.-H. (1993). Chapter 4 in
-  \emph{Fundamentals of speech
-  recognition.} Englewood Cliffs, NJ: Prentice Hall.
+    \emph{Fundamentals of speech
+    recognition.} Englewood Cliffs, NJ: Prentice Hall.
 }
 
 \examples{

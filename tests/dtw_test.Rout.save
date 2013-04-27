@@ -25,7 +25,7 @@ The following object(s) are masked from 'package:stats':
 
     as.dist, dist 
 
-Loaded dtw v1.15. See ?dtw for help, citation("dtw") for use in publication.
+Loaded dtw v1.16. See ?dtw for help, citation("dtw") for use in publication.
 
 > 
 > ### Synthetic example: check indexes, distance
@@ -78,6 +78,17 @@ In dtw:::globalCostMatrix(ldist, native = FALSE) :
   Native dtw implementation not available: using (slow) interpreted fallback
 > all.equal(ds,dsn)		# TRUE
 [1] TRUE
+> 
+> 
+> ### Open begin-end matching
+> query <- 2:3 + 0.01
+> ref <- 1:4
+> obe <- dtw(query,ref,open.begin=T,open.end=T,step=asymmetric)
+> all.equal(obe$distance,0.02)    # TRUE
+[1] TRUE
+> all.equal(obe$index2,c(2,3))    # TRUE
+[1] TRUE
+> 
 > 
 > ### Use proxy::dist
 > query <- cbind(1:10,1)

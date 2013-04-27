@@ -69,28 +69,17 @@ is.dtw(d)
     below).
   }
 
-  Several common variants of DTW are supported via the
+  Several common variants of the DTW recursion are supported via the
   \code{step.pattern} argument, which defaults to
-  \code{symmetric2}. Most common step patterns are pre-defined: see
+  \code{symmetric2}. Step patterns are commonly used to \emph{locally}
+  constrain the slope of the alignment function. See
   \code{\link{stepPattern}} for details.
 
-    
-  Open-ended alignment, i.e. semi-unconstrained alignment, can be
-  selected via the \code{open.end} argument.  Open-end DTW computes the
-  alignment which best matches all of the query with a \emph{leading
-  part} of the reference. This is proposed e.g. by Mori (2006), Sakoe
-  (1979) and others. Similarly, open-begin is enabled via
-  \code{open.begin}. Open-begin alignments usually only make sense when
-  \code{open.end} is enabled, as well (subsequence alignment);
-  otherwise, it is just as easy to reverse the query
-  sequence. Subsequence alignments are similar e.g. to UE2-1 algorithm
-  by Rabiner (1978) and others. Please find a review in Tormene et
-  al. (2009).
-  
 
-  Windowing (enforcing a global constraint) is supported by passing a
-  string or function \code{window.type} argument. Commonly used windows
-  are (abbreviations allowed):
+  Windowing enforces a \emph{global} constraint on the envelope of the
+  warping path. It is selected by passing a string or function to the
+  \code{window.type} argument. Commonly used windows are (abbreviations
+  allowed):
 
   \itemize{
 	\item{\code{"none"}}{No windowing (default)}
@@ -103,13 +92,25 @@ is.dtw(d)
   See \code{\link{dtwWindowingFunctions}} for all available windowing
   functions, details on user-defined windowing, and a discussion of the
   (mis)naming of the "Itakura" parallelogram as a global constraint.
-
   Some windowing functions may require parameters, such as the
   \code{window.size} argument.
 
-  A native (fast, compiled) version of the function is normally available.
-  If it is not, an interpreted equivalent will be used as 
-  a fall-back, with a warning.
+      
+  Open-ended alignment, i.e. semi-unconstrained alignment, can be
+  selected via the \code{open.end} switch.  Open-end DTW computes the
+  alignment which best matches all of the query with a \emph{leading
+  part} of the reference. This is proposed e.g. by Mori (2006), Sakoe
+  (1979) and others. Similarly, open-begin is enabled via
+  \code{open.begin}; it makes sense when \code{open.end} is also enabled
+  (subsequence finding). Subsequence alignments are similar e.g. to
+  UE2-1 algorithm by Rabiner (1978) and others. Please find a review in
+  Tormene et al. (2009).
+  
+
+  If the warping function is not required, computation can be sped
+  up enabling the \code{distance.only=TRUE} switch, which skips
+  the backtracking step. The output object will then lack the 
+  \code{index1}, \code{index2} and  \code{stepsTaken} fields.
 
   \code{is.dtw} tests whether the argument is of class \code{dtw}.
 
@@ -130,7 +131,9 @@ is.dtw(d)
   \item{jmin}{last element of reference matched, if \code{open.end=TRUE}}
   \item{directionMatrix}{if \code{keep.internals=TRUE}, the
     directions of steps that would be taken at each alignment pair
-    (integers indexing step patterns)}
+    (integers indexing production rules in the chosen step pattern)}
+  \item{stepsTaken}{the list of steps taken from the beginning
+    to the end of the alignment (integers indexing chosen step pattern)}
   \item{costMatrix}{if \code{keep.internals=TRUE}, the cumulative
     cost matrix}
   \item{query, reference}{if \code{keep.internals=TRUE} and passed as the \code{x}
@@ -180,8 +183,10 @@ is.dtw(d)
   matrices according to plot-like conventions, i.e.  reference index
   growing upwards. This may be confusing.
 
-  The \code{partial} argument has been deprecated and renamed
-  \code{open.end} as of version 1.12.  }
+  A fast compiled version of the function is normally used.  Should it
+  be unavailable, the interpreted equivalent will be used as a fall-back
+  with a warning.
+}
 
 \seealso{
   \code{\link{dtwDist}}, for iterating dtw over a set of timeseries;
@@ -302,5 +307,5 @@ da$distance;
 
 
 \keyword{ ts }
-\keyword{ optimize }
+
 

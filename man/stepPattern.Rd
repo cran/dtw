@@ -41,6 +41,7 @@
 \alias{typeIVc}
 
 \alias{mori2006}
+\alias{rigid}
 
 
 
@@ -56,20 +57,17 @@
   symmetric1
   symmetric2
   asymmetric
-%  asymmetricItakura
-%  symmetricVelichkoZagoruyko
 
-
-## Step patterns classified according to Rabiner-Juang [3]
+## Step patterns classified according to Rabiner-Juang [Rabiner1993]
   rabinerJuangStepPattern(type,slope.weighting="d",smoothed=FALSE)
 
-## Slope-constrained step patterns from Sakoe-Chiba [1]
+## Slope-constrained step patterns from Sakoe-Chiba [Sakoe1978]
   symmetricP0;  asymmetricP0
   symmetricP05; asymmetricP05
   symmetricP1;  asymmetricP1
   symmetricP2;  asymmetricP2
 
-## Step patterns classified according to Rabiner-Myers [4]
+## Step patterns classified according to Rabiner-Myers [Myers1980]
   typeIa;   typeIb;   typeIc;   typeId;
   typeIas;  typeIbs;  typeIcs;  typeIds;  # smoothed
   typeIIa;  typeIIb;  typeIIc;  typeIId;
@@ -77,8 +75,7 @@
 
 ## Miscellaneous
   mori2006;
-
-
+  rigid;
 
 \method{print}{stepPattern}(x,...)
 \method{plot}{stepPattern}(x,...)
@@ -91,10 +88,10 @@ is.stepPattern(x)
 
 \arguments{
   \item{x}{a step pattern object}
-  \item{type}{path specification, integer 1..7 (see [3], table 4.5)}
+  \item{type}{path specification, integer 1..7 (see [Rabiner1993], table 4.5)}
   \item{slope.weighting}{slope weighting rule: character \code{"a"}
-    to \code{"d"} (see [3],    sec. 4.7.2.5)}
-  \item{smoothed}{logical, whether to use smoothing (see [3],
+    to \code{"d"} (see [Rabiner1993],    sec. 4.7.2.5)}
+  \item{smoothed}{logical, whether to use smoothing (see [Rabiner1993],
   fig. 4.44) }
   \item{v}{a vector defining the stepPattern structure}
   \item{norm}{normalization hint (character)}
@@ -107,7 +104,7 @@ is.stepPattern(x)
   A step pattern characterizes the matching model and slope constraint
   specific of a DTW variant. They also known as local- or
   slope-constraints, transition types, production or recursion rules
-  [7].
+  [GiorginoJSS].
 
   \code{print.stepPattern} prints an user-readable
   description of the recurrence equation defined by the given pattern.
@@ -121,7 +118,7 @@ is.stepPattern(x)
   
 
   A variety of classifications have been proposed for step patterns,
-  including Sakoe-Chiba [1]; Rabiner-Juang [3]; and Rabiner-Myers [4].
+  including Sakoe-Chiba [Sakoe1978]; Rabiner-Juang [Rabiner1993]; and Rabiner-Myers [Myers1980].
   The \code{dtw} package implements all of the transition types found in
   those papers, with the exception of Itakura's and Velichko-Zagoruyko's
   steps which require subtly different algorithms (this may be rectified
@@ -130,7 +127,7 @@ is.stepPattern(x)
   
   For convenience, we shall review pre-defined step patterns grouped by
   classification. Note that the same pattern may be listed under
-  different names. Refer to paper [7] for full details.
+  different names. Refer to paper [GiorginoJSS] for full details.
 
 
   
@@ -153,29 +150,29 @@ is.stepPattern(x)
   be single-valued.  Normalized by \code{N} (length of query).
 
 %    \item{\code{asymmetricItakura}}{asymmetric, slope contrained 0.5
-%	-- 2 from reference [2]. This is the recursive definition
+%	-- 2 from reference [Itakura1975]. This is the recursive definition
 %	that generates the Itakura parallelogram; }
 
 %    \item{\code{symmetricVelichkoZagoruyko}}{symmetric, reproduced from
-%    [1]. Use distance matrix \code{1-d}}
+%    [Sakoe1978]. Use distance matrix \code{1-d}}
 
 
 
 \strong{2. The Rabiner-Juang set}
 
-  A comprehensive table of step patterns is proposed by Rabiner-Juang
-  [3], tab. 4.5.  All of them can be recovered by the
-  \code{rabinerJuangStepPattern(type,slope.weighting,smoothed)}
+  A comprehensive table of step patterns is proposed in Rabiner-Juang's
+  book [Rabiner1993], tab. 4.5.  All of them can be constructed through
+  the \code{rabinerJuangStepPattern(type,slope.weighting,smoothed)}
   function.
 
-  Seven families, labelled with Roman numerals I-VII, are
-  selected through the integer argument \code{type}. Each family has
-  four slope weighting sub-types, named in sec. 4.7.2.5 as "Type (a)" to
-  "Type (d)"; they are selected passing a character argument
-  \code{slope.weighting}, as in the table below. Furthermore, each
-  subtype can be plain or smoothed (figure 4.44); smoothing is enabled
-  setting the logical argument \code{smoothed}.  (Not all combinations
-  of arguments make sense.)
+  The classification foresees seven families, labelled with Roman
+  numerals I-VII; here, they are selected through the integer argument
+  \code{type}. Each family has four slope weighting sub-types, named in
+  sec. 4.7.2.5 as "Type (a)" to "Type (d)"; they are selected passing a
+  character argument \code{slope.weighting}, as in the table
+  below. Furthermore, each subtype can be either plain or smoothed (figure
+  4.44); smoothing is enabled setting the logical argument
+  \code{smoothed}.  (Not all combinations of arguments make sense.)
 
   \tabular{cccc}{
      Subtype \tab    Rule  \tab     Norm  \tab   Unbiased    \cr
@@ -191,84 +188,63 @@ is.stepPattern(x)
 
 \strong{3. The Sakoe-Chiba set}
 
-  \code{symmetricPx} is the family of Sakoe's symmetric steps, slope
-  contraint \code{x}; \code{asymmetricPx} are Sakoe's asymmetric, slope
-  contraint \code{x}. These slope-constrained patterns are discussed in
-  Sakoe-Chiba [1], and implemented as shown in page 47, table I. Values
-  available for \emph{P} (\code{x}) are accordingly: \code{0} (no
-  constraint), \code{1}, \code{05} (one half) and \code{2}. See
-  reference for details.
+  Sakoe-Chiba [Sakoe1978] discuss a family of slope-constrained
+  patterns; they are implemented as shown in page 47, table I.  Here,
+  they are called \code{symmetricP<x>} and \code{asymmetricP<x>}, where
+  \code{<x>} corresponds to Sakoe's integer slope parameter \emph{P}.
+  Values available are accordingly: \code{0} (no constraint), \code{1},
+  \code{05} (one half) and \code{2}. See [Sakoe1978] for details.
 
 
   
 
 \strong{4. The Rabiner-Myers set}
   
-  The \code{typeXXx} step patterns follow the older Rabiner-Myers'
-  classification given in [4-5]. Note that they are a subset of the
-  Rabiner-Juang set [3], which should be preferred to avoid
-  confusion. \code{XX} is a roman numeral specifying the shape of the
-  transitions; \code{x} is a letter in the range \code{a-d} according
-  the type of weighting used per step, as above; \code{typeIIx} patterns
-  also have a version ending in \code{s} meaning the path smoothing is
-  used (which does not permit skipping points). The \code{typeId,
-  typeIId} and \code{typeIIds} are unbiased and symmetric.
+  The \code{type<XX><y>} step patterns follow the older Rabiner-Myers'
+  classification proposed in [Myers1980] and [MRR1980]. Note that this
+  is a subset of the Rabiner-Juang set [Rabiner1993], which should be
+  preferred in order to avoid confusion. \code{<XX>} is a roman numeral
+  specifying the shape of the transitions; \code{<y>} is a letter in the
+  range \code{a-d} specifying the weighting used per step, as above;
+  \code{typeIIx} patterns also have a version ending in \code{s},
+  meaning the smoothing is used (which does not permit skipping
+  points). The \code{typeId, typeIId} and \code{typeIIds} are unbiased
+  and symmetric.
 
 
 
 \strong{5. Other}
 
-  Mori's [6] asymmetric step-constrained pattern is called
-  \code{mori2006}. It is normalized in the reference length.
+  The \code{rigid} pattern enforces a fixed unitary slope. It only makes
+  sense in combination with \code{open.begin=T}, \code{open.end=T} to
+  find gapless subsequences. It may be seen as the \eqn{P \to
+  \infty}{P->inf} limiting case in Sakoe's classification.
 
+  \code{mori2006} is Mori's asymmetric step-constrained pattern
+  [Mori2006]. It is normalized by the matched reference length.
 
 }
 
 
-\note{    
-  The \code{stepPattern} constructor is currently not well
-  documented. For a commented example please see source code for
-  \code{symmetricP1}.
-}
+\note{ Constructing \code{stepPattern} objects is tricky and thus
+  undocumented. For a commented example please see source code for
+  \code{symmetricP1}.  }
 
 
 
 \references{ 
-  [1] Sakoe, H.; Chiba, S., \emph{Dynamic programming algorithm
-  optimization for spoken word recognition,} Acoustics, Speech, and
-  Signal Processing [see also IEEE Transactions on Signal Processing],
-  IEEE Transactions on , vol.26, no.1, pp. 43-49, Feb 1978 URL:
-  \url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=1163055}
-
-  [2] Itakura, F., \emph{Minimum prediction residual principle applied
-  to speech recognition,} Acoustics, Speech, and Signal Processing [see
-  also IEEE Transactions on Signal Processing], IEEE Transactions on ,
-  vol.23, no.1, pp.  67-72, Feb 1975. URL:
-  \url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=1162641}
-
-  [3] Rabiner, L. R., & Juang, B.-H. (1993). \emph{Fundamentals of speech
-  recognition.} Englewood Cliffs, NJ: Prentice Hall.
-
-  [4] Myers, C. S.  \emph{A Comparative Study Of Several Dynamic Time
-  Warping Algorithms For Speech Recognition}, MS and BS thesis, MIT Jun
-  20 1980, \url{dspace.mit.edu/bitstream/1721.1/27909/1/07888629.pdf}
-
-  [5] Myers, C.; Rabiner, L. & Rosenberg, A. \emph{Performance tradeoffs in
-  dynamic time warping algorithms for isolated word recognition},
-  IEEE Trans. Acoust., Speech, Signal Process., 1980, 28, 623-635
-
-  [6] Mori, A.; Uchida, S.; Kurazume, R.; Taniguchi, R.; Hasegawa, T. &
-  Sakoe, H. Early Recognition and Prediction of Gestures Proc. 18th
-  International Conference on Pattern Recognition ICPR 2006, 2006, 3,
-  560-563
-  
-  [7] Toni Giorgino. \emph{Computing and Visualizing Dynamic Time Warping
-  Alignments in R: The dtw Package.}  Journal of Statistical
-  Software, 31(7), 1-24. \url{http://www.jstatsoft.org/v31/i07/}
+  [GiorginoJSS] Toni Giorgino. \emph{Computing and Visualizing Dynamic Time Warping Alignments in R: The dtw Package.}  Journal of Statistical   Software, 31(7), 1-24. \url{http://www.jstatsoft.org/v31/i07/} \cr \cr
+  [Itakura1975] Itakura, F., \emph{Minimum prediction residual principle applied to speech recognition,} Acoustics, Speech, and Signal Processing [see also IEEE Transactions on Signal Processing], IEEE Transactions on ,  vol.23, no.1, pp.  67-72, Feb 1975. URL:   \url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=1162641} \cr \cr
+  [MRR1980] Myers, C.; Rabiner, L. & Rosenberg, A. \emph{Performance tradeoffs in dynamic time warping algorithms for isolated word recognition}, IEEE Trans. Acoust., Speech, Signal Process., 1980, 28, 623-635. URL: \url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=1163491&tag=1} \cr \cr
+  [Mori2006] Mori, A.; Uchida, S.; Kurazume, R.; Taniguchi, R.; Hasegawa, T. & Sakoe, H. Early Recognition and Prediction of Gestures Proc. 18th International Conference on Pattern Recognition ICPR 2006, 2006, 3, 560-563. URL: \url{http://dx.doi.org/10.1109/ICPR.2006.467} \cr \cr
+  [Myers1980] Myers, C. S.  \emph{A Comparative Study Of Several Dynamic Time  Warping Algorithms For Speech Recognition}, MS and BS thesis, MIT Jun   20 1980, \url{dspace.mit.edu/bitstream/1721.1/27909/1/07888629.pdf} \cr \cr
+  [Rabiner1993] Rabiner, L. R., & Juang, B.-H. (1993). \emph{Fundamentals of speech  recognition.} Englewood Cliffs, NJ: Prentice Hall. \cr \cr
+  [Sakoe1978] Sakoe, H.; Chiba, S., \emph{Dynamic programming algorithm optimization for spoken word recognition,} Acoustics, Speech, and Signal Processing [see also IEEE Transactions on Signal Processing], IEEE Transactions on , vol.26, no.1, pp. 43-49, Feb 1978 URL: \url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=1163055} \cr \cr
 }
 
 
-
+\seealso{\code{\link{mvmStepPattern}},  implementing 
+    Latecki's Minimal Variance Matching algorithm.}
 
 \author{Toni Giorgino}
 
@@ -312,7 +288,7 @@ dtwPlot(asy,type="density",main="Sine and cosine, asymmetric step")
 
 #########
 ##
-##  Hand-checkable example given in [4] p 61
+##  Hand-checkable example given in [Myers1980] p 61
 ##
 
 `tm` <-

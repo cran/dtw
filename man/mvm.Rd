@@ -77,4 +77,5 @@ plot(al,main="Minimum Variance Matching alignment")
 }
 
 \author{Toni Giorgino}
+\concept{Minimum Variance Matching}
 \keyword{ts}

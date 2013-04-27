@@ -44,11 +44,11 @@ Hz with 12-bit resolution.
   affected by substantial jittering. 
   }
 
-\source{
-  Cardiac monitors, heart rate meters, and alarms [American National Standard (ANSI/AAMI EC13:2002)]. Arlington, VA: Association for the Advancement of Medical Instrumentation, 2002
-}
-\references{
+\source{ Cardiac monitors, heart rate meters, and alarms [American
+  National Standard (ANSI/AAMI EC13:2002)]. Arlington, VA: Association
+  for the Advancement of Medical Instrumentation, 2002 }
 
+\references{
   Goldberger AL, Amaral LAN, Glass L, Hausdorff JM, Ivanov PCh, Mark RG,
   Mietus JE, Moody GB, Peng CK, Stanley HE. \emph{PhysioBank, PhysioToolkit,
   and PhysioNet: Components of a New Research Resource for Complex
@@ -56,7 +56,6 @@ Hz with 12-bit resolution.
   Electronic Pages;
   \url{http://circ.ahajournals.org/cgi/content/full/101/23/e215}]; 2000
   (June 13).
-
 }
 \examples{
 
@@ -74,4 +73,4 @@ plot( main="ECG (mV)",
 
 
 }
-\keyword{data}
+\keyword{datasets}

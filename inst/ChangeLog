@@ -1,3 +1,15 @@
+1.16
+	Version bump
+
+1.15-4
+	Changed to .Call interface
+
+1.15-3
+	Fixed an off-by-one error when open.begin=T, regtest
+
+1.15-2
+	Added property for stepsTaken (backtrack results)
+
 1.15-1
 	Fixed warnings in current R checks
 
@@ -39,6 +51,6 @@
 	Fix plotting of three-way: reverse axis, partial
 	Implement & document partial option
 	Handle ts, mts objects
-	
+
 1.5-3
 	Fix malloc.h for OSX build

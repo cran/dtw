@@ -5,7 +5,7 @@
 #       Consiglio Nazionale delle Ricerche                           #
 #       www.isib.cnr.it                                    #
 #                                                             #
-#   $Id: globalCostMatrix.R 267 2012-08-12 14:37:26Z tonig $
+#   $Id: globalCostMatrix.R 290 2013-04-29 15:21:46Z tonig $
 #                                                             #
 ###############################################################
 
@@ -49,7 +49,6 @@ function(lm,
   # clear the cost and step matrix
   # these will be the outputs of the binary
   # for  cm use  seed if given
-
   if(!is.null(seed)) {
     cm <- seed;
   } else {
@@ -58,8 +57,6 @@ function(lm,
   }
 
   sm <- matrix(NA,nrow=n,ncol=m);
-
-
   
 
   if(is.loaded("computeCM") && native){
@@ -69,24 +66,39 @@ function(lm,
                        query.size=n, reference.size=m,
                        ...)]<-TRUE;
 
-    ## this call could be optimized
-    tmp<-.C(computeCM,NAOK=TRUE,
-            as.integer(dim(cm)),               # s
-            as.logical(wm),                    #
-            as.double(lm),
-            as.integer(nsteps),
-            as.double(step.matrix),
-            cmo=as.double(cm),                     # OUT
-            smo=as.integer(sm));                   # OUT
+    if(FALSE) {
+      ## this call could be optimized. Copies are killing perf.
+      out<-.C(computeCM,
+            NAOK=TRUE,
+            PACKAGE="dtw",
+            ## IN
+            as.integer(dim(cm)),               # int *s
+            as.logical(wm),                    # int *wm
+            as.double(lm),                     # double *lm
+            as.integer(nsteps),                # int *nstepsp
+            as.double(step.matrix),            # double *dir
+            ## IN+OUT
+            costMatrix=as.double(cm),                 # double *cm
+            ## OUT
+            directionMatrix=as.integer(sm));               # int *sm
 
-    cm<-matrix(tmp$cmo,nrow=n,ncol=m);
-    sm<-matrix(tmp$smo,nrow=n,ncol=m);
+      ## Hopefully avoids a copy
+      dim(out$costMatrix) <- c(n,m);     
+      dim(out$directionMatrix) <- c(n,m);
+      warning("You should not be here");
+    } else {
+      storage.mode(wm) <- "logical";
+      storage.mode(lm) <- "double";
+      storage.mode(cm) <- "double";
+      storage.mode(step.matrix) <- "double";
+      out <- .Call("computeCM_Call",
+                   wm,lm,cm,step.matrix);
+    }
 
   } else {
 
     ####################
     ## INTERPRETED PURE-R IMPLEMENTATION
-    
     warning("Native dtw implementation not available: using (slow) interpreted fallback");
                                         # now walk through the matrix, column-wise and row-wise,
                                         # and recursively compute the accumulated distance. Unreachable
@@ -110,8 +122,8 @@ function(lm,
           ii<-i-dir[s,2];                 # previous step in inp
           jj<-j-dir[s,3];                 # previous step in tpl
           if(ii>=1 && jj>=1) {            # element exists?
-            cc<-  dir[s,4];               # step penalty
-            if(cc == -1) {		#  -1? cumulative cost:
+            cc<-dir[s,4];                 # step penalty
+            if(cc == -1) {                #  -1? cumulative cost:
               clist[p]<-cm[ii,jj];	#  there must be exactly 1 per pattern
             } else {			#  a cost for 
               clist[p]<-clist[p]+cc*lm[ii,jj];
@@ -129,17 +141,14 @@ function(lm,
         }
       }
     }
+    out <- list(costMatrix=cm,directionMatrix=sm);
   }
 
   ## END PURE-R IMPLEMENTATION
   ####################
 
-
-  out<-list();
-  out$costMatrix<-cm;                   # to get distance
-  out$directionMatrix<-sm;              # to backtrack
-  out$stepPattern<-step.matrix;        # to backtrack
-
+  ## At this point out$cmo and out$smo should be set
+  out$stepPattern <- step.matrix;
   return(out);
 }
 

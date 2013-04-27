@@ -5,7 +5,7 @@
 #       Consiglio Nazionale delle Ricerche                           #
 #       www.isib.cnr.it                                    #
 #                                                             #
-#   $Id: stepPattern.R 267 2012-08-12 14:37:26Z tonig $
+#   $Id: stepPattern.R 286 2013-04-27 19:10:00Z tonig $
 #                                                             #
 ###############################################################
 
@@ -1013,4 +1013,7 @@ mori2006 <-  stepPattern(c(
  ),"M");
 
 
-
+## Completely unflexible: fixed slope 1. Only makes sense with
+## open.begin and open.end
+rigid <- stepPattern(c(1,1,1,-1,
+                       1,0,0,1  ),"N")

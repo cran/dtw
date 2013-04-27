@@ -5,7 +5,7 @@
 #       Consiglio Nazionale delle Ricerche                           #
 #       www.isib.cnr.it                                    #
 #                                                             #
-#   $Id: backtrack.R 267 2012-08-12 14:37:26Z tonig $
+#   $Id: backtrack.R 286 2013-04-27 19:10:00Z tonig $
 #                                                             #
 ###############################################################
 
@@ -26,10 +26,9 @@ function(gcm) {
   j <- gcm$jmin;
 
 
-
   ## drop rows with (0,0) deltas 
   nullrows <- dir[,2]==0 & dir[,3] ==0 ;
-  tmp <- dir[!nullrows,];
+  tmp <- dir[!nullrows,,drop=FALSE];
 
   ## Pre-compute steps
   stepsCache <- list();  
@@ -37,12 +36,11 @@ function(gcm) {
     stepsCache[[k]] <- .extractpattern(tmp,k);
   }
 
-  
+
   ## mapping lists
   ii<-c(i);
   jj<-c(j);
-
-
+  ss<-NULL;
 
   repeat {
     ## cross fingers for termination
@@ -58,7 +56,7 @@ function(gcm) {
     }
 
     ## undo the steps
-
+    ss<-c(s,ss);
     steps<-stepsCache[[s]];
     ns<-nrow(steps);
 
@@ -77,9 +75,7 @@ function(gcm) {
   }
 
 
-  out<-list();
-  out$index1<-ii;
-  out$index2<-jj;
+  out<-list(index1=ii,index2=jj,stepsTaken=ss);
 
   return(out);
 }

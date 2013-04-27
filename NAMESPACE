@@ -62,6 +62,7 @@ export(typeIId)
 export(typeIIIc)
 export(typeIVc)
 export(mori2006)
+export(rigid)
 
 # Warp
 export(warp)

@@ -35,6 +35,15 @@ ds<- dtw:::globalCostMatrix(ldist)
 dsn<- dtw:::globalCostMatrix(ldist,native=FALSE)
 all.equal(ds,dsn)		# TRUE
 
+
+### Open begin-end matching
+query <- 2:3 + 0.01
+ref <- 1:4
+obe <- dtw(query,ref,open.begin=T,open.end=T,step=asymmetric)
+all.equal(obe$distance,0.02)    # TRUE
+all.equal(obe$index2,c(2,3))    # TRUE
+
+
 ### Use proxy::dist
 query <- cbind(1:10,1)
 ref <- cbind(11:15,2)

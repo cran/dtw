@@ -5,7 +5,7 @@
 #       Consiglio Nazionale delle Ricerche                           #
 #       www.isib.cnr.it                                    #
 #                                                             #
-#   $Id: dtw.R 267 2012-08-12 14:37:26Z tonig $
+#   $Id: dtw.R 285 2013-04-27 18:30:52Z tonig $
 #                                                             #
 ###############################################################
 
@@ -77,8 +77,8 @@ function(x, y=NULL,
   if (open.begin) {
     
     ##  ensure proper normalization
-    if(norm != "N") {
-      stop("Open-begin currently only supported for 'N' normalization patterns (R-J type (c), or S-C asymmetric)");
+    if(is.na(norm) || norm != "N") {
+      stop("Open-begin requires step patterns with 'N' normalization (e.g. asymmetric, or R-J types (c)). See papers in citation().");
     }
 
     ## prepend a null row
@@ -159,20 +159,17 @@ function(x, y=NULL,
   if(!distance.only) {
     ## perform the backtrack
     mapping <- backtrack(gcm);
-
-    gcm$index1 <- mapping$index1;
-    gcm$index2 <- mapping$index2;
+    gcm <- c(gcm,mapping);    ## Add the properties to gcm
   }
 
 
   ## open-begin: discard first elements
   if(open.begin) {
     gcm$index1 <- gcm$index1[-1]-1;
-    gcm$index2 <- gcm$index2[-1]-1;
+    gcm$index2 <- gcm$index2[-1];
     lm <- lm[-1,];
     gcm$costMatrix <- gcm$costMatrix[-1,];
     gcm$directionMatrix <- gcm$directionMatrix[-1,];
-    
   }
 
 
@@ -192,7 +189,6 @@ function(x, y=NULL,
 
   ## if a dtw object is to be sponsored:
   class(gcm) <- "dtw";
-
   return(gcm);
 }
 

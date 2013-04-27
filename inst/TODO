@@ -1,17 +1,23 @@
 
-=== Suggestion from JSS paper ===
+* R_inf for comparisons
 
-* Fix warnings in dtwWindow.plot		DONE
-* Add dtw.print method				DONE  
-* Make type="l" default for dtw.plot		DONE
-* Use NAMESPACE feature				DONE
-
-
-=== Other ===
+* Remove C test
 
 * Optimize memory use (e.g. pass distance.only to the native
   implementation and avoid returning the two large matrices)
 
+
+
+== Scratch notes ==
+
+library(dtw,lib.loc="/tmp/")
+
+s<-10000
+m<-matrix(runif(s*s),s,s)
+system.time(dtw(m))
+
+ m <- matrix(1,ncol=10,nrow=10)
+  for(i in 2:10)for(j in 2:10)m[i,j]<-m[i-1,j]+m[i-1,j-1]+m[i,j-1]
 
 
 

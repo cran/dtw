@@ -4,7 +4,7 @@
  * (c) Toni Giorgino  2007-2012
  * Distributed under GPL-2 with NO WARRANTY.
  *
- * $Id: computeCM.c 268 2012-08-12 15:01:18Z tonig $
+ * $Id: computeCM.c 292 2013-05-28 14:51:52Z tonig $
  *  
  */
 
@@ -16,17 +16,16 @@
 
 #ifdef TEST_UNIT
 // Define R-like functions - a bad idea
-     #define R_alloc(n,size) malloc((n)*(size))
-     #define my_R_free(ptr) free((ptr))
+     #include <limits.h>
+     #define R_NaInt INT_MIN
+     #define R_alloc(n,size) alloca((n)*(size))
      #define error(...) { fprintf (stderr, __VA_ARGS__); exit(-1); }
 #else
      #include <R.h>
-     #define my_R_free(ptr) 
 #endif
 
 
 
-#include "computeCM.h"
 
 #ifndef NAN
 #error "This code requires native IEEE NAN support. Possible solutions: 1) verify you are using gcc with -std=gnu99; 2) use the fallback interpreted DTW version (should happen automatically); 3) ask the author"
@@ -42,10 +41,29 @@
     clist[z]=NAN; }
 
 
+
+
+/*
+ * Auxiliary function: return the arg min, ignoring NANs, -1 if all NANs 
+*/
+static inline
+int argmin(const double *list, int n) {
+  int ii=-1;
+  double vv=INFINITY;
+  for(int i=0; i<n; i++) {
+    if(!isnan(list[i]) && list[i]<vv) {
+      ii=i;
+      vv=list[i];
+    }
+  }
+  return ii;
+}
+
+
+
 /* 
  *  Compute cumulative cost matrix: replaces kernel in globalCostMatrix.R
  */
-
 
 /* For now, this code is also valid outside R, as a test unit (the
    TEST_UNIT will be defined). This means that we have to refrain to
@@ -55,14 +73,15 @@
 /* R matrix fastest index is row */
 
 void computeCM(			/* IN */
-	       int *s,		/* mtrx dimensions */
-	       int *wm,		/* windowing matrix */
-	       double *lm,	/* local cost mtrx */
-	       int *nstepsp,	/* no of steps in stepPattern */
-	       double *dir,	/* stepPattern description */
-				/* OUT */
-	       double *cm,	/* cost matrix */
-	       int *sm		/* direction mtrx */
+	       const int *s,		/* mtrx dimensions, int */
+	       const int *wm,		/* windowing matrix, logical=int */
+	       const double *lm,	/* local cost mtrx, numeric */
+	       const int *nstepsp,	/* no of steps in stepPattern, int */
+	       const double *dir,	/* stepPattern description, numeric */
+				/* IN+OUT */
+	       double *cm,		/* cost matrix, numeric */
+    	                        /* OUT */
+	       int *sm			/* direction mtrx, int */
 				) {
 
   /* recover matrix dim */
@@ -96,17 +115,18 @@ void computeCM(			/* IN */
   /* assuming pattern ids are in ascending order */
   int npats=pn[nsteps-1];
 
-
-
   /* prepare a cost list per pattern */
   double *clist=(double*)
     R_alloc(npats,sizeof(double));
-
 
   /* we do not initialize the seed - the caller is supposed
      to do so
      cm[0]=lm[0];
    */
+
+  /* clear the direction matrix */
+  for(int i=0; i<m*n; i++) 
+    sm[i]=R_NaInt;			/* should be NA_INTEGER? */
 
 
   /* lets go */
@@ -144,51 +164,138 @@ void computeCM(			/* IN */
       }
     }
   }
-
-
   /* Memory alloc'd by R_alloc is automatically freed */
-  my_R_free(clist);
-  my_R_free(sc);
-  my_R_free(di);
-  my_R_free(dj);
-  my_R_free(pn);
-
-
-
 }
 
 
 
-/* return the arg min, ignoring NANs,
-   -1 if all NANs */
-int argmin(double *list, int n) {
-  int ii=-1;
-  double vv=INFINITY;
-  for(int i=0; i<n; i++) {
-    if(!isnan(list[i]) && list[i]<vv) {
-      ii=i;
-      vv=list[i];
-    }
-  }
-  return ii;
+/* --------------------------------------------------
+ *
+ * Wrapper for .Call, avoids several copies. Returns a list with names
+ * "costMatrix" and "directionMatrix"
+ */
+#ifndef TEST_UNIT
+#include <Rdefines.h>
+#include <Rinternals.h>
+
+SEXP computeCM_Call(SEXP wm, 	/* logical */
+		    SEXP lm,	/* double */
+		    SEXP cm,	/* double */
+		    SEXP dir) {	/* double */
+
+  /* Get problem size */
+  SEXP lm_dim;
+  PROTECT(lm_dim = GET_DIM(lm)); /* ---- 1 */
+  int *p_lm_dim = INTEGER_POINTER(lm_dim);
+
+  /* Get pattern size */
+  SEXP dir_dim;
+  PROTECT(dir_dim = GET_DIM(dir)); /* ---- 2 */
+  int nsteps=INTEGER_POINTER(dir_dim)[0];
+
+  /* Cost matrix (input+output 1).  */
+  SEXP cmo;
+  PROTECT(cmo=duplicate(cm)); /* ---- 3 */
+
+  /* Output 2: smo, INTEGER */
+  SEXP smo;
+  PROTECT(smo=allocMatrix(INTSXP,p_lm_dim[0],p_lm_dim[1]));  /* ---- 4 */
+
+  /* Dispatch to C */
+  computeCM(p_lm_dim,
+	    LOGICAL_POINTER(wm),
+	    NUMERIC_POINTER(lm),
+	    &nsteps,
+	    NUMERIC_POINTER(dir),
+	    NUMERIC_POINTER(cmo),
+	    INTEGER_POINTER(smo));
+	    
+  /* cmo and smo are now set. Put them in a list. From S. Blay,
+     http://www.sfu.ca/~sblay/R-C-interface.ppt */
+  SEXP list_names;
+  PROTECT(list_names = allocVector(STRSXP,2)); /* ---- 5 */
+  SET_STRING_ELT(list_names,0,mkChar("costMatrix")); 
+  SET_STRING_ELT(list_names,1,mkChar("directionMatrix")); 
+
+  // Creating a list with 2 vector elements:
+  SEXP list;
+  PROTECT(list = allocVector(VECSXP, 2)); /* ---- 6 */
+  SET_VECTOR_ELT(list, 0, cmo); 
+  SET_VECTOR_ELT(list, 1, smo); 
+  // and attaching the vector names:
+  setAttrib(list, R_NamesSymbol, list_names); 
+
+  UNPROTECT(6);
+  return list;
 }
 
+#endif
 
 
-/*  Unit test - made for debuggers
- ***********************************************************
+
+
+/* Test as follows:
+
+   R CMD SHLIB -d computeCM.c
+
+    dyn.load("computeCM.so")
+    lm <- matrix(nrow = 6, ncol = 6, byrow = TRUE, c(
+      1, 1, 2, 2, 3, 3, 
+      1, 1, 1, 2, 2, 2, 
+      3, 1, 2, 2, 3, 3, 
+      3, 1, 2, 1, 1, 2, 
+      3, 2, 1, 2, 1, 2, 
+      3, 3, 3, 2, 1, 2
+    ))
+    step.matrix <- as.matrix(structure(c(1, 1, 2, 2, 3, 3, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 2,
+     0, -1, 1, -1, 1, -1, 1), .Dim = c(6L, 4L), class = "stepPattern", npat = 3, norm = "N"))
+    nsteps<-dim(step.matrix)[1]
+    wm <- matrix(TRUE,6,6)
+    cm <- matrix(NA,6,6)
+    cm[1,1] <- lm[1,1];
+    sm <- matrix(NA,6,6)
+
+    out<-.C("computeCM",NAOK=TRUE,
+       as.integer(dim(cm)),
+       as.logical(wm),
+       as.double(lm),
+       as.integer(nsteps),
+       as.double(step.matrix),
+       cmo=as.double(cm),
+       smo=as.integer(sm))
+
+    cmoo<-matrix(out$cmo,6,6)
+    smoo<-matrix(out$smo,6,6)
+    
+    storage.mode(wm) <- "logical"
+    storage.mode(lm) <- "double"
+    storage.mode(cm) <- "double"
+    storage.mode(step.matrix) <- "double"
+    
+    out2<-.Call("computeCM_Call", wm, lm, cm, step.matrix)
+
 */
 
 
+
+
+
+
+
+
 #ifdef TEST_UNIT
+/* --------------------------------------------------
+ * Unit test - for debugging
+ */
+
+void tm_print(int *s, double *mm, double *r);
 
 /* test main  equivalent to the following
    mylm<-outer(1:10,1:10)
    globalCostNative(mylm)->myg2
 */
 
-
-#define TS 10
+#define TS 5000
 #define TSS (TS*TS)
 int main(int argc,char **argv) {
   int ts[]={TS,TS};
@@ -259,7 +366,7 @@ void tm_print(int *s, double *mm, double *r) {
       if(isnan(val)) {
 	//	printf("NAN %d %d\n",i,j);
       }
-      fprintf(f,"[%2d,%2d] = %4.2lf    ",i,j,val);
+      //      fprintf(f,"[%2d,%2d] = %4.2lf    ",i,j,val);
     }
     fprintf(f,"\n");
   }
@@ -268,5 +375,5 @@ void tm_print(int *s, double *mm, double *r) {
   printf("** tm dump end **\n");
 }
 
+#endif
 
- #endif
