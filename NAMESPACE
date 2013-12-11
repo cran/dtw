@@ -68,5 +68,9 @@ export(rigid)
 export(warp)
 export(warpArea)
 
+# Paths
+export(countPaths)
+#export(nearOptimalPaths)
+
 # Data
 #export(aami3a,aami3b)

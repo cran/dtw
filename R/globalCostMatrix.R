@@ -5,7 +5,7 @@
 #       Consiglio Nazionale delle Ricerche                           #
 #       www.isib.cnr.it                                    #
 #                                                             #
-#   $Id: globalCostMatrix.R 290 2013-04-29 15:21:46Z tonig $
+#   $Id: globalCostMatrix.R 343 2013-12-11 11:04:41Z tonig $
 #                                                             #
 ###############################################################
 
@@ -53,7 +53,7 @@ function(lm,
     cm <- seed;
   } else {
     cm <- matrix(NA,nrow=n,ncol=m);
-    cm[1,1] <- lm[1,1];
+    cm[1,1] <- lm[1,1];                 # Questionable.
   }
 
   sm <- matrix(NA,nrow=n,ncol=m);

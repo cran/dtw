@@ -5,7 +5,7 @@
 #       Consiglio Nazionale delle Ricerche                           #
 #       www.isib.cnr.it                                    #
 #                                                             #
-#   $Id: dtw.R 285 2013-04-27 18:30:52Z tonig $
+#   $Id: dtw.R 310 2013-06-03 17:14:37Z tonig $
 #                                                             #
 ###############################################################
 
@@ -94,7 +94,6 @@ function(x, y=NULL,
     np <- n;
   }
 
-
   
   ## perform the computation
   gcm <- globalCostMatrix(lm, step.matrix=dir,
@@ -110,9 +109,9 @@ function(x, y=NULL,
   gcm$call <- match.call();
   gcm$openEnd <- open.end;
   gcm$openBegin <- open.begin;
+  gcm$windowFunction <- wfun;
 
-
-  ## last column, normalized
+  ## last row (misnamed), normalized
   lastcol <- gcm$costMatrix[np,];
 
   if(is.na(norm)) {
@@ -129,7 +128,6 @@ function(x, y=NULL,
   ## for complete alignment
   gcm$jmin <- m;
 
-
   
   ## for open-end alignment: normalize
   if (open.end) {
@@ -144,7 +142,7 @@ function(x, y=NULL,
 
   ## alignment valid?
   if(is.na(gcm$distance)) {
-    stop("No warping paths exists that is allowed by costraints"); 
+    stop("No warping path exists that is allowed by costraints"); 
   }
   
   

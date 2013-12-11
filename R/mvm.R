@@ -5,7 +5,7 @@
 #       Consiglio Nazionale delle Ricerche                           #
 #       www.isib.cnr.it                                    #
 #                                                             #
-#   $Id: stepPattern.R 146 2008-06-10 15:01:26Z tonig $
+#   $Id: mvm.R 311 2013-06-03 17:23:17Z tonig $
 #                                                             #
 ###############################################################
 

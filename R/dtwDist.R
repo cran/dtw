@@ -5,7 +5,7 @@
 #       Consiglio Nazionale delle Ricerche                           #
 #       www.isib.cnr.it                                    #
 #                                                             #
-#   $Id: distance.R 51 2007-12-11 10:59:08Z tonig $
+#   $Id: dtwDist.R 311 2013-06-03 17:23:17Z tonig $
 #                                                             #
 ###############################################################
 

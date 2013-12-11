@@ -1,14 +1,15 @@
 library(dtw);
 
-### Synthetic example: check indexes, distance
+### Synthetic example: check indexes, distance, cost matrix
 ldist<-matrix(1,nrow=6,ncol=6);  # Matrix of ones
 ldist[2,]<-0; ldist[,5]<-0;      # Mark a clear path of zeroes
 ldist[2,5]<-.01;		 # Forcely cut the corner
 
-ds<-dtw(ldist);			 # DTW with user-supplied local cost matrix
+ds<-dtw(ldist,keep=T);		 # DTW with user-supplied local cost matrix
 ds$distance			 # 2
 ds$index1			 # 1 2 2 2 2 3 4 5 6 6
 ds$index2			 # 1 1 2 3 4 5 5 5 5 6
+ds$costMatrix
 
 da<-dtw(ldist,step=asymmetric);	 # Also compute the asymmetric
 da$distance			 # 2
@@ -20,6 +21,10 @@ da$distance			 # 1
 da$index1			 # 1 2 2 2 2 3 4 5 6 6
 da$index2			 # 1 1 2 3 4 5 5 5 5 6
 
+### Count paths
+stopifnot(countPaths(ds)==1683)     
+
+### Native vs non-native
 ds<- dtw:::globalCostMatrix(ldist)
 dsn<- dtw:::globalCostMatrix(ldist,native=FALSE)
 stopifnot(all.equal(ds,dsn))		 # TRUE

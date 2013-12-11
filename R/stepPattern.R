@@ -5,7 +5,7 @@
 #       Consiglio Nazionale delle Ricerche                           #
 #       www.isib.cnr.it                                    #
 #                                                             #
-#   $Id: stepPattern.R 286 2013-04-27 19:10:00Z tonig $
+#   $Id: stepPattern.R 343 2013-12-11 11:04:41Z tonig $
 #                                                             #
 ###############################################################
 
@@ -178,7 +178,14 @@ print.stepPattern <-function(x,...) {
 }
 
 
+# Auxiliary function to easily map pattern -> delta
 
+.mkDirDeltas <- function(dir) {
+  m1 <- dir[ dir[,4]==-1, ,drop=FALSE ];
+  m1 <- m1[,-4];
+  m1 <- m1[,-1];
+  return(m1);
+}
 
 
 ## Extract rows belonging to pattern no. sn
@@ -556,9 +563,9 @@ rabinerJuangStepPattern <- function(type,slope.weighting="d",smoothed=FALSE) {
 ## aka Quasi-symmetric \cite{White1976}
 ## normalization: no (N+M?)
 symmetric1 <- stepPattern(c(
-                            1,0,1,-1,
+                            1,1,1,-1,
                             1,0,0,1,
-                            2,1,1,-1,
+                            2,0,1,-1,
                             2,0,0,1,
                             3,1,0,-1,
                             3,0,0,1
@@ -568,10 +575,10 @@ symmetric1 <- stepPattern(c(
 ## Normal symmetric
 ## normalization: N+M
 symmetric2 <- stepPattern(c(
-                            1,0,1,-1,
-                            1,0,0,1,
-                            2,1,1,-1,
-                            2,0,0,2,
+                            1,1,1,-1,
+                            1,0,0,2,
+                            2,0,1,-1,
+                            2,0,0,1,
                             3,1,0,-1,
                             3,0,0,1
                             ),"N+M");

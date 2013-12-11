@@ -5,10 +5,11 @@
 #       Consiglio Nazionale delle Ricerche                    #
 #       www.isib.cnr.it                                       #
 #                                                             #
-#   $Id: Makevars 289 2013-04-29 14:41:34Z tonig $
+#   $Id: Makevars 320 2013-06-04 16:25:35Z tonig $
 #                                                             #
 ###############################################################
 
+PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"`
 
 
 # Preserve the R makefile default target

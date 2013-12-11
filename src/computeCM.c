@@ -4,7 +4,7 @@
  * (c) Toni Giorgino  2007-2012
  * Distributed under GPL-2 with NO WARRANTY.
  *
- * $Id: computeCM.c 292 2013-05-28 14:51:52Z tonig $
+ * $Id: computeCM.c 343 2013-12-11 11:04:41Z tonig $
  *  
  */
 
@@ -44,7 +44,8 @@
 
 
 /*
- * Auxiliary function: return the arg min, ignoring NANs, -1 if all NANs 
+ * Auxiliary function: return the arg min, ignoring NANs, -1 if all NANs
+ * TODO: remove isnan and explain, check, time
 */
 static inline
 int argmin(const double *list, int n) {
@@ -101,19 +102,19 @@ void computeCM(			/* IN */
   sc=(double*) R_alloc(nsteps,sizeof(double)); /* step cost */
 
   for(int i=0; i<nsteps; i++) {
-    pn[i]=dir[EP(i,0)];
+    pn[i]=dir[EP(i,0)]-1;	/* Indexing C-way */
     di[i]=dir[EP(i,1)];
     dj[i]=dir[EP(i,2)];
     sc[i]=dir[EP(i,3)];
 
     if(pn[i]<0 || pn[i]>=nsteps) {
       error("Error on pattern row %d, pattern number %d out of bounds\n",
-	      i,pn[i]);
+	      i,pn[i]+1);
     }
   }
 
   /* assuming pattern ids are in ascending order */
-  int npats=pn[nsteps-1];
+  int npats=pn[nsteps-1]+1;
 
   /* prepare a cost list per pattern */
   double *clist=(double*)
@@ -143,7 +144,7 @@ void computeCM(			/* IN */
 
       CLEARCLIST;
       for(int s=0; s<nsteps; s++) {
-	int p=pn[s]-1;		/* indexing C-way */
+	int p=pn[s];		/* indexing C-way */
 
 	int ii=i-di[s];
 	int jj=j-dj[s];

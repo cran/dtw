@@ -1,3 +1,12 @@
+1.17-1
+	Moved vignette and other updates for R-3.1.0.  Step patterns
+	symmetric1 and symmetric2 have been reordered so that they prefer
+	the diagonal step in case of ties. This may change alignments (not
+	distances) when ties are present.
+
+1.16-1
+	Added countPaths, store window function
+
 1.16
 	Version bump
 

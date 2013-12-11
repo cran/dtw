@@ -1,7 +1,7 @@
 
-R version 2.6.1 (2007-11-26)
-Copyright (C) 2007 The R Foundation for Statistical Computing
-ISBN 3-900051-07-0
+R version 3.0.2 (2013-09-25) -- "Frisbee Sailing"
+Copyright (C) 2013 The R Foundation for Statistical Computing
+Platform: x86_64-redhat-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -20,26 +20,33 @@ Loading required package: proxy
 
 Attaching package: 'proxy'
 
+The following objects are masked from 'package:stats':
 
-The following object(s) are masked from 'package:stats':
+    as.dist, dist
 
-    as.dist, dist 
-
-Loaded dtw v1.16. See ?dtw for help, citation("dtw") for use in publication.
+Loaded dtw v1.17-1. See ?dtw for help, citation("dtw") for use in publication.
 
 > 
-> ### Synthetic example: check indexes, distance
+> ### Synthetic example: check indexes, distance, cost matrix
 > ldist<-matrix(1,nrow=6,ncol=6);  # Matrix of ones
 > ldist[2,]<-0; ldist[,5]<-0;      # Mark a clear path of zeroes
 > ldist[2,5]<-.01;		 # Forcely cut the corner
 > 
-> ds<-dtw(ldist);			 # DTW with user-supplied local cost matrix
+> ds<-dtw(ldist,keep=T);		 # DTW with user-supplied local cost matrix
 > ds$distance			 # 2
 [1] 2
 > ds$index1			 # 1 2 2 2 2 3 4 5 6 6
- [1] 1 2 2 2 2 3 4 5 6 6
+[1] 1 2 2 2 3 4 5 6 6
 > ds$index2			 # 1 1 2 3 4 5 5 5 5 6
- [1] 1 1 2 3 4 5 5 5 5 6
+[1] 1 2 3 4 5 5 5 5 6
+> ds$costMatrix
+     [,1] [,2] [,3] [,4] [,5] [,6]
+[1,]    1    2    3    4 4.00 5.00
+[2,]    1    1    1    1 1.01 1.01
+[3,]    2    2    2    2 1.00 2.00
+[4,]    3    3    3    3 1.00 2.00
+[5,]    4    4    4    4 1.00 2.00
+[6,]    5    5    5    5 1.00 2.00
 > 
 > da<-dtw(ldist,step=asymmetric);	 # Also compute the asymmetric
 > da$distance			 # 2
@@ -57,6 +64,10 @@ Loaded dtw v1.16. See ?dtw for help, citation("dtw") for use in publication.
 > da$index2			 # 1 1 2 3 4 5 5 5 5 6
  [1] 1 1 2 3 4 5 5 5 5 6
 > 
+> ### Count paths
+> stopifnot(countPaths(ds)==1683)     
+> 
+> ### Native vs non-native
 > ds<- dtw:::globalCostMatrix(ldist)
 > dsn<- dtw:::globalCostMatrix(ldist,native=FALSE)
 Warning message:
@@ -104,3 +115,6 @@ In dtw:::globalCostMatrix(ldist, native = FALSE) :
 > stopifnot(sum(lambda)==470)
 > 
 > 
+> proc.time()
+   user  system elapsed 
+  1.456   0.015   1.473 
