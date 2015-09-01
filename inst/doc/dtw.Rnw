@@ -230,7 +230,7 @@ plot(dtw(test,ref,k=TRUE),type="two",off=1,match.lty=2,match.indices=20)
 
 \begin{figure}
   \centering
-  \includegraphics[width=.95\textwidth]{object-diagram}
+  \includegraphics[width=.95\textwidth]{figures/object-diagram}
   \caption{Block diagram of the main functions (rounded boxes) and object
     classes (rectangles) of the \dtw\ package and their
     relationship.  Arrows going in functions are arguments, outgoing are
@@ -594,7 +594,7 @@ and ordinate respectively (Figure~\ref{fig:plotlike}).
 
 \begin{figure}
   \centering
-  \includegraphics[width=.9\textwidth]{plot-conventions}
+  \includegraphics[width=.9\textwidth]{figures/plot-conventions}
   \caption{Different conventions for displaying distance matrices:
     plot-like (left) and matrix (right) arrangements. }
   \label{fig:plotlike}
@@ -954,8 +954,8 @@ elasticity should be made at least as large as the reference length.
 \begin{figure}
   \centering
   % plot(dtw(reference,rep(query,2),keep=TRUE,step=mvmStepPattern(100),p=TRUE),type="three")
-  \includegraphics[width=.7\textwidth]{alignMVM}
-  \includegraphics[width=.27\textwidth]{mvmSP}
+  \includegraphics[width=.7\textwidth]{figures/alignMVM}
+  \includegraphics[width=.27\textwidth]{figures/mvmSP}
   \caption{Left: MVM alignment of a truncated query; ``jumps'' may
     occur in the middle of the query, e.g., around time 175. Note that
     since time compression is not allowed, the valley at query index

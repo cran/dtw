@@ -1,4 +1,4 @@
-library(dtw);
+suppressPackageStartupMessages(library(dtw));
 
 ### Synthetic example: check indexes, distance, cost matrix
 ldist<-matrix(1,nrow=6,ncol=6);  # Matrix of ones

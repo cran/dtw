@@ -5,7 +5,7 @@
 #       Consiglio Nazionale delle Ricerche                           #
 #       www.isib.cnr.it                                    #
 #                                                             #
-#   $Id: backtrack.R 286 2013-04-27 19:10:00Z tonig $
+#   $Id: backtrack.R 388 2015-05-19 19:09:08Z tonig $
 #                                                             #
 ###############################################################
 
@@ -38,8 +38,8 @@ function(gcm) {
 
 
   ## mapping lists
-  ii<-c(i);
-  jj<-c(j);
+  iis<-ii<-c(i);
+  jjs<-jj<-c(j);
   ss<-NULL;
 
   repeat {
@@ -72,10 +72,16 @@ function(gcm) {
     ## And don't forget where we arrived to
     i<-i-steps[ns,1];
     j<-j-steps[ns,2];
+
+    ## iis & jjs are backtracking without the intermediate steps
+    iis<-c(i,iis)
+    jjs<-c(j,jjs)
   }
 
 
-  out<-list(index1=ii,index2=jj,stepsTaken=ss);
+  out<-list(index1=ii,index2=jj,
+            index1s=iis, index2s=jjs,
+            stepsTaken=ss);
 
   return(out);
 }

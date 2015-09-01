@@ -110,7 +110,7 @@ is.dtw(d)
   If the warping function is not required, computation can be sped
   up enabling the \code{distance.only=TRUE} switch, which skips
   the backtracking step. The output object will then lack the 
-  \code{index1}, \code{index2} and  \code{stepsTaken} fields.
+  \code{index{1,2,1s,2s}} and  \code{stepsTaken} fields.
 
   \code{is.dtw} tests whether the argument is of class \code{dtw}.
 
@@ -134,6 +134,8 @@ is.dtw(d)
     (integers indexing production rules in the chosen step pattern)}
   \item{stepsTaken}{the list of steps taken from the beginning
     to the end of the alignment (integers indexing chosen step pattern)}
+  \item{index1s, index2s}{same as \code{index1/2}, excluding
+    intermediate steps for multi-step patterns like \code{\link{asymmetricP05}} }
   \item{costMatrix}{if \code{keep.internals=TRUE}, the cumulative
     cost matrix}
   \item{query, reference}{if \code{keep.internals=TRUE} and passed as the \code{x}
@@ -149,12 +151,12 @@ is.dtw(d)
   Tormene, P.; Giorgino, T.; Quaglini, S. & Stefanelli,
   M. \emph{Matching incomplete time series with dynamic time warping: an
   algorithm and an application to post-stroke rehabilitation.} Artif
-  Intell Med, 2009, 45, 11-34
+  Intell Med, 2009, 45, 11-34. \url{http://dx.doi.org/10.1016/j.artmed.2008.11.007}
 \cr \cr
   Sakoe, H.; Chiba, S., \emph{Dynamic programming algorithm optimization
   for spoken word recognition,} Acoustics, Speech, and Signal Processing
   [see also IEEE Transactions on Signal Processing], IEEE Transactions
-  on , vol.26, no.1, pp. 43-49, Feb 1978 URL:
+  on , vol.26, no.1, pp. 43-49, Feb 1978.
   \url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=1163055}
 \cr \cr
   Mori, A.; Uchida, S.; Kurazume, R.; Taniguchi, R.; Hasegawa, T. &
@@ -170,8 +172,11 @@ is.dtw(d)
   Rabiner L, Rosenberg A, Levinson S (1978). \emph{Considerations in
     dynamic time warping algorithms for discrete word recognition.}
   IEEE Trans. Acoust., Speech, Signal Process.,
-  26(6), 575-582. ISSN 0096-3518. 
-
+  26(6), 575-582. ISSN 0096-3518.
+\cr \cr
+  Muller M. \emph{Dynamic Time Warping} in \emph{Information Retrieval for Music
+  and Motion}. Springer Berlin Heidelberg; 2007. p. 69-84. 
+  \url{http://link.springer.com/chapter/10.1007/978-3-540-74048-3_4}
 }
 
 \author{Toni Giorgino}

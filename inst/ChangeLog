@@ -1,3 +1,10 @@
+1.18-1
+        Compliant with new CRAN checks
+
+1.18
+	Added index1s, index2s properties: backtrack skipping intermediate
+	steps
+
 1.17-1
 	Moved vignette and other updates for R-3.1.0.  Step patterns
 	symmetric1 and symmetric2 have been reordered so that they prefer

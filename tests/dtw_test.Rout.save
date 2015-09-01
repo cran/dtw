@@ -15,17 +15,7 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
-> library(dtw);
-Loading required package: proxy
-
-Attaching package: 'proxy'
-
-The following objects are masked from 'package:stats':
-
-    as.dist, dist
-
-Loaded dtw v1.17-1. See ?dtw for help, citation("dtw") for use in publication.
-
+> suppressPackageStartupMessages(library(dtw));
 > 
 > ### Synthetic example: check indexes, distance, cost matrix
 > ldist<-matrix(1,nrow=6,ncol=6);  # Matrix of ones

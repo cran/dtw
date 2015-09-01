@@ -5,7 +5,7 @@
 #       Consiglio Nazionale delle Ricerche                           #
 #       www.isib.cnr.it                                    #
 #                                                             #
-#   $Id: dtw.R 310 2013-06-03 17:14:37Z tonig $
+#   $Id: dtw.R 388 2015-05-19 19:09:08Z tonig $
 #                                                             #
 ###############################################################
 
@@ -164,7 +164,9 @@ function(x, y=NULL,
   ## open-begin: discard first elements
   if(open.begin) {
     gcm$index1 <- gcm$index1[-1]-1;
+    gcm$index1s <- gcm$index1s[-1]-1;
     gcm$index2 <- gcm$index2[-1];
+    gcm$index2s <- gcm$index2s[-1];
     lm <- lm[-1,];
     gcm$costMatrix <- gcm$costMatrix[-1,];
     gcm$directionMatrix <- gcm$directionMatrix[-1,];

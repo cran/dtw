@@ -1,5 +1,12 @@
-# import(proxy)
 useDynLib(dtw,computeCM)
+
+# Computed on 3-jul-2015 for new CRAN checks
+importFrom("graphics", "axis", "box", "contour", "image", "layout", "lines", "matplot", "par", "plot", "points", "segments", "text")
+importFrom("grDevices", "terrain.colors")
+importFrom("stats", "approx")
+importFrom("utils", "head")
+
+# import(proxy)
 importFrom(proxy,dist)
 importFrom(proxy,pr_DB)
 
