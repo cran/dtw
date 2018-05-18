@@ -1,11 +1,11 @@
 ###############################################################
 #                                                             #
 #   Author: Toni Giorgino <toni.giorgino,gmail.com>           #
-#       Istituto di Ingegneria Biomedica (ISIB-CNR)                 #
+#       Istituto di Neuroscienze (IN-CNR)                 #
 #       Consiglio Nazionale delle Ricerche                           #
 #       www.isib.cnr.it                                    #
 #                                                             #
-#   $Id: window.R 267 2012-08-12 14:37:26Z tonig $
+#   $Id: window.R 425 2016-08-25 19:48:58Z tonig $
 #                                                             #
 ###############################################################
 

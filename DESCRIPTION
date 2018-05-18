@@ -4,13 +4,13 @@ Title: Dynamic Time Warping Algorithms
 Description: A comprehensive implementation of dynamic time warping (DTW) algorithms in R.  DTW computes the optimal (least cumulative distance) alignment between points of two time series.  Common DTW variants covered include local (slope) and global (window) constraints, subsequence matches, arbitrary distance definitions, normalizations, minimum variance matching, and so on.  Provides cumulative distances, alignments, specialized plot styles, etc.
 Author: Toni Giorgino <toni.giorgino@gmail.com>,
 Maintainer: Toni Giorgino <toni.giorgino@gmail.com>
-Version: 1.18-1
-Date: 2015-9-1
+Version: 1.20-1
+Date: 2018-5-17
 Depends: R (>= 2.10.0), proxy
 Imports: graphics, grDevices, stats, utils
 License: GPL (>= 2)
 URL: http://dtw.r-forge.r-project.org/
 NeedsCompilation: yes
-Packaged: 2015-09-01 10:12:16 UTC; toni
+Packaged: 2018-05-17 17:01:52 UTC; toni
 Repository: CRAN
-Date/Publication: 2015-09-01 17:55:23
+Date/Publication: 2018-05-18 05:47:54 UTC

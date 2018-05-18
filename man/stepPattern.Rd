@@ -121,7 +121,7 @@ is.stepPattern(x)
   including Sakoe-Chiba [Sakoe1978]; Rabiner-Juang [Rabiner1993]; and Rabiner-Myers [Myers1980].
   The \code{dtw} package implements all of the transition types found in
   those papers, with the exception of Itakura's and Velichko-Zagoruyko's
-  steps which require subtly different algorithms (this may be rectified
+  steps, which require subtly different algorithms (this may be rectified
   in the future). Itakura recursion is almost, but not quite, equivalent
   to \code{typeIIIc}.
   
@@ -133,21 +133,23 @@ is.stepPattern(x)
   
 \strong{1. Well-known step patterns}
 
-  These common transition types are used in quite a lot of implementations.
+  Common DTW implementations are based on one of the following transition types.
 
-  \code{symmetric1} (or White-Neely) is the commonly used
-  quasi-symmetric, no local constraint, non-normalizable. It is biased
-  in favor of oblique steps.
-  
-  \code{symmetric2} is normalizable, symmetric, with no local slope
+  \code{symmetric2} is the normalizable, symmetric, with no local slope
   constraints.  Since one diagonal step costs as much as the two
   equivalent steps along the sides, it can be normalized dividing by
-  \code{N+M} (query+reference lengths).
+  \code{N+M} (query+reference lengths). It is widely used and 
+  the default.
 
   \code{asymmetric} is asymmetric, slope constrained between 0 and
   2. Matches each element of the query time series exactly once, so
   the warping path \code{index2~index1} is guaranteed to
   be single-valued.  Normalized by \code{N} (length of query).
+
+  \code{symmetric1} (or White-Neely) is quasi-symmetric, 
+  no local constraint, non-normalizable. It is biased
+  in favor of oblique steps.
+
 
 %    \item{\code{asymmetricItakura}}{asymmetric, slope contrained 0.5
 %	-- 2 from reference [Itakura1975]. This is the recursive definition
@@ -179,8 +181,8 @@ is.stepPattern(x)
 %    --------------------------------
         a    \tab  min step \tab    --    \tab   NO          \cr
         b    \tab  max step \tab    --    \tab   NO          \cr
-        c    \tab  Di step   \tab    N     \tab   YES         \cr
-        d    \tab  Di+Dj step \tab    N+M   \tab   YES         \cr
+        c    \tab  Di step    \tab    N   \tab   YES         \cr
+        d    \tab  Di+Dj step \tab   N+M  \tab   YES         \cr
     }
   
 
@@ -202,8 +204,8 @@ is.stepPattern(x)
   
   The \code{type<XX><y>} step patterns follow the older Rabiner-Myers'
   classification proposed in [Myers1980] and [MRR1980]. Note that this
-  is a subset of the Rabiner-Juang set [Rabiner1993], which should be
-  preferred in order to avoid confusion. \code{<XX>} is a roman numeral
+  is a subset of the Rabiner-Juang set [Rabiner1993], and the latter should be
+  preferred in order to avoid confusion. \code{<XX>} is a Roman numeral
   specifying the shape of the transitions; \code{<y>} is a letter in the
   range \code{a-d} specifying the weighting used per step, as above;
   \code{typeIIx} patterns also have a version ending in \code{s},
@@ -222,6 +224,9 @@ is.stepPattern(x)
 
   \code{mori2006} is Mori's asymmetric step-constrained pattern
   [Mori2006]. It is normalized by the matched reference length.
+  
+  \code{\link{mvmStepPattern}()} implements Latecki's Minimum
+  Variance Matching algorithm, and it is described in its own page.
 
 }
 
@@ -234,10 +239,10 @@ is.stepPattern(x)
 
 \references{ 
   [GiorginoJSS] Toni Giorgino. \emph{Computing and Visualizing Dynamic Time Warping Alignments in R: The dtw Package.}  Journal of Statistical   Software, 31(7), 1-24. \url{http://www.jstatsoft.org/v31/i07/} \cr \cr
-  [Itakura1975] Itakura, F., \emph{Minimum prediction residual principle applied to speech recognition,} Acoustics, Speech, and Signal Processing [see also IEEE Transactions on Signal Processing], IEEE Transactions on ,  vol.23, no.1, pp.  67-72, Feb 1975. URL:   \url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=1162641} \cr \cr
-  [MRR1980] Myers, C.; Rabiner, L. & Rosenberg, A. \emph{Performance tradeoffs in dynamic time warping algorithms for isolated word recognition}, IEEE Trans. Acoust., Speech, Signal Process., 1980, 28, 623-635. URL: \url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=1163491&tag=1} \cr \cr
+  [Itakura1975] Itakura, F., \emph{Minimum prediction residual principle applied to speech recognition,} Acoustics, Speech, and Signal Processing [see also IEEE Transactions on Signal Processing], IEEE Transactions on ,  vol.23, no.1, pp.  67-72, Feb 1975. URL:   \url{http://dx.doi.org/10.1109/TASSP.1975.1162641} \cr \cr
+  [MRR1980] Myers, C.; Rabiner, L. & Rosenberg, A. \emph{Performance tradeoffs in dynamic time warping algorithms for isolated word recognition}, IEEE Trans. Acoust., Speech, Signal Process., 1980, 28, 623-635. URL: \url{http://dx.doi.org/10.1109/TASSP.1980.1163491} \cr \cr
   [Mori2006] Mori, A.; Uchida, S.; Kurazume, R.; Taniguchi, R.; Hasegawa, T. & Sakoe, H. Early Recognition and Prediction of Gestures Proc. 18th International Conference on Pattern Recognition ICPR 2006, 2006, 3, 560-563. URL: \url{http://dx.doi.org/10.1109/ICPR.2006.467} \cr \cr
-  [Myers1980] Myers, C. S.  \emph{A Comparative Study Of Several Dynamic Time  Warping Algorithms For Speech Recognition}, MS and BS thesis, MIT Jun   20 1980, \url{dspace.mit.edu/bitstream/1721.1/27909/1/07888629.pdf} \cr \cr
+  [Myers1980] Myers, Cory S.  \emph{A Comparative Study Of Several Dynamic Time  Warping Algorithms For Speech Recognition}, MS and BS thesis, Dept. of Electrical Engineering and Computer Science, Massachusetts Institute of Technology, archived Jun 20 1980, \url{http://hdl.handle.net/1721.1/27909} \cr \cr
   [Rabiner1993] Rabiner, L. R., & Juang, B.-H. (1993). \emph{Fundamentals of speech  recognition.} Englewood Cliffs, NJ: Prentice Hall. \cr \cr
   [Sakoe1978] Sakoe, H.; Chiba, S., \emph{Dynamic programming algorithm optimization for spoken word recognition,} Acoustics, Speech, and Signal Processing [see also IEEE Transactions on Signal Processing], IEEE Transactions on , vol.26, no.1, pp. 43-49, Feb 1978 URL: \url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=1163055} \cr \cr
 }

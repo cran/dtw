@@ -1,11 +1,11 @@
 ###############################################################
 #                                                             #
 #   (c) Toni Giorgino <toni.giorgino,gmail.com>           #
-#       Istituto di Ingegneria Biomedica (ISIB-CNR)                 #
+#       Istituto di Neuroscienze (IN-CNR)                 #
 #       Consiglio Nazionale delle Ricerche                           #
 #       www.isib.cnr.it                                    #
 #                                                             #
-#   $Id: dtw.R 388 2015-05-19 19:09:08Z tonig $
+#   $Id: dtw.R 426 2016-09-01 08:15:40Z tonig $
 #                                                             #
 ###############################################################
 
@@ -26,29 +26,27 @@ function(x, y=NULL,
          open.begin=FALSE,
          ... ) {
 
+  ## The local cost matrix  
   lm <- NULL;
 
-
-  
   ## if matrix given
   if(is.null(y)) {
+      if(!missing(dist.method))
+          stop("Argument dist.method does not make sense with a local cost matrix")
       if(!is.matrix(x)) 
-        stop("Single argument requires a global cost matrix");
-    
+          stop("Single argument requires a pre-computed local cost matrix");
       lm <- x;
-  } else if(is.character(dist.method)) {
+  } else {
       ## two timeseries or vectors given
       ## as.matrix coerces ts or mts to matrices
       x <- as.matrix(x);
       y <- as.matrix(y);
+      if( (ncol(x)==1 || ncol(y)==1) && !missing(dist.method) )
+          warning("Argument dist.method is only useful with multivariate timeseries")
+      if(!is.character(dist.method)) 
+          stop("dist.method should be a method name supported by proxy::dist()");
       lm <- proxy::dist(x,y,method=dist.method);
-  } else if(is.function(dist.method)) {
-      stop("Unimplemented");
-  } else {
-      stop("dist.method should be a character method supported by proxy::dist()");
-  }
-
-
+  } 
   
 
   ## Now we have a function

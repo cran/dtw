@@ -4,7 +4,7 @@
  * (c) Toni Giorgino  2007-2012
  * Distributed under GPL-2 with NO WARRANTY.
  *
- * $Id: computeCM.c 343 2013-12-11 11:04:41Z tonig $
+ * $Id: computeCM.c 436 2018-05-17 14:23:15Z tonig $
  *  
  */
 
@@ -52,7 +52,11 @@ int argmin(const double *list, int n) {
   int ii=-1;
   double vv=INFINITY;
   for(int i=0; i<n; i++) {
-    if(!isnan(list[i]) && list[i]<vv) {
+      /* The following is a faster equivalent to
+       *    if(!isnan(list[i]) && list[i]<vv) 
+       * because   (NAN < x) is false 
+       */
+    if(list[i]<vv) {
       ii=i;
       vv=list[i];
     }
@@ -73,7 +77,7 @@ int argmin(const double *list, int n) {
 
 /* R matrix fastest index is row */
 
-void computeCM(			/* IN */
+static void computeCM(			/* IN */
 	       const int *s,		/* mtrx dimensions, int */
 	       const int *wm,		/* windowing matrix, logical=int */
 	       const double *lm,	/* local cost mtrx, numeric */
@@ -96,15 +100,15 @@ void computeCM(			/* IN */
   int *pn,*di,*dj;
   double *sc;
 
-  pn=(int*) R_alloc(nsteps,sizeof(int)); /* pattern id */
-  di=(int*) R_alloc(nsteps,sizeof(int)); /* delta i */
-  dj=(int*) R_alloc(nsteps,sizeof(int)); /* delta j */
-  sc=(double*) R_alloc(nsteps,sizeof(double)); /* step cost */
+  pn=(int*) R_alloc((size_t)nsteps,sizeof(int)); /* pattern id */
+  di=(int*) R_alloc((size_t)nsteps,sizeof(int)); /* delta i */
+  dj=(int*) R_alloc((size_t)nsteps,sizeof(int)); /* delta j */
+  sc=(double*) R_alloc((size_t)nsteps,sizeof(double)); /* step cost */
 
   for(int i=0; i<nsteps; i++) {
-    pn[i]=dir[EP(i,0)]-1;	/* Indexing C-way */
-    di[i]=dir[EP(i,1)];
-    dj[i]=dir[EP(i,2)];
+    pn[i]=(int)dir[EP(i,0)]-1;	/* Indexing C-way */
+    di[i]=(int)dir[EP(i,1)];
+    dj[i]=(int)dir[EP(i,2)];
     sc[i]=dir[EP(i,3)];
 
     if(pn[i]<0 || pn[i]>=nsteps) {
@@ -118,7 +122,7 @@ void computeCM(			/* IN */
 
   /* prepare a cost list per pattern */
   double *clist=(double*)
-    R_alloc(npats,sizeof(double));
+    R_alloc((size_t)npats,sizeof(double));
 
   /* we do not initialize the seed - the caller is supposed
      to do so
@@ -289,16 +293,47 @@ SEXP computeCM_Call(SEXP wm, 	/* logical */
  * Unit test - for debugging
  */
 
-void tm_print(int *s, double *mm, double *r);
 
-/* test main  equivalent to the following
+
+
+/*
+ * Printout a matrix. 
+ * int *s: s[0] - no. of rows
+ *         s[1] - no. of columns
+ * double *mm: matrix to print
+ * double *r: return value
+ */
+
+void tm_print(int *s, double *mm, double *r) {
+  int i,j;
+  int n=s[0],m=s[1];
+  FILE *f=stdout;
+
+  for(i=0;i<n;i++) {
+    for(j=0;j<m;j++) {
+      double val=mm[j*n+i];
+      if(isnan(val)) {
+	  printf("NAN %d %d\n",i,j);
+      }
+      fprintf(f,"[%2d,%2d] = %4.2lf    ",i,j,val);
+    }
+    fprintf(f,"\n");
+  }
+  *r=-1;
+  // fclose(f);
+  printf("** tm dump end **\n");
+}
+
+
+/* test  equivalent to the following
    mylm<-outer(1:10,1:10)
    globalCostNative(mylm)->myg2
 */
 
 #define TS 5000
 #define TSS (TS*TS)
-int main(int argc,char **argv) {
+
+void test_computeCM() {
   int ts[]={TS,TS};
   int *twm;
   double *tlm;
@@ -330,13 +365,13 @@ int main(int argc,char **argv) {
 
   double r=-2;
 
-  tm_print(ts,tlm,&r);
+//  tm_print(ts,tlm,&r);
 
   /* pretend we'r R */
   computeCM(ts,twm,tlm,tnstepsp,
 	    tdir,tcm,tsm);
 
-  tm_print(ts,tcm,&r);
+//  tm_print(ts,tcm,&r);
 
   free(twm);
   free(tlm);
@@ -346,34 +381,28 @@ int main(int argc,char **argv) {
 }
 
 
+# include <assert.h>
 
+void test_argmin() {
+    int n=5;
+
+    double t1[]={10,-2,NAN,2,NAN};
+    double t2[]={10,-2,-3,2,-4};
+    double t3[]={10,INFINITY,-3,2,-4};
+    double t4[]={NAN,NAN,NAN,NAN,NAN};
+
+    printf("argmin(t1,n)==%d, should be 1\n",argmin(t1,n));
+    printf("argmin(t2,n)==%d, should be 4\n",argmin(t2,n));
+    printf("argmin(t3,n)==%d, should be 4\n",argmin(t3,n));
+    printf("argmin(t4,n)==%d, should be -1\n",argmin(t4,n));
+    
+}
  
-/*
- * Printout a matrix. 
- * int *s: s[0] - no. of rows
- *         s[1] - no. of columns
- * double *mm: matrix to print
- * double *r: return value
- */
 
-void tm_print(int *s, double *mm, double *r) {
-  int i,j;
-  int n=s[0],m=s[1];
-  FILE *f=stdout;
 
-  for(i=0;i<n;i++) {
-    for(j=0;j<m;j++) {
-      double val=mm[j*n+i];
-      if(isnan(val)) {
-	//	printf("NAN %d %d\n",i,j);
-      }
-      //      fprintf(f,"[%2d,%2d] = %4.2lf    ",i,j,val);
-    }
-    fprintf(f,"\n");
-  }
-  *r=-1;
-  // fclose(f);
-  printf("** tm dump end **\n");
+int main(int argc,char **argv) {
+    test_argmin();
+    test_computeCM();
 }
 
 #endif

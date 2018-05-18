@@ -1,11 +1,11 @@
 ###############################################################
 #                                                             #
 #   (c) Toni Giorgino <toni.giorgino,gmail.com>               #
-#       Istituto di Ingegneria Biomedica (ISIB-CNR)                 #
+#       Istituto di Neuroscienze (IN-CNR)                 #
 #       Consiglio Nazionale delle Ricerche                           #
 #       www.isib.cnr.it                                    #
 #                                                             #
-#   $Id: globalCostMatrix.R 343 2013-12-11 11:04:41Z tonig $
+#   $Id: globalCostMatrix.R 436 2018-05-17 14:23:15Z tonig $
 #                                                             #
 ###############################################################
 
@@ -57,46 +57,23 @@ function(lm,
   }
 
   sm <- matrix(NA,nrow=n,ncol=m);
-  
 
-  if(is.loaded("computeCM") && native){
-    ## precompute windowing
-    wm <- matrix(FALSE,nrow=n,ncol=m);
-    wm[window.function(row(wm),col(wm),
+  #if(is.loaded("computeCM_Call") && native){ # -- not working any more?
+  if(native){
+        ## precompute windowing
+        wm <- matrix(FALSE,nrow=n,ncol=m);
+        wm[window.function(row(wm),col(wm),
                        query.size=n, reference.size=m,
                        ...)]<-TRUE;
-
-    if(FALSE) {
-      ## this call could be optimized. Copies are killing perf.
-      out<-.C(computeCM,
-            NAOK=TRUE,
-            PACKAGE="dtw",
-            ## IN
-            as.integer(dim(cm)),               # int *s
-            as.logical(wm),                    # int *wm
-            as.double(lm),                     # double *lm
-            as.integer(nsteps),                # int *nstepsp
-            as.double(step.matrix),            # double *dir
-            ## IN+OUT
-            costMatrix=as.double(cm),                 # double *cm
-            ## OUT
-            directionMatrix=as.integer(sm));               # int *sm
-
-      ## Hopefully avoids a copy
-      dim(out$costMatrix) <- c(n,m);     
-      dim(out$directionMatrix) <- c(n,m);
-      warning("You should not be here");
-    } else {
-      storage.mode(wm) <- "logical";
-      storage.mode(lm) <- "double";
-      storage.mode(cm) <- "double";
-      storage.mode(step.matrix) <- "double";
-      out <- .Call("computeCM_Call",
+        
+        storage.mode(wm) <- "logical";
+        storage.mode(lm) <- "double";
+        storage.mode(cm) <- "double";
+        storage.mode(step.matrix) <- "double";
+        out <- .Call(C_computeCM_Call,
                    wm,lm,cm,step.matrix);
-    }
-
+        
   } else {
-
     ####################
     ## INTERPRETED PURE-R IMPLEMENTATION
     warning("Native dtw implementation not available: using (slow) interpreted fallback");

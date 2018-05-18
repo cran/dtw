@@ -1,23 +1,17 @@
 \name{dtw-package}
 \alias{dtw-package}
-
 \docType{package}
 \title{
-Dynamic Time Warp algorithms in R
+\packageTitle{dtw}
 }
 \description{
-  Dynamic Time Warp: find the optimal alignment between two time series.
+\packageDescription{dtw}
 }
-
 \details{
-\tabular{ll}{
-Package: \tab  dtw		\cr
-Type: 	 \tab  Package		\cr
-Version: \tab  1.15		\cr
-Date: 	 \tab  2012-8-22	\cr
-License: \tab  GPL-2		\cr
-URL:     \tab  \url{http://dtw.r-forge.r-project.org} \cr
-}
+
+The DESCRIPTION file:
+\packageDESCRIPTION{dtw}
+\packageIndices{dtw}
 
 Comprehensive implementation of Dynamic Time Warping (DTW) algorithms in
 R.
@@ -61,31 +55,17 @@ In addition to computing alignments, the package provides:
 inverse; and more.
 }
 
-
 If you use this software, please cite it according to
 \code{citation("dtw")}.  The package home page is at
 \url{http://dtw.r-forge.r-project.org}.
 
-To get the latest stable version from CRAN, use
-\code{install.packages("dtw")}.  To get the development version
-(possibly unstable), use
-\code{install.packages("dtw",repos="http://r-forge.r-project.org")}.
 
 }
 \author{
-  Toni Giorgino, Copyright (c) 2007-2013 \cr
-  Istituto di Ingegneria Biomedica (ISIB-CNR) \cr
-  National Research Council of Italy \cr
-  \cr
-  Maintainer:  toni.giorgino@gmail.com
-}
+\packageAuthor{dtw}
 
-\seealso{ \code{\link{dtw}} for the main entry point to the package;
-  \code{\link{dtwWindowingFunctions}} for global constraints;
-  \code{\link{stepPattern}} for local constraints;
-  \code{\link[analogue]{distance}},  \code{\link{outer}} for
-  building a local cost matrix with multivariate
-  timeseries and custom distance functions. }
+Maintainer: \packageMaintainer{dtw}
+}
 
 \references{
   Toni Giorgino. \emph{Computing and Visualizing Dynamic Time Warping
@@ -102,11 +82,19 @@ To get the latest stable version from CRAN, use
     recognition.} Englewood Cliffs, NJ: Prentice Hall.
 }
 
+
+\keyword{ package }
+\keyword{ ts }
+
+
+\seealso{ \code{\link{dtw}} for the main entry point to the package;
+  \code{\link{dtwWindowingFunctions}} for global constraints;
+  \code{\link{stepPattern}} for local constraints;
+  \code{\link[analogue]{distance}},  \code{\link{outer}} for
+  building a local cost matrix with multivariate
+  timeseries and custom distance functions. }
+  
 \examples{
  library(dtw);
  ## demo(dtw);
 }
-
-
-\keyword{ package }
-\keyword{ ts }

@@ -50,11 +50,11 @@
 
 \Address{
   Toni Giorgino\\
-  Institute of Biomedical Engineering (ISIB-CNR)\\
+  Institute of Neurosciences (IN-CNR)\\
   National Research Council of Italy\\
   Corso Stati Uniti 4\\
   I-35127, Padua, Italy\\
-  E-mail: \email{toni.giorgino@isib.cnr.it}
+  E-mail: \email{toni.giorgino@cnr.it}
 }
 
 

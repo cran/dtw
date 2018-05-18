@@ -1,4 +1,4 @@
-useDynLib(dtw,computeCM)
+useDynLib(dtw,.registration = TRUE, .fixes="C_")
 
 # Computed on 3-jul-2015 for new CRAN checks
 importFrom("graphics", "axis", "box", "contour", "image", "layout", "lines", "matplot", "par", "plot", "points", "segments", "text")
@@ -70,6 +70,10 @@ export(typeIIIc)
 export(typeIVc)
 export(mori2006)
 export(rigid)
+
+# Triangle Fixing
+export(triangleFixing)
+export(tri.ineq.show)
 
 # Warp
 export(warp)

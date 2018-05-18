@@ -1,3 +1,15 @@
+1.20-1
+        Move to init.c registration style
+
+1.19-2
+        Fixed dtw-package.Rd with macros
+
+1.19-1
+        Added triangle inequality fixing algorithm
+
+1.18-2
+        Speedup in C code
+
 1.18-1
         Compliant with new CRAN checks
 

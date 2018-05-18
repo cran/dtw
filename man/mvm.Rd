@@ -44,16 +44,12 @@
 \references{
 [1] Latecki, L. J.; Megalooikonomou, V.; Wang, Q. & Yu, D. \emph{An elastic
 partial shape matching technique} Pattern Recognition, 2007, 40,
-3069-3080 
-\cr \cr
-[2]  Toni Giorgino. \emph{Computing and Visualizing Dynamic Time Warping
-  Alignments in R: The dtw Package.}  Journal of Statistical
-  Software, 31(7), 1-24. \url{http://www.jstatsoft.org/v31/i07/}
-  }
+3069-3080. \url{http://dx.doi.org/10.1016/j.patcog.2007.03.004} 
+}
 
 \examples{
 
-## The hand-checkable example given in ref. [1] above
+## The hand-checkable example given in Fig. 5, ref. [1] above
 diffmx <- matrix( byrow=TRUE, nrow=5, c(
   0,  1,  8,  2,  2,  4,  8,
   1,  0,  7,  1,  1,  3,  7,
