@@ -5,17 +5,30 @@
 #       Consiglio Nazionale delle Ricerche                           #
 #       www.isib.cnr.it                                    #
 #                                                             #
-#   $Id: dtw-internal.R 425 2016-08-25 19:48:58Z tonig $
+#   $Id$
 #                                                             #
 ###############################################################
 
 ##
-## $Id: dtw-internal.R 425 2016-08-25 19:48:58Z tonig $
+## $Id$
 ##
 
 ## Internal functions for the dtw package.
 ## Not to be used by the user.
 
+
+
+#' Internal dtw Functions
+#' 
+#' Internal dtw functions
+#' 
+#' These are not to be called by the user. Frontend to the DTW package is the
+#' \code{\link{dtw}} function.
+#' 
+#' @name dtw-internal
+#' @aliases backtrack dtwpairdist globalCostMatrix
+#' @keywords internal
+NULL
 
 ## Function applying dtw and only returning the
 ## distance

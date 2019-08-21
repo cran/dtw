@@ -5,16 +5,68 @@
 #       Consiglio Nazionale delle Ricerche                           #
 #       www.isib.cnr.it                                    #
 #                                                             #
-#   $Id: mvm.R 425 2016-08-25 19:48:58Z tonig $
+#   $Id$
 #                                                             #
 ###############################################################
 
 
-
-#############################
-## Step pattern for MVM (minimum variance matching)
-##
-
+#' Minimum Variance Matching algorithm
+#' 
+#' Step patterns to compute the Minimum Variance Matching (MVM) correspondence
+#' between time series
+#' 
+#' 
+#' The Minimum Variance Matching algorithm [1] finds the non-contiguous parts
+#' of reference which best match the query, allowing for arbitrarily long
+#' "stretches" of reference to be excluded from the match. All elements of the
+#' query have to be matched. First and last elements of the query are anchored
+#' at the boundaries of the reference.
+#' 
+#' The \code{mvmStepPattern} function creates a \code{stepPattern} object which
+#' implements this behavior, to be used with the usual \code{\link{dtw}} call
+#' (see example). MVM is computed as a special case of DTW, with a very large,
+#' asymmetric-like step pattern.
+#' 
+#' The \code{elasticity} argument limits the maximum run length of reference
+#' which can be skipped at once. If no limit is desired, set \code{elasticity}
+#' to an integer at least as large as the reference (computation time grows
+#' linearly).
+#' 
+#' @name mvm
+#' @aliases mvm mvmStepPattern
+#' @param elasticity integer: maximum consecutive reference elements skippable
+#' @return A step pattern object.
+#' @author Toni Giorgino
+#' @seealso Other objects in \code{\link{stepPattern}}.
+#' @references [1] Latecki, L. J.; Megalooikonomou, V.; Wang, Q. & Yu, D.
+#' \emph{An elastic partial shape matching technique} Pattern Recognition,
+#' 2007, 40, 3069-3080. \url{http://dx.doi.org/10.1016/j.patcog.2007.03.004}
+#' @keywords ts
+#' @examples
+#' 
+#' 
+#' ## The hand-checkable example given in Fig. 5, ref. [1] above
+#' diffmx <- matrix( byrow=TRUE, nrow=5, c(
+#'   0,  1,  8,  2,  2,  4,  8,
+#'   1,  0,  7,  1,  1,  3,  7,
+#'  -7, -6,  1, -5, -5, -3,  1,
+#'  -5, -4,  3, -3, -3, -1,  3,
+#'  -7, -6,  1, -5, -5, -3,  1 ) ) ;
+#' 
+#' ## Cost matrix
+#' costmx <- diffmx^2;
+#' 
+#' ## Compute the alignment
+#' al <- dtw(costmx,step.pattern=mvmStepPattern(10))
+#' 
+#' ## Elements 4,5 are skipped
+#' print(al$index2)
+#' 
+#' plot(al,main="Minimum Variance Matching alignment")
+#' 
+#' 
+#' 
+#' @export
 mvmStepPattern <- function(elasticity=20) {
   size <- elasticity;
   

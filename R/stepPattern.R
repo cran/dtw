@@ -5,7 +5,7 @@
 #       Consiglio Nazionale delle Ricerche                           #
 #       www.isib.cnr.it                                    #
 #                                                             #
-#   $Id: stepPattern.R 425 2016-08-25 19:48:58Z tonig $
+#   $Id$
 #                                                             #
 ###############################################################
 
@@ -16,6 +16,249 @@
 #############################
 ## Methods for accessing and creating step.patterns
 ## TODO: validate norm
+
+
+
+
+
+#' Step patterns for DTW
+#' 
+#' A \code{stepPattern} object lists the transitions allowed while searching
+#' for the minimum-distance path.  DTW variants are implemented by passing one
+#' of the objects described in this page to the \code{stepPattern} argument of
+#' the \code{\link{dtw}} call.
+#' 
+#' A step pattern characterizes the matching model and slope constraint
+#' specific of a DTW variant. They also known as local- or slope-constraints,
+#' transition types, production or recursion rules [GiorginoJSS].
+#' 
+#' \strong{Pre-defined step patterns}
+#' 
+#' \preformatted{
+#'    ## Well-known step patterns
+#'    symmetric1
+#'    symmetric2
+#'    asymmetric
+#'    
+#'    ## Step patterns classified according to Rabiner-Juang [Rabiner1993]
+#'    rabinerJuangStepPattern(type,slope.weighting="d",smoothed=FALSE)
+#'    
+#'    ## Slope-constrained step patterns from Sakoe-Chiba [Sakoe1978]
+#'    symmetricP0;  asymmetricP0
+#'    symmetricP05; asymmetricP05
+#'    symmetricP1;  asymmetricP1
+#'    symmetricP2;  asymmetricP2
+#'    
+#'    ## Step patterns classified according to Rabiner-Myers [Myers1980]
+#'    typeIa;   typeIb;   typeIc;   typeId;
+#'    typeIas;  typeIbs;  typeIcs;  typeIds;  # smoothed
+#'    typeIIa;  typeIIb;  typeIIc;  typeIId;
+#'    typeIIIc; typeIVc;
+#'    
+#'    ## Miscellaneous
+#'    mori2006;
+#'    rigid;
+#'  }
+#' 
+#'  
+#' A variety of classification schemes have been proposed for step patterns, including
+#' Sakoe-Chiba [Sakoe1978]; Rabiner-Juang [Rabiner1993]; and Rabiner-Myers
+#' [Myers1980].  The \code{dtw} package implements all of the transition types
+#' found in those papers, with the exception of Itakura's and
+#' Velichko-Zagoruyko's steps, which require subtly different algorithms (this
+#' may be rectified in the future). Itakura recursion is almost, but not quite,
+#' equivalent to \code{typeIIIc}.
+#' 
+#' For convenience, we shall review pre-defined step patterns grouped by
+#' classification. Note that the same pattern may be listed under different
+#' names. Refer to paper [GiorginoJSS] for full details.
+#' 
+#' \strong{1. Well-known step patterns}
+#' 
+#' Common DTW implementations are based on one of the following transition
+#' types.
+#' 
+#' \code{symmetric2} is the normalizable, symmetric, with no local slope
+#' constraints.  Since one diagonal step costs as much as the two equivalent
+#' steps along the sides, it can be normalized dividing by \code{N+M}
+#' (query+reference lengths). It is widely used and the default.
+#' 
+#' \code{asymmetric} is asymmetric, slope constrained between 0 and 2. Matches
+#' each element of the query time series exactly once, so the warping path
+#' \code{index2~index1} is guaranteed to be single-valued.  Normalized by
+#' \code{N} (length of query).
+#' 
+#' \code{symmetric1} (or White-Neely) is quasi-symmetric, no local constraint,
+#' non-normalizable. It is biased in favor of oblique steps.
+#' 
+#' \strong{2. The Rabiner-Juang set}
+#' 
+#' A comprehensive table of step patterns is proposed in Rabiner-Juang's book
+#' [Rabiner1993], tab. 4.5.  All of them can be constructed through the
+#' \code{rabinerJuangStepPattern(type,slope.weighting,smoothed)} function.
+#' 
+#' The classification foresees seven families, labelled with Roman numerals
+#' I-VII; here, they are selected through the integer argument \code{type}.
+#' Each family has four slope weighting sub-types, named in sec. 4.7.2.5 as
+#' "Type (a)" to "Type (d)"; they are selected passing a character argument
+#' \code{slope.weighting}, as in the table below. Furthermore, each subtype can
+#' be either plain or smoothed (figure 4.44); smoothing is enabled setting the
+#' logical argument \code{smoothed}.  (Not all combinations of arguments make
+#' sense.)
+#' 
+#' \tabular{cccc}{ 
+#' Subtype \tab Rule \tab Norm \tab Unbiased \cr 
+#' % -------------------------------- 
+#' a \tab min step \tab -- \tab NO \cr 
+#' b \tab max step \tab -- \tab NO \cr 
+#' c \tab Di step \tab N \tab YES \cr 
+#' d \tab Di+Dj step \tab N+M \tab YES \cr 
+#' }
+#' 
+#' \strong{3. The Sakoe-Chiba set}
+#' 
+#' Sakoe-Chiba [Sakoe1978] discuss a family of slope-constrained patterns; they
+#' are implemented as shown in page 47, table I.  Here, they are called
+#' \code{symmetricP<x>} and \code{asymmetricP<x>}, where \code{<x>} corresponds
+#' to Sakoe's integer slope parameter \emph{P}.  Values available are
+#' accordingly: \code{0} (no constraint), \code{1}, \code{05} (one half) and
+#' \code{2}. See [Sakoe1978] for details.
+#' 
+#' \strong{4. The Rabiner-Myers set}
+#' 
+#' The \code{type<XX><y>} step patterns follow the older Rabiner-Myers'
+#' classification proposed in [Myers1980] and [MRR1980]. Note that this is a
+#' subset of the Rabiner-Juang set [Rabiner1993], and the latter should be
+#' preferred in order to avoid confusion. \code{<XX>} is a Roman numeral
+#' specifying the shape of the transitions; \code{<y>} is a letter in the range
+#' \code{a-d} specifying the weighting used per step, as above; \code{typeIIx}
+#' patterns also have a version ending in \code{s}, meaning the smoothing is
+#' used (which does not permit skipping points). The \code{typeId, typeIId} and
+#' \code{typeIIds} are unbiased and symmetric.
+#' 
+#' \strong{5. Others}
+#' 
+#' The \code{rigid} pattern enforces a fixed unitary slope. It only makes sense
+#' in combination with \code{open.begin=T}, \code{open.end=T} to find gapless
+#' subsequences. It may be seen as the \eqn{P \to \infty}{P->inf} limiting case in Sakoe's classification.
+#' 
+#' \code{mori2006} is Mori's asymmetric step-constrained pattern [Mori2006]. It
+#' is normalized by the matched reference length.
+#' 
+#' \code{\link{mvmStepPattern}()} implements Latecki's Minimum Variance
+#' Matching algorithm, and it is described in its own page.
+#' 
+#' 
+#' \strong{Methods}
+#' 
+#' \code{print.stepPattern} prints an user-readable description of the
+#' recurrence equation defined by the given pattern.
+#' 
+#' \code{plot.stepPattern} graphically displays the step patterns productions
+#' which can lead to element (0,0). Weights are shown along the step leading to
+#' the corresponding element.
+#' 
+#' \code{t.stepPattern} transposes the productions and normalization hint so
+#' that roles of query and reference become reversed.
+#'
+#'
+#' @aliases stepPattern is.stepPattern print.stepPattern t.stepPattern
+#' plot.stepPattern symmetric1 symmetric2 asymmetric rabinerJuangStepPattern
+#' symmetricP0 asymmetricP0 symmetricP05 asymmetricP05 symmetricP1 asymmetricP1
+#' symmetricP2 asymmetricP2 typeIa typeIas typeIb typeIbs typeIc typeIcs typeId
+#' typeIds typeIIa typeIIb typeIIc typeIId typeIIIc typeIVc mori2006 rigid
+#' @export symmetric1 symmetric2 asymmetric rabinerJuangStepPattern  symmetricP0 asymmetricP0 symmetricP05 asymmetricP05 symmetricP1 asymmetricP1  symmetricP2 asymmetricP2 typeIa typeIas typeIb typeIbs typeIc typeIcs typeId typeIds typeIIa typeIIb typeIIc typeIId typeIIIc typeIVc mori2006 rigid
+#' @param x a step pattern object
+#' @param type path specification, integer 1..7 (see [Rabiner1993], table 4.5)
+#' @param slope.weighting slope weighting rule: character \code{"a"} to
+#' \code{"d"} (see [Rabiner1993], sec. 4.7.2.5)
+#' @param smoothed logical, whether to use smoothing (see [Rabiner1993], fig.
+#' 4.44)
+#' @param ... additional arguments to \code{\link{print}}.
+#' @note Constructing \code{stepPattern} objects is tricky and thus
+#' undocumented. For a commented example please see source code for
+#' \code{symmetricP1}.
+#' @author Toni Giorgino
+#' @seealso \code{\link{mvmStepPattern}}, implementing Latecki's Minimal
+#' Variance Matching algorithm.
+#' @references [GiorginoJSS] Toni Giorgino. \emph{Computing and Visualizing
+#' Dynamic Time Warping Alignments in R: The dtw Package.} Journal of
+#' Statistical Software, 31(7), 1-24. \url{http://www.jstatsoft.org/v31/i07/}
+#' \cr \cr [Itakura1975] Itakura, F., \emph{Minimum prediction residual
+#' principle applied to speech recognition,} Acoustics, Speech, and Signal
+#' Processing [see also IEEE Transactions on Signal Processing], IEEE
+#' Transactions on , vol.23, no.1, pp.  67-72, Feb 1975. URL:
+#' \url{http://dx.doi.org/10.1109/TASSP.1975.1162641} \cr \cr [MRR1980] Myers,
+#' C.; Rabiner, L. & Rosenberg, A. \emph{Performance tradeoffs in dynamic time
+#' warping algorithms for isolated word recognition}, IEEE Trans. Acoust.,
+#' Speech, Signal Process., 1980, 28, 623-635. URL:
+#' \url{http://dx.doi.org/10.1109/TASSP.1980.1163491} \cr \cr [Mori2006] Mori,
+#' A.; Uchida, S.; Kurazume, R.; Taniguchi, R.; Hasegawa, T. & Sakoe, H. Early
+#' Recognition and Prediction of Gestures Proc. 18th International Conference
+#' on Pattern Recognition ICPR 2006, 2006, 3, 560-563. URL:
+#' \url{http://dx.doi.org/10.1109/ICPR.2006.467} \cr \cr [Myers1980] Myers,
+#' Cory S.  \emph{A Comparative Study Of Several Dynamic Time Warping
+#' Algorithms For Speech Recognition}, MS and BS thesis, Dept. of Electrical
+#' Engineering and Computer Science, Massachusetts Institute of Technology,
+#' archived Jun 20 1980, \url{http://hdl.handle.net/1721.1/27909} \cr \cr
+#' [Rabiner1993] Rabiner, L. R., & Juang, B.-H. (1993). \emph{Fundamentals of
+#' speech recognition.} Englewood Cliffs, NJ: Prentice Hall. \cr \cr
+#' [Sakoe1978] Sakoe, H.; Chiba, S., \emph{Dynamic programming algorithm
+#' optimization for spoken word recognition,} Acoustics, Speech, and Signal
+#' Processing [see also IEEE Transactions on Signal Processing], IEEE
+#' Transactions on , vol.26, no.1, pp. 43-49, Feb 1978 URL:
+#' \url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=1163055} \cr \cr
+#' @keywords ts
+#' @examples
+#' 
+#' 
+#' #########
+#' ##
+#' ## The usual (normalizable) symmetric step pattern
+#' ## Step pattern recursion, defined as:
+#' ## g[i,j] = min(
+#' ##      g[i,j-1] + d[i,j] ,
+#' ##      g[i-1,j-1] + 2 * d[i,j] ,
+#' ##      g[i-1,j] + d[i,j] ,
+#' ##   )
+#' 
+#' print(symmetric2)   # or just "symmetric2"
+#' 
+#' 
+#' 
+#' #########
+#' ##
+#' ## The well-known plotting style for step patterns
+#' 
+#' plot(symmetricP2,main="Sakoe's Symmetric P=2 recursion")
+#' 
+#' 
+#' 
+#' #########
+#' ##
+#' ## Same example seen in ?dtw , now with asymmetric step pattern
+#' 
+#' idx<-seq(0,6.28,len=100);
+#' query<-sin(idx)+runif(100)/10;
+#' reference<-cos(idx);
+#' 
+#' ## Do the computation 
+#' asy<-dtw(query,reference,keep=TRUE,step=asymmetric);
+#' 
+#' dtwPlot(asy,type="density",main="Sine and cosine, asymmetric step")
+#' 
+#' 
+#' #########
+#' ##
+#' ##  Hand-checkable example given in [Myers1980] p 61
+#' ##
+#' 
+#' `tm` <-
+#' structure(c(1, 3, 4, 4, 5, 2, 2, 3, 3, 4, 3, 1, 1, 1, 3, 4, 2,
+#' 3, 3, 2, 5, 3, 4, 4, 1), .Dim = c(5L, 5L))
+#' 
+#' @name stepPattern
+NULL
 
 stepPattern <- function(v,norm=NA) {
   obj <- NULL;
@@ -32,7 +275,7 @@ stepPattern <- function(v,norm=NA) {
   return(obj);
 }
 
-
+#' @export
 is.stepPattern <- function(x) {
   return(inherits(x,"stepPattern"));
 }
@@ -40,6 +283,8 @@ is.stepPattern <- function(x) {
 
 
 ## Transpose - exchange role of query and reference
+#' @rdname stepPattern
+#' @export
 t.stepPattern <- function(x) {
 
   # exchange dx <-> dy
@@ -61,7 +306,8 @@ t.stepPattern <- function(x) {
 
 
 ## plot the step pattern
-
+#' @rdname stepPattern
+#' @export
 plot.stepPattern <- function(x,...) {
   pats <- unique(x[,1]);                #list of patterns
   xr <- max(x[,2]);
@@ -87,8 +333,8 @@ plot.stepPattern <- function(x,...) {
     }                               
     
 
-    xh <- alpha*head(x[ss,2],-1) + (1-alpha)*x[ss,2][-1];
-    yh <- alpha*head(x[ss,3],-1) + (1-alpha)*x[ss,3][-1];
+    xh <- alpha*utils::head(x[ss,2],-1) + (1-alpha)*x[ss,2][-1];
+    yh <- alpha*utils::head(x[ss,3],-1) + (1-alpha)*x[ss,3][-1];
 
     text(-xh,-yh,
          labels=round(x[ss,4][-1],2),
@@ -108,7 +354,8 @@ plot.stepPattern <- function(x,...) {
 
 ## pretty-print the matrix meaning,
 ## so it will not be as write-only as now
-
+#' @rdname stepPattern
+#' @export
 print.stepPattern <-function(x,...) {
 
   step.pattern<-x;                      # for clarity
@@ -280,7 +527,8 @@ print.stepPattern <-function(x,...) {
 }
 
 
-
+#' @export
+#' @rdname stepPattern
 rabinerJuangStepPattern <- function(type,slope.weighting="d",smoothed=FALSE) {
 
   sw <- slope.weighting;
@@ -596,6 +844,9 @@ asymmetric <-  stepPattern(c(
                            ),"N");
 
 
+# % \item{\code{symmetricVelichkoZagoruyko}}{symmetric, reproduced from %
+# [Sakoe1978]. Use distance matrix \code{1-d}}
+# 
 
 ## normalization: max[N,M]
 ## note: local distance matrix is 1-d
@@ -607,6 +858,10 @@ asymmetric <-  stepPattern(c(
 		3, 1, 0, -1 ));
 
 
+# % \item{\code{asymmetricItakura}}{asymmetric, slope contrained 0.5 -- 2
+# from reference [Itakura1975]. This is the recursive definition % that
+# generates the Itakura parallelogram; }
+# 
 
 ## Itakura slope-limited asymmetric \cite{Itakura1975}
 ## Max slope: 2; min slope: 1/2

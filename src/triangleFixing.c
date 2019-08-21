@@ -7,7 +7,7 @@
  * (c) Toni Giorgino  2016
  * Distributed under GPL-2 with NO WARRANTY.
  *
- * $Id: triangleFixing.c 424 2016-08-25 19:45:42Z tonig $
+ * $Id$
  *  
  */
 

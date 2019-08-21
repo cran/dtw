@@ -1,4 +1,4 @@
-## $Id: dtw.R 218 2008-12-18 11:30:00Z tonig $
+## $Id$
 
 
 ## Show off some dtw capabilities on a sine/cosine

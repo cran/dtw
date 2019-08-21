@@ -1,3 +1,6 @@
+1.21-1
+        Migrate to roxygen; remove triangle fixing algorithm.
+
 1.20-1
         Move to init.c registration style
 

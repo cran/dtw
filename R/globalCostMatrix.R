@@ -5,7 +5,7 @@
 #       Consiglio Nazionale delle Ricerche                           #
 #       www.isib.cnr.it                                    #
 #                                                             #
-#   $Id: globalCostMatrix.R 436 2018-05-17 14:23:15Z tonig $
+#   $Id$
 #                                                             #
 ###############################################################
 
@@ -15,7 +15,7 @@
 
 ## Wrapper to the native function
 
-
+#' @useDynLib dtw, .registration = TRUE, .fixes="C_" 
 
 
 

@@ -15,6 +15,14 @@ static R_NativePrimitiveArgType triangle_fixing_l2_t[] = {
         REALSXP          // OUT
 };
 
+/* For when it will be enabled
+        static R_NativeArgStyle triangle_fixing_l2_s[] = {
+                R_ARG_IN_OUT,   R_ARG_IN_OUT,
+                R_ARG_IN,       R_ARG_IN,
+                R_ARG_OUT
+        };
+ */
+
 static const R_CMethodDef R_CDef[] = {
         {"triangle_fixing_l2", (DL_FUNC) &triangle_fixing_l2, 
          5, triangle_fixing_l2_t},

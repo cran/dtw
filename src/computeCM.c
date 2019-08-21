@@ -4,7 +4,7 @@
  * (c) Toni Giorgino  2007-2012
  * Distributed under GPL-2 with NO WARRANTY.
  *
- * $Id: computeCM.c 436 2018-05-17 14:23:15Z tonig $
+ * $Id$
  *  
  */
 

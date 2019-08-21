@@ -50,10 +50,11 @@
 
 \Address{
   Toni Giorgino\\
-  Institute of Neurosciences (IN-CNR)\\
+  Institute of Biophysics (IBF-CNR)\\
   National Research Council of Italy\\
-  Corso Stati Uniti 4\\
-  I-35127, Padua, Italy\\
+  Department of Biosciences, University of Milan\\
+  Via Celoria 26\\
+  I-20133, Milan, Italy\\
   E-mail: \email{toni.giorgino@cnr.it}
 }
 

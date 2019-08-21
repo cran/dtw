@@ -5,11 +5,42 @@
 #       Consiglio Nazionale delle Ricerche                           #
 #       www.isib.cnr.it                                    #
 #                                                             #
-#   $Id: countPaths.R 425 2016-08-25 19:48:58Z tonig $
+#   $Id$
 #                                                             #
 ###############################################################
 
 
+
+
+
+
+#' Count the number of possible warping paths
+#' 
+#' Count the number of warping paths compatible with the constraints.
+#' 
+#' Count how many possible warping paths exist in the alignment problem passed
+#' as an argument. The object passed as an argument is used to look up the
+#' problem parameters such as the used step pattern, windowing, open ends, and
+#' so on. The actual alignment is ignored.
+#' 
+#' Note that the number of paths grows exponentially with problems size. The
+#' result may be approximate when windowing functions are used.
+#' 
+#' If \code{debug} is \code{TRUE}, a matrix used for the computation is
+#' returned instead of the final result.
+#' 
+#' @param d an object of class \code{dtw}
+#' @param debug return an intermediate result
+#' @return The number of paths.
+#' @author Toni Giorgino
+#' @keywords ts
+#' @examples
+#' 
+#'   ds<-dtw(1:7+2,1:8,keep=TRUE,step=asymmetric);
+#'   countPaths(ds)
+#'   ## Result: 126
+#' 
+#' @export countPaths
 countPaths <-
 function(d,debug=FALSE) {
   
