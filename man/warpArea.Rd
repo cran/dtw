@@ -20,7 +20,7 @@ path, in unit steps.
 Above- and below- diagonal unit areas all count \emph{plus} one (they do not
 cancel with each other).  The "diagonal" goes from one corner to the other
 of the possibly rectangular cost matrix, therefore having a slope of
-\code{M/N}, not 1, as in \code{\link{slantedBandWindow}}.
+\code{M/N}, not 1, as in \code{\link[=slantedBandWindow]{slantedBandWindow()}}.
 
 The computation is approximate: points having multiple correspondences are
 averaged, and points without a match are interpolated. Therefore, the area

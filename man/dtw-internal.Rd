@@ -11,6 +11,6 @@ Internal dtw functions
 }
 \details{
 These are not to be called by the user. Frontend to the DTW package is the
-\code{\link{dtw}} function.
+\code{\link[=dtw]{dtw()}} function.
 }
 \keyword{internal}

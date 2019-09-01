@@ -1,13 +1,22 @@
-###############################################################
-#                                                             #
-#   (c) Toni Giorgino <toni.giorgino,gmail.com>           #
-#       Istituto di Neuroscienze (IN-CNR)                 #
-#       Consiglio Nazionale delle Ricerche                           #
-#       www.isib.cnr.it                                    #
-#                                                             #
-#   $Id$
-#                                                             #
-###############################################################
+
+##
+## Copyright (c) 2006-2019 of Toni Giorgino
+##
+## This file is part of the DTW package.
+##
+## DTW is free software: you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
+##
+## DTW is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public
+## License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with DTW.  If not, see <http://www.gnu.org/licenses/>.
+##
 
 
 ## Compute a dissimilarity matrix, akin to "dist", analogue/distance,
@@ -24,39 +33,39 @@
 #' Compute the dissimilarity matrix between a set of single-variate timeseries.
 #' 
 #' 
-#' \code{dtwDist} computes a dissimilarity matrix, akin to \code{\link{dist}},
+#' `dtwDist` computes a dissimilarity matrix, akin to [dist()],
 #' based on the Dynamic Time Warping definition of a distance between
 #' single-variate timeseries.
 #' 
-#' The \code{dtwDist} command is a synonym for the \code{\link[proxy]{dist}}
+#' The `dtwDist` command is a synonym for the [proxy::dist()]
 #' function of package \pkg{proxy}; the DTW distance is registered as
-#' \code{method="DTW"} (see examples below).
+#' `method="DTW"` (see examples below).
 #' 
-#' The timeseries are stored as rows in the matrix argument \code{m}. In other
-#' words, if \code{m} is an N * T matrix, \code{dtwDist} will build N*N ordered
-#' pairs of timeseries, perform the corresponding N*N \code{dtw} alignments,
+#' The timeseries are stored as rows in the matrix argument `m`. In other
+#' words, if `m` is an N * T matrix, `dtwDist` will build N*N ordered
+#' pairs of timeseries, perform the corresponding N*N `dtw` alignments,
 #' and return all of the results in a matrix. Each of the timeseries is T
 #' elements long.
 #' 
-#' \code{dtwDist} returns a square matrix, whereas the \code{dist} object is
+#' `dtwDist` returns a square matrix, whereas the `dist` object is
 #' lower-triangular. This makes sense because in general the DTW "distance" is
 #' not symmetric (see e.g.  asymmetric step patterns).  To make a square matrix
-#' with the \code{\link[proxy]{dist}} function sematics, use the two-arguments
-#' call as \code{dist(m,m)}. This will return a square \code{crossdist} object.
+#' with the [proxy::dist()] function sematics, use the two-arguments
+#' call as `dist(m,m)`. This will return a square `crossdist` object.
 #' 
 #' @param mx numeric matrix, containing timeseries as rows
 #' @param my numeric matrix, containing timeseries as rows (for cross-distance)
-#' @param ... arguments passed to the \code{\link{dtw}} call
-#' @return A square matrix whose element \code{[i,j]} holds the Dynamic Time
-#' Warp distance between row \code{i} (query) and \code{j} (reference) of
-#' \code{mx} and \code{my}, i.e.  \code{dtw(mx[i,],my[j,])$distance}.
-#' @note To convert a square cross-distance matrix (\code{crossdist} object) to
-#' a symmetric \code{\link{dist}} object, use a suitable conversion strategy
+#' @param ... arguments passed to the [dtw()] call
+#' @return A square matrix whose element `[i,j]` holds the Dynamic Time
+#' Warp distance between row `i` (query) and `j` (reference) of
+#' `mx` and `my`, i.e.  `dtw(mx[i,],my[j,])$distance`.
+#' @note To convert a square cross-distance matrix (`crossdist` object) to
+#' a symmetric [dist()] object, use a suitable conversion strategy
 #' (see examples).
 #' @author Toni Giorgino
-#' @seealso Other "distance" functions are: \code{\link{dist}},
-#' \code{\link[vegan]{vegdist}} in package \code{vegan},
-#' \code{\link[analogue]{distance}} in package \code{analogue}, etc.
+#' @seealso Other "distance" functions are: [dist()],
+#' [vegan::vegdist()] in package `vegan`,
+#' [analogue::distance()] in package `analogue`, etc.
 #' @keywords ts
 #' @examples
 #' 
@@ -131,6 +140,7 @@ dtwDist <- function(mx,my=mx,...) {
 
   apply(my,1,mye,mx,dtwpairdist,...);
 }
+
 
 
 

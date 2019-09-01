@@ -11,7 +11,7 @@ dtwDist(mx, my = mx, ...)
 
 \item{my}{numeric matrix, containing timeseries as rows (for cross-distance)}
 
-\item{...}{arguments passed to the \code{\link{dtw}} call}
+\item{...}{arguments passed to the \code{\link[=dtw]{dtw()}} call}
 }
 \value{
 A square matrix whose element \code{[i,j]} holds the Dynamic Time
@@ -22,29 +22,29 @@ Warp distance between row \code{i} (query) and \code{j} (reference) of
 Compute the dissimilarity matrix between a set of single-variate timeseries.
 }
 \details{
-\code{dtwDist} computes a dissimilarity matrix, akin to \code{\link{dist}},
+\code{dtwDist} computes a dissimilarity matrix, akin to \code{\link[=dist]{dist()}},
 based on the Dynamic Time Warping definition of a distance between
 single-variate timeseries.
 
-The \code{dtwDist} command is a synonym for the \code{\link[proxy]{dist}}
+The \code{dtwDist} command is a synonym for the \code{\link[proxy:dist]{proxy::dist()}}
 function of package \pkg{proxy}; the DTW distance is registered as
 \code{method="DTW"} (see examples below).
 
 The timeseries are stored as rows in the matrix argument \code{m}. In other
-words, if \code{m} is an N * T matrix, \code{dtwDist} will build N*N ordered
-pairs of timeseries, perform the corresponding N*N \code{dtw} alignments,
+words, if \code{m} is an N * T matrix, \code{dtwDist} will build N\emph{N ordered
+pairs of timeseries, perform the corresponding N}N \code{dtw} alignments,
 and return all of the results in a matrix. Each of the timeseries is T
 elements long.
 
 \code{dtwDist} returns a square matrix, whereas the \code{dist} object is
 lower-triangular. This makes sense because in general the DTW "distance" is
 not symmetric (see e.g.  asymmetric step patterns).  To make a square matrix
-with the \code{\link[proxy]{dist}} function sematics, use the two-arguments
+with the \code{\link[proxy:dist]{proxy::dist()}} function sematics, use the two-arguments
 call as \code{dist(m,m)}. This will return a square \code{crossdist} object.
 }
 \note{
 To convert a square cross-distance matrix (\code{crossdist} object) to
-a symmetric \code{\link{dist}} object, use a suitable conversion strategy
+a symmetric \code{\link[=dist]{dist()}} object, use a suitable conversion strategy
 (see examples).
 }
 \examples{
@@ -114,9 +114,9 @@ stopifnot(dm[2,1]==dtw(mm[2,],mm[1,],step=asymmetric)$distance)
 
 }
 \seealso{
-Other "distance" functions are: \code{\link{dist}},
-\code{\link[vegan]{vegdist}} in package \code{vegan},
-\code{\link[analogue]{distance}} in package \code{analogue}, etc.
+Other "distance" functions are: \code{\link[=dist]{dist()}},
+\code{\link[vegan:vegdist]{vegan::vegdist()}} in package \code{vegan},
+\code{\link[analogue:distance]{analogue::distance()}} in package \code{analogue}, etc.
 }
 \author{
 Toni Giorgino

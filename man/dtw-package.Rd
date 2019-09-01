@@ -13,32 +13,40 @@ for classification and clustering tasks in econometrics, chemometrics and
 general timeseries mining.
 }
 \details{
-Please see documentation for function \code{\link{dtw}}, which is the main
+Please see documentation for function \code{\link[=dtw]{dtw()}}, which is the main
 entry point to the package.
 
 The R implementation in dtw provides:
-
-\itemize{ \item arbitrary windowing functions (global constraints), eg. the
-Sakoe-Chiba band; see \code{\link{dtwWindowingFunctions}} \item arbitrary
+\itemize{
+\item arbitrary windowing functions (global constraints), eg. the
+Sakoe-Chiba band; see \code{\link[=dtwWindowingFunctions]{dtwWindowingFunctions()}}
+\item arbitrary
 transition types (also known as step patterns, slope constraints, local
 constraints, or DP-recursion rules). This includes dozens of well-known
-types; see \code{\link{stepPattern}}: \itemize{ \item all step patterns
-classified by Rabiner-Juang, Sakoe-Chiba, and Rabiner-Myers; \item symmetric
-and asymmetric; \item Rabiner's smoothed variants; \item arbitrary,
-user-defined slope constraints } \item partial matches: open-begin,
-open-end, substring matches \item proper, pattern-dependent, normalization
-(exact average distance per step) \item the Minimum Variance Matching (MVM)
-algorithm (Latecki et al.) }
+types; see \code{\link[=stepPattern]{stepPattern()}}:
+\itemize{
+\item all step patterns classified by Rabiner-Juang, Sakoe-Chiba, and Rabiner-Myers;
+\item symmetric and asymmetric;
+\item Rabiner's smoothed variants;
+\item arbitrary, user-defined slope constraints
+}
+\item partial matches: open-begin, open-end, substring matches
+\item proper, pattern-dependent, normalization (exact average distance per step)
+\item the Minimum Variance Matching (MVM) algorithm (Latecki et al.)
+}
 
 Multivariate timeseries can be aligned with arbitrary local distance
-definitions, leveraging the \code{\link[proxy]{dist}} function of package
+definitions, leveraging the \code{\link[proxy:dist]{proxy::dist()}} function of package
 \pkg{proxy}. DTW itself becomes a distance function with the dist semantics.
 
-In addition to computing alignments, the package provides: \itemize{ \item
-methods for plotting alignments and warping functions in several classic
-styles (see plot gallery); \item graphical representation of step patterns;
+In addition to computing alignments, the package provides:
+\itemize{
+\item methods for plotting alignments and warping functions in several classic
+styles (see plot gallery);
+\item graphical representation of step patterns;
 \item functions for applying a warping function, either direct or inverse;
-and more. }
+and more.
+}
 
 If you use this software, please cite it according to
 \code{citation("dtw")}.  The package home page is at
@@ -51,20 +59,22 @@ If you use this software, please cite it according to
 
 }
 \references{
-Toni Giorgino. \emph{Computing and Visualizing Dynamic Time
+\itemize{
+\item Toni Giorgino. \emph{Computing and Visualizing Dynamic Time
 Warping Alignments in R: The dtw Package.} Journal of Statistical Software,
-31(7), 1-24. \url{http://www.jstatsoft.org/v31/i07/} \cr \cr Tormene, P.;
-Giorgino, T.; Quaglini, S. & Stefanelli, M. \emph{Matching incomplete time
+31(7), 1-24. \url{http://www.jstatsoft.org/v31/i07/}
+\item Tormene, P.; Giorgino, T.; Quaglini, S. & Stefanelli, M. \emph{Matching incomplete time
 series with dynamic time warping: an algorithm and an application to
-post-stroke rehabilitation.} Artif Intell Med, 2009, 45, 11-34 \cr \cr
-Rabiner, L. R., & Juang, B.-H. (1993). Chapter 4 in \emph{Fundamentals of
+post-stroke rehabilitation.} Artif Intell Med, 2009, 45, 11-34
+\item Rabiner, L. R., & Juang, B.-H. (1993). Chapter 4 in \emph{Fundamentals of
 speech recognition.} Englewood Cliffs, NJ: Prentice Hall.
 }
+}
 \seealso{
-\code{\link{dtw}} for the main entry point to the package;
-\code{\link{dtwWindowingFunctions}} for global constraints;
-\code{\link{stepPattern}} for local constraints;
-\code{\link[analogue]{distance}}, \code{\link{outer}} for building a local
+\code{\link[=dtw]{dtw()}} for the main entry point to the package;
+\code{\link[=dtwWindowingFunctions]{dtwWindowingFunctions()}} for global constraints;
+\code{\link[=stepPattern]{stepPattern()}} for local constraints;
+\code{\link[analogue:distance]{analogue::distance()}}, \code{\link[=outer]{outer()}} for building a local
 cost matrix with multivariate timeseries and custom distance functions.
 }
 \author{

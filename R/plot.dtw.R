@@ -1,13 +1,22 @@
-###############################################################
-#                                                             #
-#   (c) Toni Giorgino <toni.giorgino,gmail.com>           #
-#       Istituto di Neuroscienze (IN-CNR)                 #
-#       Consiglio Nazionale delle Ricerche                           #
-#       www.isib.cnr.it                                    #
-#                                                             #
-#   $Id$
-#                                                             #
-###############################################################
+
+##
+## Copyright (c) 2006-2019 of Toni Giorgino
+##
+## This file is part of the DTW package.
+##
+## DTW is free software: you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
+##
+## DTW is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public
+## License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with DTW.  If not, see <http://www.gnu.org/licenses/>.
+##
 
 
 
@@ -15,45 +24,36 @@
 #' Plotting of dynamic time warp results
 #' 
 #' Methods for plotting dynamic time warp alignment objects returned by
-#' \code{\link{dtw}}.
+#' [dtw()].
 #' 
-#' \code{dtwPlot} displays alignment contained in \code{dtw} objects.
+#' `dtwPlot` displays alignment contained in `dtw` objects.
 #' 
-#' Various plotting styles are available, passing strings to the \code{type}
+#' Various plotting styles are available, passing strings to the `type`
 #' argument (may be abbreviated):
 #' 
-#' \itemize{ 
-#' \item\code{alignment} plots the warping curve in \code{d};
-#' \item\code{twoway} plots a point-by-point comparison, with matching lines; see \code{\link{dtwPlotTwoWay}};
-#' \item\code{threeway} vis-a-vis inspection of the timeseries and their warping curve; see \code{\link{dtwPlotThreeWay}};
-#' \item\code{density} displays the cumulative cost landscape with the
-#' warping path overimposed 
-#' }
+#'  * `alignment` plots the warping curve in `d`;
+#'  * `twoway` plots a point-by-point comparison, with matching lines; see [dtwPlotTwoWay()];
+#'  * `threeway` vis-a-vis inspection of the timeseries and their warping curve; see [dtwPlotThreeWay()];
+#'  * `density` displays the cumulative cost landscape with the warping path overimposed; see [dtwPlotDensity()]
 #' 
-#' If \code{normalize} is \code{TRUE}, the \emph{average} cost per step is
-#' plotted instead of the cumulative one. Step averaging depends on the
-#' \code{\link{stepPattern}} used.
-#' 
-#' Additional parameters are carried on to the plotting functions: use with
+#' Additional parameters are passed to the plotting functions: use with
 #' care.
 #' 
-#' @aliases dtwPlot dtwPlotAlignment dtwPlotDensity  plot.dtw 
-#' @param x,d \code{dtw} object, usually result of call to \code{\link{dtw}}
+#' @aliases dtwPlot dtwPlotAlignment  plot.dtw 
+#' @param x,d `dtw` object, usually result of call to [dtw()]
 #' @param xlab label for the query axis
 #' @param ylab label for the reference axis
-#' @param type general style for the alignment plot
-#' @param plot.type type of line to be drawn, used as the \code{type} argument
-#' in the underlying \code{plot} call
-#' @param normalize show per-step average cost instead of cumulative cost
+#' @param type general style for the plot, see below
+#' @param plot.type type of line to be drawn, used as the `type` argument
+#' in the underlying `plot` call
 #' @param ... additional arguments, passed to plotting functions
-#' @note The density plot is more colorful than useful.
 #' @section Warning: These functions are incompatible with mechanisms for
-#' arranging plots on a device: \code{par(mfrow)}, \code{layout} and
-#' \code{split.screen}.
+#' arranging plots on a device: `par(mfrow)`, `layout` and
+#' `split.screen`.
 #' @author Toni Giorgino
-#' @seealso \code{\link{dtwPlotTwoWay}} for details on two-way plotting
-#' function.  \code{\link{dtwPlotThreeWay}} for details on three-way plotting
-#' function.
+#' @family plot
+#' @seealso [dtwPlotTwoWay()], [dtwPlotThreeWay()] and  [dtwPlotDensity()] for details 
+#' on the respective plotting styles.
 #' @keywords ts hplot
 #' @examples
 #' 
@@ -65,45 +65,22 @@
 #' 
 #' alignment<-dtw(query,reference,keep=TRUE);
 #' 
+#' # A sample of the plot styles. See individual plotting functions for details
 #' 
-#' ## A profile of the cumulative distance matrix
-#' ## Contour plot of the global cost
+#' plot(alignment, type="alignment",
+#'   main="DTW sine/cosine: simple alignment plot")
+#'   
+#' plot(alignment, type="twoway",
+#'   main="DTW sine/cosine: dtwPlotTwoWay")
 #' 
-#' dtwPlotDensity(alignment,
-#'   main="Sine/cosine: symmetric  alignment, no constraints")
-#' 
-#' 
-#' 
-#' ######
-#' ##
-#' ## A study of the "Itakura" parallelogram
-#' ##
-#' ## A widely held misconception is that the "Itakura parallelogram" (as
-#' ## described in the original article) is a global constraint.  Instead,
-#' ## it arises from local slope restrictions. Anyway, an "itakuraWindow",
-#' ## is provided in this package. A comparison between the two follows.
-#' 
-#' 
-#' ## The local constraint: three sides of the parallelogram are seen
-#' 
-#' dtw(query,reference,keep=TRUE,step=typeIIIc)->ita;
-#' dtwPlot(ita,type="density",
-#'         main="Slope-limited asymmetric step (Itakura)")
-#' 
-#' ## Symmetric step with global parallelogram-shaped constraint. Note how
-#' ## long (>2 steps) horizontal stretches are allowed within the window.
-#' 
-#' dtw(query,reference,keep=TRUE,window=itakuraWindow)->ita;
-#' dtwPlot(ita,type="density",
-#'         main="Symmetric step with Itakura parallelogram window")
-#' 
-#' 
+#' plot(alignment, type="threeway",
+#'   main="DTW sine/cosine: dtwPlotThreeWay")
+#'   
+#' plot(alignment, type="density",
+#'   main="DTW sine/cosine: dtwPlotDensity")
+#'   
 #' @name dtwPlot
 #' @import graphics
-NULL
-
-
-#' @rdname dtwPlot
 #' @export
 plot.dtw <- function(x, type="alignment", ...) {
   
@@ -135,44 +112,6 @@ dtwPlotAlignment <- function(d, xlab="Query index", ylab="Reference index", plot
 }
 
 
-## Normalization plots the average cost per step instead of
-## the cumulative cost
-#' @rdname dtwPlot
-#' @export 
-dtwPlotDensity <- function(d, normalize=FALSE,
-                           xlab="Query index", ylab="Reference index", ...) {
-
-    cm<-d$costMatrix;
-
-    if(is.null(cm)) 
-      stop("dtwPlotDensity requires dtw internals (set keep.internals=TRUE on dtw() call)");
-
-    ## We can safely modify cm locally
-    if(normalize) {
-        norm <- attr(d$stepPattern,"norm");
-        if(is.na(norm))
-          stop("No normalization known for step pattern used");
-
-        if(norm=="N") {
-            cm <- cm / row(cm);
-        } else if(norm=="N+M") {
-            cm <- cm / (row(cm)+col(cm));
-        } else if(norm=="M") {
-            cm <- cm / col(cm);
-        }
-    }
-
-    xd<-dim(cm)[1];
-    yd<-dim(cm)[2];
-
-    image(cm,col=grDevices::terrain.colors(100),x=1:xd,y=1:yd,
-          xlab=xlab,ylab=ylab, ...);
-    contour(cm,x=1:xd,y=1:yd,add=TRUE);
-    lines(d$index1,d$index2,col="blue",lwd=2);
-}
-
-
-
 
 ## Well-known and much-copied pairwise matching
 
@@ -182,25 +121,24 @@ dtwPlotDensity <- function(d, normalize=FALSE,
 #' Display the query and reference time series and their alignment, arranged
 #' for visual inspection.
 #' 
-#' 
-#' The two vectors are displayed via the \code{\link{matplot}} functions; their
-#' appearance can be customized via the \code{type} and \code{pch} arguments
-#' (constants or vectors of two elements).  If \code{offset} is set, the
+#' The two vectors are displayed via the [matplot()] functions; their
+#' appearance can be customized via the `type` and `pch` arguments
+#' (constants or vectors of two elements).  If `offset` is set, the
 #' reference is shifted vertically by the given amount; this will be reflected
-#' by the \emph{right-hand} axis.
+#' by the *right-hand* axis.
 #' 
-#' Argument \code{match.indices} is used to draw a visual guide to matches; if
+#' Argument `match.indices` is used to draw a visual guide to matches; if
 #' a vector is given, guides are drawn for the corresponding indices in the
 #' warping curve (match lines). If integer, it is used as the number of guides
 #' to be plotted. The corresponding style is customized via the
-#' \code{match.col} and \code{match.lty} arguments.
+#' `match.col` and `match.lty` arguments.
 #' 
-#' If \code{xts} and \code{yts} are not supplied, they will be recovered from
-#' \code{d}, as long as it was created with the two-argument call of
-#' \code{\link{dtw}} with \code{keep.internals=T}.  Only single-variate time
+#' If `xts` and `yts` are not supplied, they will be recovered from
+#' `d`, as long as it was created with the two-argument call of
+#' [dtw()] with `keep.internals=TRUE`.  Only single-variate time
 #' series can be plotted this way.
 #' 
-#' @param d an alignment result, object of class \code{dtw}
+#' @param d an alignment result, object of class `dtw`
 #' @param xts query vector
 #' @param yts reference vector
 #' @param xlab,ylab axis labels
@@ -208,15 +146,16 @@ dtwPlotDensity <- function(d, normalize=FALSE,
 #' @param match.col,match.lty color and line type of the match guide lines
 #' @param match.indices indices for which to draw a visual guide
 #' @param ts.type,pch graphical parameters for timeseries plotting, passed to
-#' \code{matplot}
-#' @param ... additional arguments, passed to \code{matplot}
-#' @note When \code{offset} is set values on the left axis only apply to the
+#' `matplot`
+#' @param ... additional arguments, passed to `matplot`
+#' @note When `offset` is set values on the left axis only apply to the
 #' query.
 #' @section Warning: The function is incompatible with mechanisms for arranging
-#' plots on a device: \code{par(mfrow)}, \code{layout} and \code{split.screen}.
+#' plots on a device: `par(mfrow)`, `layout` and `split.screen`.
 #' @author Toni Giorgino
-#' @seealso \code{\link{dtwPlot}} for other dtw plotting functions,
-#' \code{\link{matplot}} for graphical parameters.
+#' @family plot
+#' @seealso [dtwPlot()] for other dtw plotting functions,
+#' [matplot()] for graphical parameters.
 #' @keywords hplot
 #' @examples
 #' 
@@ -354,18 +293,18 @@ dtwPlotTwoWay <- function(d,xts=NULL,yts=NULL, offset=0,
 #' indices, and therefore element (1,1) will be at the lower left, (N,M) at the
 #' upper right.
 #' 
-#' Argument \code{match.indices} is used to draw a visual guide to matches; if
+#' Argument `match.indices` is used to draw a visual guide to matches; if
 #' a vector is given, guides are drawn for the corresponding indices in the
 #' warping curve (match lines). If integer, it is used as the number of guides
 #' to be plotted. The corresponding style is customized via the
-#' \code{match.col} and \code{match.lty} arguments.
+#' `match.col` and `match.lty` arguments.
 #' 
-#' If \code{xts} and \code{yts} are not supplied, they will be recovered from
-#' \code{d}, as long as it was created with the two-argument call of
-#' \code{\link{dtw}} with \code{keep.internals=T}.  Only single-variate time
+#' If `xts` and `yts` are not supplied, they will be recovered from
+#' `d`, as long as it was created with the two-argument call of
+#' [dtw()] with `keep.internals=TRUE`.  Only single-variate time
 #' series can be plotted.
 #' 
-#' @param d an alignment result, object of class \code{dtw}
+#' @param d an alignment result, object of class `dtw`
 #' @param xts query vector
 #' @param yts reference vector
 #' @param xlab label for the query axis
@@ -378,8 +317,9 @@ dtwPlotTwoWay <- function(d,xts=NULL,yts=NULL, offset=0,
 #' @param inner.margin inner figure margin
 #' @param title.margin space on the top of figure
 #' @param ... additional arguments, used for the warping curve
+#' @family plot
 #' @section Warning: The function is incompatible with mechanisms for arranging
-#' plots on a device: \code{par(mfrow)}, \code{layout} and \code{split.screen}.
+#' plots on a device: `par(mfrow)`, `layout` and `split.screen`.
 #' Appearance of the match lines and timeseries currently can not be
 #' customized.
 #' @author Toni Giorgino
@@ -518,4 +458,87 @@ dtwPlotThreeWay <- function(d,xts=NULL,yts=NULL,
      par(def.par)#- reset to default
 
 }
+
+
+
+
+
+
+
+#' Display the cumulative cost density with the warping path overimposed
+#' 
+#' The plot is based on the cumulative cost matrix. It displays the optimal alignment
+#' as a "ridge" in the global cost landscape.
+#' 
+#' The alignment must have been
+#' constructed with the `keep.internals=TRUE` parameter set. 
+#' 
+#' If `normalize` is `TRUE`, the *average* cost per step is
+#' plotted instead of the cumulative one. Step averaging depends on the
+#' [stepPattern()] used.
+#' 
+#' @param d an alignment result, object of class `dtw`
+#' @param normalize show per-step average cost instead of cumulative cost
+#' @param xlab label for the query axis
+#' @param ylab label for the reference axis
+#' @param ... additional parameters forwarded to plotting functions
+#' @family plot
+#' @examples 
+#' 
+#' ## A study of the "Itakura" parallelogram
+#' ##
+#' ## A widely held misconception is that the "Itakura parallelogram" (as
+#' ## described in the original article) is a global constraint.  Instead,
+#' ## it arises from local slope restrictions. Anyway, an "itakuraWindow",
+#' ## is provided in this package. A comparison between the two follows.
+#' 
+#' ## The local constraint: three sides of the parallelogram are seen
+#' idx<-seq(0,6.28,len=100);
+#' query<-sin(idx)+runif(100)/10;
+#' reference<-cos(idx)
+#' 
+#' ita <- dtw(query,reference,keep=TRUE,step=typeIIIc)
+#' dtwPlotDensity(ita, main="Slope-limited asymmetric step (Itakura)")
+#' 
+#' ## Symmetric step with global parallelogram-shaped constraint. Note how
+#' ## long (>2 steps) horizontal stretches are allowed within the window.
+#' 
+#' dtw(query,reference,keep=TRUE,window=itakuraWindow)->ita;
+#' dtwPlotDensity(ita,
+#'         main="Symmetric step with Itakura parallelogram window")
+#' 
+#' @export 
+dtwPlotDensity <- function(d, normalize=FALSE,
+                           xlab="Query index", ylab="Reference index", ...) {
+    
+    cm<-d$costMatrix;
+    
+    if(is.null(cm)) 
+        stop("dtwPlotDensity requires dtw internals (set keep.internals=TRUE on dtw() call)");
+    
+    ## We can safely modify cm locally
+    if(normalize) {
+        norm <- attr(d$stepPattern,"norm");
+        if(is.na(norm))
+            stop("No normalization known for step pattern used");
+        
+        if(norm=="N") {
+            cm <- cm / row(cm);
+        } else if(norm=="N+M") {
+            cm <- cm / (row(cm)+col(cm));
+        } else if(norm=="M") {
+            cm <- cm / col(cm);
+        }
+    }
+    
+    xd<-dim(cm)[1];
+    yd<-dim(cm)[2];
+    
+    image(cm,col=grDevices::terrain.colors(100),x=1:xd,y=1:yd,
+          xlab=xlab,ylab=ylab, ...);
+    contour(cm,x=1:xd,y=1:yd,add=TRUE);
+    lines(d$index1,d$index2,col="blue",lwd=2);
+}
+
+
 

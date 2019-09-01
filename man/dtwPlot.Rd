@@ -2,23 +2,19 @@
 % Please edit documentation in R/plot.dtw.R
 \name{dtwPlot}
 \alias{dtwPlot}
-\alias{dtwPlotAlignment}
-\alias{dtwPlotDensity}
 \alias{plot.dtw}
+\alias{dtwPlotAlignment}
 \title{Plotting of dynamic time warp results}
 \usage{
 \method{plot}{dtw}(x, type = "alignment", ...)
 
 dtwPlotAlignment(d, xlab = "Query index", ylab = "Reference index",
   plot.type = "l", ...)
-
-dtwPlotDensity(d, normalize = FALSE, xlab = "Query index",
-  ylab = "Reference index", ...)
 }
 \arguments{
-\item{x, d}{\code{dtw} object, usually result of call to \code{\link{dtw}}}
+\item{x, d}{\code{dtw} object, usually result of call to \code{\link[=dtw]{dtw()}}}
 
-\item{type}{general style for the alignment plot}
+\item{type}{general style for the plot, see below}
 
 \item{...}{additional arguments, passed to plotting functions}
 
@@ -28,36 +24,25 @@ dtwPlotDensity(d, normalize = FALSE, xlab = "Query index",
 
 \item{plot.type}{type of line to be drawn, used as the \code{type} argument
 in the underlying \code{plot} call}
-
-\item{normalize}{show per-step average cost instead of cumulative cost}
 }
 \description{
 Methods for plotting dynamic time warp alignment objects returned by
-\code{\link{dtw}}.
+\code{\link[=dtw]{dtw()}}.
 }
 \details{
 \code{dtwPlot} displays alignment contained in \code{dtw} objects.
 
 Various plotting styles are available, passing strings to the \code{type}
 argument (may be abbreviated):
-
-\itemize{ 
-\item\code{alignment} plots the warping curve in \code{d};
-\item\code{twoway} plots a point-by-point comparison, with matching lines; see \code{\link{dtwPlotTwoWay}};
-\item\code{threeway} vis-a-vis inspection of the timeseries and their warping curve; see \code{\link{dtwPlotThreeWay}};
-\item\code{density} displays the cumulative cost landscape with the
-warping path overimposed 
+\itemize{
+\item \code{alignment} plots the warping curve in \code{d};
+\item \code{twoway} plots a point-by-point comparison, with matching lines; see \code{\link[=dtwPlotTwoWay]{dtwPlotTwoWay()}};
+\item \code{threeway} vis-a-vis inspection of the timeseries and their warping curve; see \code{\link[=dtwPlotThreeWay]{dtwPlotThreeWay()}};
+\item \code{density} displays the cumulative cost landscape with the warping path overimposed; see \code{\link[=dtwPlotDensity]{dtwPlotDensity()}}
 }
 
-If \code{normalize} is \code{TRUE}, the \emph{average} cost per step is
-plotted instead of the cumulative one. Step averaging depends on the
-\code{\link{stepPattern}} used.
-
-Additional parameters are carried on to the plotting functions: use with
+Additional parameters are passed to the plotting functions: use with
 care.
-}
-\note{
-The density plot is more colorful than useful.
 }
 \section{Warning}{
  These functions are incompatible with mechanisms for
@@ -75,47 +60,32 @@ reference<-cos(idx)
 
 alignment<-dtw(query,reference,keep=TRUE);
 
+# A sample of the plot styles. See individual plotting functions for details
 
-## A profile of the cumulative distance matrix
-## Contour plot of the global cost
+plot(alignment, type="alignment",
+  main="DTW sine/cosine: simple alignment plot")
+  
+plot(alignment, type="twoway",
+  main="DTW sine/cosine: dtwPlotTwoWay")
 
-dtwPlotDensity(alignment,
-  main="Sine/cosine: symmetric  alignment, no constraints")
-
-
-
-######
-##
-## A study of the "Itakura" parallelogram
-##
-## A widely held misconception is that the "Itakura parallelogram" (as
-## described in the original article) is a global constraint.  Instead,
-## it arises from local slope restrictions. Anyway, an "itakuraWindow",
-## is provided in this package. A comparison between the two follows.
-
-
-## The local constraint: three sides of the parallelogram are seen
-
-dtw(query,reference,keep=TRUE,step=typeIIIc)->ita;
-dtwPlot(ita,type="density",
-        main="Slope-limited asymmetric step (Itakura)")
-
-## Symmetric step with global parallelogram-shaped constraint. Note how
-## long (>2 steps) horizontal stretches are allowed within the window.
-
-dtw(query,reference,keep=TRUE,window=itakuraWindow)->ita;
-dtwPlot(ita,type="density",
-        main="Symmetric step with Itakura parallelogram window")
-
-
+plot(alignment, type="threeway",
+  main="DTW sine/cosine: dtwPlotThreeWay")
+  
+plot(alignment, type="density",
+  main="DTW sine/cosine: dtwPlotDensity")
+  
 }
 \seealso{
-\code{\link{dtwPlotTwoWay}} for details on two-way plotting
-function.  \code{\link{dtwPlotThreeWay}} for details on three-way plotting
-function.
+\code{\link[=dtwPlotTwoWay]{dtwPlotTwoWay()}}, \code{\link[=dtwPlotThreeWay]{dtwPlotThreeWay()}} and  \code{\link[=dtwPlotDensity]{dtwPlotDensity()}} for details
+on the respective plotting styles.
+
+Other plot: \code{\link{dtwPlotDensity}},
+  \code{\link{dtwPlotThreeWay}},
+  \code{\link{dtwPlotTwoWay}}
 }
 \author{
 Toni Giorgino
 }
+\concept{plot}
 \keyword{hplot}
 \keyword{ts}

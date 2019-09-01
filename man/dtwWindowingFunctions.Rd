@@ -8,21 +8,32 @@
 \alias{itakuraWindow}
 \alias{dtwWindow.plot}
 \title{Global constraints and windowing functions for DTW}
+\usage{
+sakoeChibaWindow(iw, jw, window.size, ...)
+
+slantedBandWindow(iw, jw, query.size, reference.size, window.size, ...)
+
+itakuraWindow(iw, jw, query.size, reference.size, ...)
+
+dtwWindow.plot(fun, query.size = 200, reference.size = 220, ...)
+
+noWindow(iw, jw, ...)
+}
 \arguments{
 \item{iw}{index in the query (row) -- automatically set}
 
 \item{jw}{index in the reference (column) -- automatically set}
 
+\item{window.size}{window size, used by some windowing functions -- must be
+set}
+
+\item{...}{additional arguments passed to windowing functions}
+
 \item{query.size}{size of the query time series -- automatically set}
 
 \item{reference.size}{size of the reference time series -- automatically set}
 
-\item{window.size}{window size, used by some windowing functions -- must be
-set}
-
 \item{fun}{a windowing function}
-
-\item{...}{additional arguments passed to windowing functions}
 }
 \value{
 Windowing functions return \code{TRUE} if the coordinates passed as
@@ -31,12 +42,12 @@ User-defined functions should do the same.
 }
 \description{
 Various global constraints (windows) which can be applied to the
-\code{window.type} argument of \code{\link{dtw}}, including the Sakoe-Chiba
+\code{window.type} argument of \code{\link[=dtw]{dtw()}}, including the Sakoe-Chiba
 band, the Itakura parallelogram, and custom functions.
 }
 \details{
 Windowing functions can be passed to the \code{window.type} argument in
-\code{\link{dtw}} to put a global constraint to the warping paths allowed.
+\code{\link[=dtw]{dtw()}} to put a global constraint to the warping paths allowed.
 They take two integer arguments (plus optional parameters) and must return a
 boolean value \code{TRUE} if the coordinates fall within the allowed region
 for warping paths, \code{FALSE} otherwise.
@@ -74,10 +85,10 @@ Although \code{dtwWindow.plot} resembles object-oriented notation,
 there is not a such a dtwWindow class currently.
 
 A widely held misconception is that the "Itakura parallelogram" (as
-described in reference [2]) is a \emph{global} constraint, i.e. a window.
+described in reference 2) is a \emph{global} constraint, i.e. a window.
 To the author's knowledge, it instead arises from the local slope
 restrictions imposed to the warping path, such as the one implemented by the
-\code{\link{typeIIIc}} step pattern.
+\code{\link[=typeIIIc]{typeIIIc()}} step pattern.
 }
 \examples{
 
@@ -105,16 +116,18 @@ dtwPlot(asyband,type="density",main="Sine/cosine: asymmetric step, S-C window")
 
 }
 \references{
-[1] Sakoe, H.; Chiba, S., \emph{Dynamic programming algorithm
+\enumerate{
+\item Sakoe, H.; Chiba, S., \emph{Dynamic programming algorithm
 optimization for spoken word recognition,} Acoustics, Speech, and Signal
-Processing [see also IEEE Transactions on Signal Processing], IEEE
+Processing, IEEE
 Transactions on , vol.26, no.1, pp. 43-49, Feb 1978 URL:
-\url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=1163055} \cr \cr
-[2] Itakura, F., \emph{Minimum prediction residual principle applied to
-speech recognition,} Acoustics, Speech, and Signal Processing [see also IEEE
-Transactions on Signal Processing], IEEE Transactions on , vol.23, no.1, pp.
+\url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=1163055}
+\item Itakura, F., \emph{Minimum prediction residual principle applied to
+speech recognition,} Acoustics, Speech, and Signal Processing,
+IEEE Transactions on , vol.23, no.1, pp.
 67-72, Feb 1975. URL:
 \url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=1162641}
+}
 }
 \author{
 Toni Giorgino

@@ -1,3 +1,9 @@
+1.21-3
+        Documentation twaks for consistency with Python (dtw-python)
+
+1.21-2
+        Migrate to markdown documentation.
+
 1.21-1
         Migrate to roxygen; remove triangle fixing algorithm.
 

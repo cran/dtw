@@ -33,7 +33,7 @@ Display the query and reference time series and their alignment, arranged
 for visual inspection.
 }
 \details{
-The two vectors are displayed via the \code{\link{matplot}} functions; their
+The two vectors are displayed via the \code{\link[=matplot]{matplot()}} functions; their
 appearance can be customized via the \code{type} and \code{pch} arguments
 (constants or vectors of two elements).  If \code{offset} is set, the
 reference is shifted vertically by the given amount; this will be reflected
@@ -47,7 +47,7 @@ to be plotted. The corresponding style is customized via the
 
 If \code{xts} and \code{yts} are not supplied, they will be recovered from
 \code{d}, as long as it was created with the two-argument call of
-\code{\link{dtw}} with \code{keep.internals=T}.  Only single-variate time
+\code{\link[=dtw]{dtw()}} with \code{keep.internals=TRUE}.  Only single-variate time
 series can be plotted this way.
 }
 \note{
@@ -96,10 +96,14 @@ legend("topright",c("Query","Reference (rt. axis)"), pch=21, col=1:6)
 
 }
 \seealso{
-\code{\link{dtwPlot}} for other dtw plotting functions,
-\code{\link{matplot}} for graphical parameters.
+\code{\link[=dtwPlot]{dtwPlot()}} for other dtw plotting functions,
+\code{\link[=matplot]{matplot()}} for graphical parameters.
+
+Other plot: \code{\link{dtwPlotDensity}},
+  \code{\link{dtwPlotThreeWay}}, \code{\link{dtwPlot}}
 }
 \author{
 Toni Giorgino
 }
+\concept{plot}
 \keyword{hplot}

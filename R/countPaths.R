@@ -1,22 +1,29 @@
-###############################################################
-#                                                             #
-#   (c) Toni Giorgino <toni.giorgino,gmail.com>               #
-#       Istituto di Neuroscienze (IN-CNR)                 #
-#       Consiglio Nazionale delle Ricerche                           #
-#       www.isib.cnr.it                                    #
-#                                                             #
-#   $Id$
-#                                                             #
-###############################################################
+
+##
+## Copyright (c) 2006-2019 of Toni Giorgino
+##
+## This file is part of the DTW package.
+##
+## DTW is free software: you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
+##
+## DTW is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public
+## License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with DTW.  If not, see <http://www.gnu.org/licenses/>.
+##
 
 
 
 
 
 
-#' Count the number of possible warping paths
-#' 
-#' Count the number of warping paths compatible with the constraints.
+#' Count the number of warping paths consistent with the constraints.
 #' 
 #' Count how many possible warping paths exist in the alignment problem passed
 #' as an argument. The object passed as an argument is used to look up the
@@ -26,10 +33,10 @@
 #' Note that the number of paths grows exponentially with problems size. The
 #' result may be approximate when windowing functions are used.
 #' 
-#' If \code{debug} is \code{TRUE}, a matrix used for the computation is
+#' If `debug=TRUE`, a matrix used for the computation is
 #' returned instead of the final result.
 #' 
-#' @param d an object of class \code{dtw}
+#' @param d an object of class `dtw`
 #' @param debug return an intermediate result
 #' @return The number of paths.
 #' @author Toni Giorgino
@@ -101,3 +108,4 @@ function(d,debug=FALSE) {
   }
   
 }
+

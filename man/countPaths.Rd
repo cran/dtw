@@ -2,7 +2,7 @@
 % Please edit documentation in R/countPaths.R
 \name{countPaths}
 \alias{countPaths}
-\title{Count the number of possible warping paths}
+\title{Count the number of warping paths consistent with the constraints.}
 \usage{
 countPaths(d, debug = FALSE)
 }
@@ -15,18 +15,16 @@ countPaths(d, debug = FALSE)
 The number of paths.
 }
 \description{
-Count the number of warping paths compatible with the constraints.
-}
-\details{
 Count how many possible warping paths exist in the alignment problem passed
 as an argument. The object passed as an argument is used to look up the
 problem parameters such as the used step pattern, windowing, open ends, and
 so on. The actual alignment is ignored.
-
+}
+\details{
 Note that the number of paths grows exponentially with problems size. The
 result may be approximate when windowing functions are used.
 
-If \code{debug} is \code{TRUE}, a matrix used for the computation is
+If \code{debug=TRUE}, a matrix used for the computation is
 returned instead of the final result.
 }
 \examples{

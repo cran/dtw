@@ -49,13 +49,15 @@ plot( main="ECG (mV)",
 
 }
 \references{
-Goldberger AL, Amaral LAN, Glass L, Hausdorff JM, Ivanov PCh,
+\itemize{
+\item Goldberger AL, Amaral LAN, Glass L, Hausdorff JM, Ivanov PCh,
 Mark RG, Mietus JE, Moody GB, Peng CK, Stanley HE. \emph{PhysioBank,
 PhysioToolkit, and PhysioNet: Components of a New Research Resource for
 Complex Physiologic Signals.} Circulation 101(23):e215-e220; 2000 (June
-13).\cr
-Cardiac monitors, heart rate meters, and alarms [American National
-Standard (ANSI/AAMI EC13:2002)]. Arlington, VA: Association for the
+13).
+\item Cardiac monitors, heart rate meters, and alarms; American National
+Standard (ANSI/AAMI EC13:2002). Arlington, VA: Association for the
 Advancement of Medical Instrumentation, 2002.
+}
 }
 \keyword{datasets}

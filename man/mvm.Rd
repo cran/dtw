@@ -18,14 +18,14 @@ Step patterns to compute the Minimum Variance Matching (MVM) correspondence
 between time series
 }
 \details{
-The Minimum Variance Matching algorithm [1] finds the non-contiguous parts
+The Minimum Variance Matching algorithm (1) finds the non-contiguous parts
 of reference which best match the query, allowing for arbitrarily long
 "stretches" of reference to be excluded from the match. All elements of the
 query have to be matched. First and last elements of the query are anchored
 at the boundaries of the reference.
 
 The \code{mvmStepPattern} function creates a \code{stepPattern} object which
-implements this behavior, to be used with the usual \code{\link{dtw}} call
+implements this behavior, to be used with the usual \code{\link[=dtw]{dtw()}} call
 (see example). MVM is computed as a special case of DTW, with a very large,
 asymmetric-like step pattern.
 
@@ -60,12 +60,12 @@ plot(al,main="Minimum Variance Matching alignment")
 
 }
 \references{
-[1] Latecki, L. J.; Megalooikonomou, V.; Wang, Q. & Yu, D.
+Latecki, L. J.; Megalooikonomou, V.; Wang, Q. & Yu, D.
 \emph{An elastic partial shape matching technique} Pattern Recognition,
 2007, 40, 3069-3080. \url{http://dx.doi.org/10.1016/j.patcog.2007.03.004}
 }
 \seealso{
-Other objects in \code{\link{stepPattern}}.
+Other objects in \code{\link[=stepPattern]{stepPattern()}}.
 }
 \author{
 Toni Giorgino

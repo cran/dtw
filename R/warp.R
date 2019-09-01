@@ -1,13 +1,22 @@
-###############################################################
-#                                                             #
-#   (c) Toni Giorgino <toni.giorgino,gmail.com>           #
-#       Istituto di Neuroscienze (IN-CNR)                 #
-#       Consiglio Nazionale delle Ricerche                           #
-#       www.isib.cnr.it                                    #
-#                                                             #
-#   $Id$
-#                                                             #
-###############################################################
+
+##
+## Copyright (c) 2006-2019 of Toni Giorgino
+##
+## This file is part of the DTW package.
+##
+## DTW is free software: you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
+##
+## DTW is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public
+## License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with DTW.  If not, see <http://www.gnu.org/licenses/>.
+##
 
 
 ## Apply the warping curve to a given timeseries. If the curve is
@@ -46,18 +55,18 @@
 #' 
 #' The warping is returned as a set of indices, which can be used to subscript
 #' the timeseries to be warped (or rows in a matrix, if one wants to warp a
-#' multivariate time series).  In other words, \code{warp} converts the warping
+#' multivariate time series).  In other words, `warp` converts the warping
 #' curve, or its inverse, into a function in the explicit form.
 #' 
 #' Multiple indices that would be mapped to a single point are averaged, with a
 #' warning. Gaps in the index sequence are filled by linear interpolation.
 #' 
-#' @param d \code{dtw} object specifying the warping curve to apply
-#' @param index.reference \code{TRUE} to warp a reference, \code{FALSE} to warp
+#' @param d `dtw` object specifying the warping curve to apply
+#' @param index.reference `TRUE` to warp a reference, `FALSE` to warp
 #' a query
 #' @return A list of indices to subscript the timeseries.
 #' @author Toni Giorgino
-#' @seealso Examples in \code{\link{dtw}} show how to \emph{graphically} apply
+#' @seealso Examples in [dtw()] show how to *graphically* apply
 #' the warping via parametric plots.
 #' @keywords ts
 #' @examples
@@ -139,3 +148,4 @@ warp <- function(d,index.reference=FALSE) {
 ## > plot(query);lines(st)
 ## > plot(query,type="l");points(st)
 ## > 
+

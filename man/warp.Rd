@@ -72,7 +72,7 @@ plot(query,type="l",col="blue",
 
 }
 \seealso{
-Examples in \code{\link{dtw}} show how to \emph{graphically} apply
+Examples in \code{\link[=dtw]{dtw()}} show how to \emph{graphically} apply
 the warping via parametric plots.
 }
 \author{

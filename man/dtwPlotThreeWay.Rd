@@ -55,7 +55,7 @@ to be plotted. The corresponding style is customized via the
 
 If \code{xts} and \code{yts} are not supplied, they will be recovered from
 \code{d}, as long as it was created with the two-argument call of
-\code{\link{dtw}} with \code{keep.internals=T}.  Only single-variate time
+\code{\link[=dtw]{dtw()}} with \code{keep.internals=TRUE}.  Only single-variate time
 series can be plotted.
 }
 \section{Warning}{
@@ -95,7 +95,12 @@ hi <- (1:length(alignment$index1))[hw];   # get the indices of TRUE elems
 dtwPlotThreeWay(alignment,match.indices=hi);
 
 }
+\seealso{
+Other plot: \code{\link{dtwPlotDensity}},
+  \code{\link{dtwPlotTwoWay}}, \code{\link{dtwPlot}}
+}
 \author{
 Toni Giorgino
 }
+\concept{plot}
 \keyword{hplot}

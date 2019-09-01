@@ -1,12 +1,21 @@
-/* 
- * Compute global cost matrix - companion
- * to the dtw R package
- * (c) Toni Giorgino  2007-2012
- * Distributed under GPL-2 with NO WARRANTY.
- *
- * $Id$
- *  
- */
+//
+// Copyright (c) 2006-2019 of Toni Giorgino
+//
+// This file is part of the DTW package.
+//
+// DTW is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// DTW is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+// or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public
+// License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with DTW.  If not, see <http://www.gnu.org/licenses/>.
+//
 
 
 #include <stdlib.h>
@@ -14,21 +23,22 @@
 #include <math.h>
 
 
-#ifdef TEST_UNIT
+#ifdef DTW_R
+    #include <R.h>
+    #define EXPORT_FLAG static
+#else
 // Define R-like functions - a bad idea
      #include <limits.h>
      #define R_NaInt INT_MIN
      #define R_alloc(n,size) alloca((n)*(size))
      #define error(...) { fprintf (stderr, __VA_ARGS__); exit(-1); }
-#else
-     #include <R.h>
+     #define EXPORT_FLAG
 #endif
 
 
 
-
 #ifndef NAN
-#error "This code requires native IEEE NAN support. Possible solutions: 1) verify you are using gcc with -std=gnu99; 2) use the fallback interpreted DTW version (should happen automatically); 3) ask the author"
+#error "This code requires native IEEE NAN support. Verify you are using gcc with -std=gnu99"
 #endif
 
 
@@ -71,13 +81,13 @@ int argmin(const double *list, int n) {
  */
 
 /* For now, this code is also valid outside R, as a test unit (the
-   TEST_UNIT will be defined). This means that we have to refrain to
+   STANDALONE will be defined). This means that we have to refrain to
    use R-specific functions, such as R_malloc, or conditionally
-   provide replacements when TEST_UNIT is defined */
+   provide replacements when STANDALONE is defined */
 
 /* R matrix fastest index is row */
 
-static void computeCM(			/* IN */
+EXPORT_FLAG void computeCM(			/* IN */
 	       const int *s,		/* mtrx dimensions, int */
 	       const int *wm,		/* windowing matrix, logical=int */
 	       const double *lm,	/* local cost mtrx, numeric */
@@ -179,7 +189,7 @@ static void computeCM(			/* IN */
  * Wrapper for .Call, avoids several copies. Returns a list with names
  * "costMatrix" and "directionMatrix"
  */
-#ifndef TEST_UNIT
+#ifdef DTW_R
 #include <Rdefines.h>
 #include <Rinternals.h>
 
