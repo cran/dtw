@@ -8,8 +8,13 @@
 \usage{
 \method{plot}{dtw}(x, type = "alignment", ...)
 
-dtwPlotAlignment(d, xlab = "Query index", ylab = "Reference index",
-  plot.type = "l", ...)
+dtwPlotAlignment(
+  d,
+  xlab = "Query index",
+  ylab = "Reference index",
+  plot.type = "l",
+  ...
+)
 }
 \arguments{
 \item{x, d}{\code{dtw} object, usually result of call to \code{\link[=dtw]{dtw()}}}
@@ -79,9 +84,10 @@ plot(alignment, type="density",
 \code{\link[=dtwPlotTwoWay]{dtwPlotTwoWay()}}, \code{\link[=dtwPlotThreeWay]{dtwPlotThreeWay()}} and  \code{\link[=dtwPlotDensity]{dtwPlotDensity()}} for details
 on the respective plotting styles.
 
-Other plot: \code{\link{dtwPlotDensity}},
-  \code{\link{dtwPlotThreeWay}},
-  \code{\link{dtwPlotTwoWay}}
+Other plot: 
+\code{\link{dtwPlotDensity}()},
+\code{\link{dtwPlotThreeWay}()},
+\code{\link{dtwPlotTwoWay}()}
 }
 \author{
 Toni Giorgino

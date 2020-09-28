@@ -19,14 +19,6 @@
 ##
 
 
-## Compute a dissimilarity matrix, akin to "dist", analogue/distance,
-## vegan/vegdist, etc. , based on the dtw "distance" measure.
-
-
-## Apply FUN to all row pairs
-
-
-
 
 #' Compute a dissimilarity matrix
 #' 
@@ -38,7 +30,7 @@
 #' single-variate timeseries.
 #' 
 #' The `dtwDist` command is a synonym for the [proxy::dist()]
-#' function of package \pkg{proxy}; the DTW distance is registered as
+#' function of package \CRANpkg{proxy}; the DTW distance is registered as
 #' `method="DTW"` (see examples below).
 #' 
 #' The timeseries are stored as rows in the matrix argument `m`. In other
@@ -63,9 +55,6 @@
 #' a symmetric [dist()] object, use a suitable conversion strategy
 #' (see examples).
 #' @author Toni Giorgino
-#' @seealso Other "distance" functions are: [dist()],
-#' [vegan::vegdist()] in package `vegan`,
-#' [analogue::distance()] in package `analogue`, etc.
 #' @keywords ts
 #' @examples
 #' 

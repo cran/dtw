@@ -19,16 +19,19 @@
 
 
 
-#ifndef _DTW_H
-#define _DTW_H
+#ifndef _DTW_CORE_H
+#define _DTW_CORE_H
 
-#include <Rinternals.h> // for SEXP
-
-// extern void computeCM(const int *s, const int *wm, const double *lm, const int *nstepsp, const double *dir, double *cm, int *sm);
-extern SEXP computeCM_Call(SEXP wm, SEXP lm, SEXP cm, SEXP dir);
-extern void triangle_fixing_l2(double *D, int *maxiter_p, const int *n_p, 
-                               const double *kappa_p, double *delta_p);
+void computeCM(                 /* IN */
+    const int *s,            /* mtrx dimensions, int */
+    const int *wm,           /* windowing matrix, logical=int */
+    const double *lm,        /* local cost mtrx, numeric */
+    const int *nstepsp,      /* no of steps in stepPattern, int */
+    const double *dir,       /* stepPattern description, numeric */
+    /* IN+OUT */
+    double *cm,              /* cost matrix, numeric */
+    /* OUT */
+    int *sm                  /* direction mtrx, int */
+) ;
 
 #endif
-
-

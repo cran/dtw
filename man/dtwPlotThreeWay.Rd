@@ -4,10 +4,21 @@
 \alias{dtwPlotThreeWay}
 \title{Plotting of dynamic time warp results: annotated warping function}
 \usage{
-dtwPlotThreeWay(d, xts = NULL, yts = NULL, type.align = "l",
-  type.ts = "l", match.indices = NULL, margin = 4,
-  inner.margin = 0.2, title.margin = 1.5, xlab = "Query index",
-  ylab = "Reference index", main = "Timeseries alignment", ...)
+dtwPlotThreeWay(
+  d,
+  xts = NULL,
+  yts = NULL,
+  type.align = "l",
+  type.ts = "l",
+  match.indices = NULL,
+  margin = 4,
+  inner.margin = 0.2,
+  title.margin = 1.5,
+  xlab = "Query index",
+  ylab = "Reference index",
+  main = "Timeseries alignment",
+  ...
+)
 }
 \arguments{
 \item{d}{an alignment result, object of class \code{dtw}}
@@ -96,8 +107,10 @@ dtwPlotThreeWay(alignment,match.indices=hi);
 
 }
 \seealso{
-Other plot: \code{\link{dtwPlotDensity}},
-  \code{\link{dtwPlotTwoWay}}, \code{\link{dtwPlot}}
+Other plot: 
+\code{\link{dtwPlotDensity}()},
+\code{\link{dtwPlotTwoWay}()},
+\code{\link{dtwPlot}()}
 }
 \author{
 Toni Giorgino

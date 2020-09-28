@@ -40,9 +40,9 @@
 #' The local distance between elements of `x` (query) and `y`
 #' (reference) can be computed in one of the following ways:
 #' 
-#'  1. if `dist.method` is a string, `x` and `y` are passed to the [proxy::dist()] function in package \pkg{proxy} with the method given; 
+#'  1. if `dist.method` is a string, `x` and `y` are passed to the [proxy::dist()] function in package \CRANpkg{proxy} with the method given; 
 #'  2. if `dist.method` is a function of two arguments, it invoked repeatedly on all pairs `x[i],y[j]` to build the local cost matrix; 
-#'  3. multivariate time series and arbitrary distance metrics can be handled by supplying a local-distance matrix. Element `[i,j]` of the local-distance matrix is understood as the distance between element `x[i]` and `y[j]`. The distance matrix has therefore `n=length(x)` rows and `m=length(y)` columns (see note below).  
+#'  3. multivariate time series and arbitrary distance metrics can be handled by supplying a precomputed local cost matrix. Element `[i,j]` of the local cost matrix is understood as the distance between element `x[i]` and `y[j]`. The distance matrix has therefore `n=length(x)` rows and `m=length(y)` columns (see note below).  
 #' 
 #' Several common variants of the DTW recursion are supported via the
 #' `step.pattern` argument, which defaults to `symmetric2`. Step
@@ -83,9 +83,9 @@
 #' 
 #' @aliases is.dtw print.dtw
 #' @param x query vector *or* local cost matrix
-#' @param y reference vector, unused if `x` given as cost matrix
+#' @param y reference vector, or NULL if `x` given as a local cost matrix
 #' @param dist.method pointwise (local) distance function to use. See
-#' [proxy::dist()] in package \pkg{proxy}
+#' [proxy::dist()] in package \CRANpkg{proxy}
 #' @param step.pattern a stepPattern object describing the local warping steps
 #' allowed with their cost (see [stepPattern()])
 #' @param window.type windowing function. Character: "none", "itakura",
@@ -123,39 +123,36 @@
 #' [dtwWindowingFunctions()], for windowing and global constraints;
 #' [stepPattern()], step patterns and local constraints;
 #' [plot.dtw()], plot methods for DTW objects.  To generate a local
-#' distance matrix, the functions [proxy::dist()] in package
-#' \pkg{proxy}, [analogue::distance()] in package \pkg{analogue},
-#' [outer()] may come handy.
+#' cost matrix, the functions [proxy::dist()],
+#' `analogue::distance()`, `vegan::vegdist()`, or [outer()] may come handy.
 #' @references
 #' 1. Toni Giorgino. *Computing and Visualizing Dynamic Time
 #' Warping Alignments in R: The dtw Package.* Journal of Statistical Software,
-#' 31(7), 1-24. <http://www.jstatsoft.org/v31/i07/>
+#' 31(7), 1-24.  \doi{10.18637/jss.v031.i07}
 #' 2. Tormene, P.;
 #' Giorgino, T.; Quaglini, S. & Stefanelli, M. *Matching incomplete time
 #' series with dynamic time warping: an algorithm and an application to
 #' post-stroke rehabilitation.* Artif Intell Med, 2009, 45, 11-34.
-#' <http://dx.doi.org/10.1016/j.artmed.2008.11.007>
+#' \doi{10.1016/j.artmed.2008.11.007}
 #' 3. Sakoe, H.;
 #' Chiba, S., *Dynamic programming algorithm optimization for spoken word
 #' recognition,* Acoustics, Speech, and Signal Processing,
 #' IEEE Transactions on , vol.26, no.1, pp. 43-49, Feb 1978.
-#' <http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=1163055> 
+#'  \doi{10.1109/TASSP.1978.1163055}
 #' 4. Mori, A.; Uchida, S.; Kurazume, R.; Taniguchi, R.; Hasegawa, T. & Sakoe, H.
-#' *Early Recognition and Prediction of Gestures* Proc. 18th International
-#' Conference on Pattern Recognition ICPR 2006, 2006, 3, 560-563
+#' *Early Recognition and Prediction of Gestures* Proc. 18th International 
+#' Conference on Pattern Recognition ICPR 2006, 2006, 3, 560-563 \doi{10.1109/ICPR.2006.467}
 #' 5. Sakoe,
 #' H. *Two-level DP-matching--A dynamic programming-based pattern matching
 #' algorithm for connected word recognition* Acoustics, Speech, and Signal
-#' Processing, IEEE
-#' Transactions on, 1979, 27, 588-595
+#' Processing, IEEE Transactions on, 1979, 27, 588-595 \doi{10.1109/TASSP.1979.1163310}
 #' 6. Rabiner L, Rosenberg A, Levinson
 #' S (1978). *Considerations in dynamic time warping algorithms for
 #' discrete word recognition.* IEEE Trans. Acoust., Speech, Signal Process.,
-#' 26(6), 575-582. ISSN 0096-3518.
+#' 26(6), 575-582.  \doi{10.1109/TASSP.1978.1163164}
 #' 7. Muller M. *Dynamic Time
 #' Warping* in *Information Retrieval for Music and Motion*. Springer
-#' Berlin Heidelberg; 2007. p. 69-84.
-#' <http://link.springer.com/chapter/10.1007/978-3-540-74048-3_4>
+#' Berlin Heidelberg; 2007. p. 69-84. \doi{10.1007/978-3-540-74048-3_4}
 #' @keywords ts
 #' @concept Dynamic Time Warp
 #' @concept Dynamic programming
@@ -259,7 +256,7 @@
 #' 
 #' 
 #' 
-#' 
+#' @import proxy
 #' @export dtw
 `dtw` <-
 function(x, y=NULL,
@@ -288,9 +285,9 @@ function(x, y=NULL,
       x <- as.matrix(x);
       y <- as.matrix(y);
       if( (ncol(x)==1 || ncol(y)==1) && !missing(dist.method) )
-          warning("Argument dist.method is only useful with multivariate timeseries")
-      if(!is.character(dist.method)) 
-          stop("dist.method should be a method name supported by proxy::dist()");
+          warning("Argument dist.method does not usually make a difference with single-variate timeseries")
+      if(!proxy::pr_DB$entry_exists(dist.method)) 
+          stop("dist.method should be one of the method names supported by proxy::dist()");
       lm <- proxy::dist(x,y,method=dist.method);
   } 
   

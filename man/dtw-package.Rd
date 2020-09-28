@@ -37,7 +37,7 @@ types; see \code{\link[=stepPattern]{stepPattern()}}:
 
 Multivariate timeseries can be aligned with arbitrary local distance
 definitions, leveraging the \code{\link[proxy:dist]{proxy::dist()}} function of package
-\pkg{proxy}. DTW itself becomes a distance function with the dist semantics.
+\CRANpkg{proxy}. DTW itself becomes a distance function with the dist semantics.
 
 In addition to computing alignments, the package provides:
 \itemize{
@@ -50,7 +50,7 @@ and more.
 
 If you use this software, please cite it according to
 \code{citation("dtw")}.  The package home page is at
-\url{http://dtw.r-forge.r-project.org}.
+\url{https://dynamictimewarping.github.io}.
 }
 \examples{
 
@@ -62,10 +62,11 @@ If you use this software, please cite it according to
 \itemize{
 \item Toni Giorgino. \emph{Computing and Visualizing Dynamic Time
 Warping Alignments in R: The dtw Package.} Journal of Statistical Software,
-31(7), 1-24. \url{http://www.jstatsoft.org/v31/i07/}
+31(7), 1-24. \doi{10.18637/jss.v031.i07}
 \item Tormene, P.; Giorgino, T.; Quaglini, S. & Stefanelli, M. \emph{Matching incomplete time
 series with dynamic time warping: an algorithm and an application to
 post-stroke rehabilitation.} Artif Intell Med, 2009, 45, 11-34
+\doi{10.1016/j.artmed.2008.11.007}
 \item Rabiner, L. R., & Juang, B.-H. (1993). Chapter 4 in \emph{Fundamentals of
 speech recognition.} Englewood Cliffs, NJ: Prentice Hall.
 }
@@ -74,8 +75,8 @@ speech recognition.} Englewood Cliffs, NJ: Prentice Hall.
 \code{\link[=dtw]{dtw()}} for the main entry point to the package;
 \code{\link[=dtwWindowingFunctions]{dtwWindowingFunctions()}} for global constraints;
 \code{\link[=stepPattern]{stepPattern()}} for local constraints;
-\code{\link[analogue:distance]{analogue::distance()}}, \code{\link[=outer]{outer()}} for building a local
-cost matrix with multivariate timeseries and custom distance functions.
+\code{\link[proxy:dist]{proxy::dist()}}, \code{analogue::distance()}, \code{vegan::vegdist()} to build local
+cost matrices for multivariate timeseries and custom distance functions.
 }
 \author{
 Toni Giorgino

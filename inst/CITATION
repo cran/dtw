@@ -10,12 +10,12 @@ bibentry(bibtype = "Article",
            volume       = "31",
            number       = "7",
            pages        = "1--24",
-           url          = "http://www.jstatsoft.org/v31/i07/",
+           doi          = "10.18637/jss.v031.i07"
 
            ## textVersion  = paste("Toni Giorgino (2009).",
            ##   "Computing and Visualizing Dynamic Time Warping Alignments in R: The dtw Package.",
            ##   "Journal of Statistical Software, 31(7), 1-24.",
-           ##   "URL http://www.jstatsoft.org/v31/i07/"),
+           ##   "URL https://www.jstatsoft.org/v31/i07/"),
 )
 
 bibentry(bibtype = "Article",
@@ -32,6 +32,7 @@ bibentry(bibtype = "Article",
            number       = "1",
            pages        = "11--34",
            doi          = "10.1016/j.artmed.2008.11.007"
+           
            ## url          = "http://dx.doi.org/10.1016/j.artmed.2008.11.007",
 
            ## textVersion  =  paste("Paolo Tormene, Toni Giorgino, Silvana Quaglini, Mario Stefanelli (2008).",

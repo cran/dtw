@@ -1,19 +1,27 @@
 Package: dtw
 Type: Package
 Title: Dynamic Time Warping Algorithms
-Description: A comprehensive implementation of dynamic time warping (DTW) algorithms in R.  DTW computes the optimal (least cumulative distance) alignment between points of two time series.  Common DTW variants covered include local (slope) and global (window) constraints, subsequence matches, arbitrary distance definitions, normalizations, minimum variance matching, and so on.  Provides cumulative distances, alignments, specialized plot styles, etc.
-Author: Toni Giorgino <toni.giorgino@gmail.com>,
-Maintainer: Toni Giorgino <toni.giorgino@gmail.com>
-Version: 1.21-3
-Date: 2019-8-17
+Description: A comprehensive implementation of dynamic time warping
+    (DTW) algorithms in R.  DTW computes the optimal (least cumulative
+    distance) alignment between points of two time series.  Common DTW
+    variants covered include local (slope) and global (window)
+    constraints, subsequence matches, arbitrary distance definitions,
+    normalizations, minimum variance matching, and so on.  Provides
+    cumulative distances, alignments, specialized plot styles, etc.,
+    as described in Giorgino (2009) <doi:10.18637/jss.v031.i07>.
+Authors@R: c(person("Toni","Giorgino",email="toni.giorgino@gmail.com",role=c("aut","cre")))
+Version: 1.22-3
+Date: 2020-9-26
 Depends: R (>= 2.10.0), proxy
 Imports: graphics, grDevices, stats, utils
 License: GPL (>= 2)
 URL: https://dynamictimewarping.github.io/,
         http://dtw.r-forge.r-project.org/
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.1
 Encoding: UTF-8
 NeedsCompilation: yes
-Packaged: 2019-09-01 06:26:40 UTC; toni
+Packaged: 2020-09-28 12:13:21 UTC; toni
+Author: Toni Giorgino [aut, cre]
+Maintainer: Toni Giorgino <toni.giorgino@gmail.com>
 Repository: CRAN
-Date/Publication: 2019-09-01 06:50:02 UTC
+Date/Publication: 2020-09-28 13:40:07 UTC

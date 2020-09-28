@@ -4,8 +4,13 @@
 \alias{dtwPlotDensity}
 \title{Display the cumulative cost density with the warping path overimposed}
 \usage{
-dtwPlotDensity(d, normalize = FALSE, xlab = "Query index",
-  ylab = "Reference index", ...)
+dtwPlotDensity(
+  d,
+  normalize = FALSE,
+  xlab = "Query index",
+  ylab = "Reference index",
+  ...
+)
 }
 \arguments{
 \item{d}{an alignment result, object of class \code{dtw}}
@@ -56,7 +61,9 @@ dtwPlotDensity(ita,
 
 }
 \seealso{
-Other plot: \code{\link{dtwPlotThreeWay}},
-  \code{\link{dtwPlotTwoWay}}, \code{\link{dtwPlot}}
+Other plot: 
+\code{\link{dtwPlotThreeWay}()},
+\code{\link{dtwPlotTwoWay}()},
+\code{\link{dtwPlot}()}
 }
 \concept{plot}

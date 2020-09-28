@@ -18,7 +18,7 @@
 ##
 
 
-PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"`
+# PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"`
 PKG_CPPFLAGS = -DDTW_R
 
 
@@ -34,7 +34,7 @@ all: $(SHLIB)
 
 
 clean:
-	-rm computeCM.o dtw.o test_computeCM
+	-rm dtw_core.o dtw_R.o test_dtw_core
 
 # Allow building a stand alone executable with test main method
 # Usage: make -f Makevars test_computeCM
@@ -43,7 +43,7 @@ clean:
 TEST_UNIT_CFLAGS=-std=gnu99 -g -O2 -DTEST_UNIT -Wall -pedantic
 TEST_UNIT_LOADLIBES=
 
-test_computeCM: computeCM.c 
+test_dtw_core: dtw_core.c 
 	$(CC) $(TEST_UNIT_CFLAGS) $< -o $@  $(TEST_UNIT_LOADLIBES)
 
 

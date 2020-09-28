@@ -146,21 +146,21 @@ sense.)\preformatted{  Subtype | Rule       | Norm | Unbiased
 
 Sakoe-Chiba (Sakoe1978) discuss a family of slope-constrained patterns; they
 are implemented as shown in page 47, table I.  Here, they are called
-\code{symmetricP<x>} and \code{asymmetricP<x>}, where \code{<x>} corresponds
+\verb{symmetricP<x>} and \verb{asymmetricP<x>}, where \verb{<x>} corresponds
 to Sakoe's integer slope parameter \emph{P}.  Values available are
 accordingly: \code{0} (no constraint), \code{1}, \code{05} (one half) and
 \code{2}. See (Sakoe1978) for details.
 
 \strong{4. The Rabiner-Myers set}
 
-The \code{type<XX><y>} step patterns follow the older Rabiner-Myers'
+The \verb{type<XX><y>} step patterns follow the older Rabiner-Myers'
 classification proposed in (Myers1980) and (MRR1980). Note that this is a
 subset of the Rabiner-Juang set (Rabiner1993), and the latter should be
-preferred in order to avoid confusion. \code{<XX>} is a Roman numeral
-specifying the shape of the transitions; \code{<y>} is a letter in the range
+preferred in order to avoid confusion. \verb{<XX>} is a Roman numeral
+specifying the shape of the transitions; \verb{<y>} is a letter in the range
 \code{a-d} specifying the weighting used per step, as above; \code{typeIIx}
 patterns also have a version ending in \code{s}, meaning the smoothing is
-used (which does not permit skipping points). The \code{typeId, typeIId} and
+used (which does not permit skipping points). The \verb{typeId, typeIId} and
 \code{typeIIds} are unbiased and symmetric.
 
 \strong{5. Others}
@@ -243,34 +243,32 @@ structure(c(1, 3, 4, 4, 5, 2, 2, 3, 3, 4, 3, 1, 1, 1, 3, 4, 2,
 \itemize{
 \item (GiorginoJSS) Toni Giorgino. \emph{Computing and Visualizing
 Dynamic Time Warping Alignments in R: The dtw Package.} Journal of
-Statistical Software, 31(7), 1-24. \url{http://www.jstatsoft.org/v31/i07/}
+Statistical Software, 31(7), 1-24. \doi{10.18637/jss.v031.i07}
 \item (Itakura1975) Itakura, F., \emph{Minimum prediction residual
 principle applied to speech recognition,} Acoustics, Speech, and Signal
-Processing, IEEE
-Transactions on , vol.23, no.1, pp.  67-72, Feb 1975. URL:
-\url{http://dx.doi.org/10.1109/TASSP.1975.1162641}
+Processing, IEEE Transactions on , vol.23, no.1, pp.  67-72, Feb 1975.
+\doi{10.1109/TASSP.1975.1162641}
 \item (MRR1980) Myers,
 C.; Rabiner, L. & Rosenberg, A. \emph{Performance tradeoffs in dynamic time
 warping algorithms for isolated word recognition}, IEEE Trans. Acoust.,
-Speech, Signal Process., 1980, 28, 623-635. URL:
-\url{http://dx.doi.org/10.1109/TASSP.1980.1163491}
+Speech, Signal Process., 1980, 28, 623-635.
+\doi{10.1109/TASSP.1980.1163491}
 \item (Mori2006) Mori,
 A.; Uchida, S.; Kurazume, R.; Taniguchi, R.; Hasegawa, T. & Sakoe, H. Early
 Recognition and Prediction of Gestures Proc. 18th International Conference
-on Pattern Recognition ICPR 2006, 2006, 3, 560-563. URL:
-\url{http://dx.doi.org/10.1109/ICPR.2006.467}
+on Pattern Recognition ICPR 2006, 2006, 3, 560-563.
+\doi{10.1109/ICPR.2006.467}
 \item (Myers1980) Myers,
 Cory S.  \emph{A Comparative Study Of Several Dynamic Time Warping
 Algorithms For Speech Recognition}, MS and BS thesis, Dept. of Electrical
 Engineering and Computer Science, Massachusetts Institute of Technology,
-archived Jun 20 1980, \url{http://hdl.handle.net/1721.1/27909}
+archived Jun 20 1980, \url{https://hdl.handle.net/1721.1/27909}
 \item (Rabiner1993) Rabiner, L. R., & Juang, B.-H. (1993). \emph{Fundamentals of
 speech recognition.} Englewood Cliffs, NJ: Prentice Hall.
 \item (Sakoe1978) Sakoe, H.; Chiba, S., \emph{Dynamic programming algorithm
 optimization for spoken word recognition,} Acoustics, Speech, and Signal
-Processing, IEEE
-Transactions on , vol.26, no.1, pp. 43-49, Feb 1978 URL:
-\url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=1163055}
+Processing, IEEE Transactions on , vol.26, no.1, pp. 43-49, Feb 1978
+\doi{10.1109/TASSP.1978.1163055}
 }
 }
 \seealso{

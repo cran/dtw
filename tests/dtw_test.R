@@ -3,12 +3,12 @@ suppressPackageStartupMessages(library(dtw));
 ### Synthetic example: check indexes, distance, cost matrix
 ldist<-matrix(1,nrow=6,ncol=6);  # Matrix of ones
 ldist[2,]<-0; ldist[,5]<-0;      # Mark a clear path of zeroes
-ldist[2,5]<-.01;		 # Forcely cut the corner
+ldist[2,5]<-.01;		 # Forcibly cut the corner
 
 ds<-dtw(ldist,keep=T);		 # DTW with user-supplied local cost matrix
 ds$distance			 # 2
-ds$index1			 # 1 2 2 2 2 3 4 5 6 6
-ds$index2			 # 1 1 2 3 4 5 5 5 5 6
+ds$index1			 
+ds$index2			 
 ds$costMatrix
 
 da<-dtw(ldist,step=asymmetric);	 # Also compute the asymmetric
@@ -20,6 +20,13 @@ da<-dtw(ldist,step=asymmetricP0);	 # The strange aP0 alignment
 da$distance			 # 1
 da$index1			 # 1 2 2 2 2 3 4 5 6 6
 da$index2			 # 1 1 2 3 4 5 5 5 5 6
+
+da<-dtw(ldist,step=asymmetricP1);	 # Multi-step
+da$distance			 # 3
+da$index1			 # 1 2 3 3 4 5 6
+da$index1s                       # 1 2 3 5 6
+da$index2			 # 1 2 3 4 5 5 6
+da$index2s			 # 1 2 4 5 6
 
 ### Count paths
 stopifnot(countPaths(ds)==1683)     

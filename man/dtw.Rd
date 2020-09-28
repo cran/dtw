@@ -6,10 +6,18 @@
 \alias{print.dtw}
 \title{Dynamic Time Warp}
 \usage{
-dtw(x, y = NULL, dist.method = "Euclidean",
-  step.pattern = symmetric2, window.type = "none",
-  keep.internals = FALSE, distance.only = FALSE, open.end = FALSE,
-  open.begin = FALSE, ...)
+dtw(
+  x,
+  y = NULL,
+  dist.method = "Euclidean",
+  step.pattern = symmetric2,
+  window.type = "none",
+  keep.internals = FALSE,
+  distance.only = FALSE,
+  open.end = FALSE,
+  open.begin = FALSE,
+  ...
+)
 
 is.dtw(d)
 
@@ -18,10 +26,10 @@ is.dtw(d)
 \arguments{
 \item{x}{query vector \emph{or} local cost matrix}
 
-\item{y}{reference vector, unused if \code{x} given as cost matrix}
+\item{y}{reference vector, or NULL if \code{x} given as a local cost matrix}
 
 \item{dist.method}{pointwise (local) distance function to use. See
-\code{\link[proxy:dist]{proxy::dist()}} in package \pkg{proxy}}
+\code{\link[proxy:dist]{proxy::dist()}} in package \CRANpkg{proxy}}
 
 \item{step.pattern}{a stepPattern object describing the local warping steps
 allowed with their cost (see \code{\link[=stepPattern]{stepPattern()}})}
@@ -46,7 +54,7 @@ the following items:
 \itemize{
 \item \code{distance} the minimum global distance computed, \emph{not} normalized.
 \item \code{normalizedDistance} distance computed, \emph{normalized} for path length, if normalization is known for chosen step pattern.
-\item \code{N,M} query and reference length
+\item \verb{N,M} query and reference length
 \item \code{call} the function call that created the object
 \item \code{index1} matched elements: indices in \code{x}
 \item \code{index2} corresponding mapped indices in \code{y}
@@ -54,9 +62,9 @@ the following items:
 \item \code{jmin} last element of reference matched, if \code{open.end=TRUE}
 \item \code{directionMatrix} if \code{keep.internals=TRUE}, the directions of steps that would be taken at each alignment pair (integers indexing  production rules in the chosen step pattern)
 \item \code{stepsTaken} the list of steps taken from the beginning to the end of the alignment (integers indexing chosen step pattern)
-\item \code{index1s, index2s} same as \code{index1/2}, excluding intermediate steps for multi-step patterns like \code{\link[=asymmetricP05]{asymmetricP05()}}
+\item \verb{index1s, index2s} same as \code{index1/2}, excluding intermediate steps for multi-step patterns like \code{\link[=asymmetricP05]{asymmetricP05()}}
 \item \code{costMatrix} if \code{keep.internals=TRUE}, the cumulative cost matrix
-\item \code{query, reference} if \code{keep.internals=TRUE} and passed as the \code{x} and \code{y} arguments, the query and reference timeseries.
+\item \verb{query, reference} if \code{keep.internals=TRUE} and passed as the \code{x} and \code{y} arguments, the query and reference timeseries.
 }
 }
 \description{
@@ -72,9 +80,9 @@ aligned elements. Lengths of \code{x} and \code{y} may differ.
 The local distance between elements of \code{x} (query) and \code{y}
 (reference) can be computed in one of the following ways:
 \enumerate{
-\item if \code{dist.method} is a string, \code{x} and \code{y} are passed to the \code{\link[proxy:dist]{proxy::dist()}} function in package \pkg{proxy} with the method given;
-\item if \code{dist.method} is a function of two arguments, it invoked repeatedly on all pairs \code{x[i],y[j]} to build the local cost matrix;
-\item multivariate time series and arbitrary distance metrics can be handled by supplying a local-distance matrix. Element \code{[i,j]} of the local-distance matrix is understood as the distance between element \code{x[i]} and \code{y[j]}. The distance matrix has therefore \code{n=length(x)} rows and \code{m=length(y)} columns (see note below).
+\item if \code{dist.method} is a string, \code{x} and \code{y} are passed to the \code{\link[proxy:dist]{proxy::dist()}} function in package \CRANpkg{proxy} with the method given;
+\item if \code{dist.method} is a function of two arguments, it invoked repeatedly on all pairs \verb{x[i],y[j]} to build the local cost matrix;
+\item multivariate time series and arbitrary distance metrics can be handled by supplying a precomputed local cost matrix. Element \verb{[i,j]} of the local cost matrix is understood as the distance between element \code{x[i]} and \code{y[j]}. The distance matrix has therefore \code{n=length(x)} rows and \code{m=length(y)} columns (see note below).
 }
 
 Several common variants of the DTW recursion are supported via the
@@ -110,7 +118,7 @@ Please find a review in Tormene et al. (2009).
 
 If the warping function is not required, computation can be sped up enabling
 the \code{distance.only=TRUE} switch, which skips the backtracking step. The
-output object will then lack the \code{index{1,2,1s,2s}} and
+output object will then lack the \verb{index\{1,2,1s,2s\}} and
 \code{stepsTaken} fields.
 
 \code{is.dtw} tests whether the argument is of class \code{dtw}.
@@ -220,39 +228,36 @@ da$distance;
 
 
 
-
 }
 \references{
 \enumerate{
 \item Toni Giorgino. \emph{Computing and Visualizing Dynamic Time
 Warping Alignments in R: The dtw Package.} Journal of Statistical Software,
-31(7), 1-24. \url{http://www.jstatsoft.org/v31/i07/}
+31(7), 1-24.  \doi{10.18637/jss.v031.i07}
 \item Tormene, P.;
 Giorgino, T.; Quaglini, S. & Stefanelli, M. \emph{Matching incomplete time
 series with dynamic time warping: an algorithm and an application to
 post-stroke rehabilitation.} Artif Intell Med, 2009, 45, 11-34.
-\url{http://dx.doi.org/10.1016/j.artmed.2008.11.007}
+\doi{10.1016/j.artmed.2008.11.007}
 \item Sakoe, H.;
 Chiba, S., \emph{Dynamic programming algorithm optimization for spoken word
 recognition,} Acoustics, Speech, and Signal Processing,
 IEEE Transactions on , vol.26, no.1, pp. 43-49, Feb 1978.
-\url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=1163055}
+\doi{10.1109/TASSP.1978.1163055}
 \item Mori, A.; Uchida, S.; Kurazume, R.; Taniguchi, R.; Hasegawa, T. & Sakoe, H.
 \emph{Early Recognition and Prediction of Gestures} Proc. 18th International
-Conference on Pattern Recognition ICPR 2006, 2006, 3, 560-563
+Conference on Pattern Recognition ICPR 2006, 2006, 3, 560-563 \doi{10.1109/ICPR.2006.467}
 \item Sakoe,
 H. \emph{Two-level DP-matching--A dynamic programming-based pattern matching
 algorithm for connected word recognition} Acoustics, Speech, and Signal
-Processing, IEEE
-Transactions on, 1979, 27, 588-595
+Processing, IEEE Transactions on, 1979, 27, 588-595 \doi{10.1109/TASSP.1979.1163310}
 \item Rabiner L, Rosenberg A, Levinson
 S (1978). \emph{Considerations in dynamic time warping algorithms for
 discrete word recognition.} IEEE Trans. Acoust., Speech, Signal Process.,
-26(6), 575-582. ISSN 0096-3518.
+26(6), 575-582.  \doi{10.1109/TASSP.1978.1163164}
 \item Muller M. \emph{Dynamic Time
 Warping} in \emph{Information Retrieval for Music and Motion}. Springer
-Berlin Heidelberg; 2007. p. 69-84.
-\url{http://link.springer.com/chapter/10.1007/978-3-540-74048-3_4}
+Berlin Heidelberg; 2007. p. 69-84. \doi{10.1007/978-3-540-74048-3_4}
 }
 }
 \seealso{
@@ -260,9 +265,8 @@ Berlin Heidelberg; 2007. p. 69-84.
 \code{\link[=dtwWindowingFunctions]{dtwWindowingFunctions()}}, for windowing and global constraints;
 \code{\link[=stepPattern]{stepPattern()}}, step patterns and local constraints;
 \code{\link[=plot.dtw]{plot.dtw()}}, plot methods for DTW objects.  To generate a local
-distance matrix, the functions \code{\link[proxy:dist]{proxy::dist()}} in package
-\pkg{proxy}, \code{\link[analogue:distance]{analogue::distance()}} in package \pkg{analogue},
-\code{\link[=outer]{outer()}} may come handy.
+cost matrix, the functions \code{\link[proxy:dist]{proxy::dist()}},
+\code{analogue::distance()}, \code{vegan::vegdist()}, or \code{\link[=outer]{outer()}} may come handy.
 }
 \author{
 Toni Giorgino

@@ -1,3 +1,12 @@
+1.22-3
+        Documentation cleanups
+
+1.22-1
+        Cleanups for the C parts, merge with Python
+
+1.21-4
+        Clarifications in dist.method
+
 1.21-3
         Documentation twaks for consistency with Python (dtw-python)
 

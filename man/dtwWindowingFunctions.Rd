@@ -70,8 +70,8 @@ package.  See example below for a demonstration of the difference between a
 local the two.
 
 The \code{slantedBandWindow} (package-specific) is a band centered around
-the (jagged) line segment which joins element \code{[1,1]} to element
-\code{[query.size,reference.size]}, and will be \code{window.size} columns
+the (jagged) line segment which joins element \verb{[1,1]} to element
+\verb{[query.size,reference.size]}, and will be \code{window.size} columns
 wide. In other words, the "diagonal" goes from one corner to the other of
 the possibly rectangular cost matrix, therefore having a slope of
 \code{M/N}, not 1.
@@ -119,14 +119,12 @@ dtwPlot(asyband,type="density",main="Sine/cosine: asymmetric step, S-C window")
 \enumerate{
 \item Sakoe, H.; Chiba, S., \emph{Dynamic programming algorithm
 optimization for spoken word recognition,} Acoustics, Speech, and Signal
-Processing, IEEE
-Transactions on , vol.26, no.1, pp. 43-49, Feb 1978 URL:
-\url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=1163055}
+Processing, IEEE Transactions on , vol.26, no.1, pp. 43-49, Feb 1978
+\doi{10.1109/TASSP.1978.1163055}
 \item Itakura, F., \emph{Minimum prediction residual principle applied to
 speech recognition,} Acoustics, Speech, and Signal Processing,
 IEEE Transactions on , vol.23, no.1, pp.
-67-72, Feb 1975. URL:
-\url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=1162641}
+67-72, Feb 1975. \doi{10.1109/TASSP.1975.1162641}
 }
 }
 \author{

@@ -4,9 +4,20 @@
 \alias{dtwPlotTwoWay}
 \title{Plotting of dynamic time warp results: pointwise comparison}
 \usage{
-dtwPlotTwoWay(d, xts = NULL, yts = NULL, offset = 0, ts.type = "l",
-  pch = 21, match.indices = NULL, match.col = "gray70",
-  match.lty = 3, xlab = "Index", ylab = "Query value", ...)
+dtwPlotTwoWay(
+  d,
+  xts = NULL,
+  yts = NULL,
+  offset = 0,
+  ts.type = "l",
+  pch = 21,
+  match.indices = NULL,
+  match.col = "gray70",
+  match.lty = 3,
+  xlab = "Index",
+  ylab = "Query value",
+  ...
+)
 }
 \arguments{
 \item{d}{an alignment result, object of class \code{dtw}}
@@ -99,8 +110,10 @@ legend("topright",c("Query","Reference (rt. axis)"), pch=21, col=1:6)
 \code{\link[=dtwPlot]{dtwPlot()}} for other dtw plotting functions,
 \code{\link[=matplot]{matplot()}} for graphical parameters.
 
-Other plot: \code{\link{dtwPlotDensity}},
-  \code{\link{dtwPlotThreeWay}}, \code{\link{dtwPlot}}
+Other plot: 
+\code{\link{dtwPlotDensity}()},
+\code{\link{dtwPlotThreeWay}()},
+\code{\link{dtwPlot}()}
 }
 \author{
 Toni Giorgino

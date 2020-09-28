@@ -14,7 +14,7 @@ dtwDist(mx, my = mx, ...)
 \item{...}{arguments passed to the \code{\link[=dtw]{dtw()}} call}
 }
 \value{
-A square matrix whose element \code{[i,j]} holds the Dynamic Time
+A square matrix whose element \verb{[i,j]} holds the Dynamic Time
 Warp distance between row \code{i} (query) and \code{j} (reference) of
 \code{mx} and \code{my}, i.e.  \code{dtw(mx[i,],my[j,])$distance}.
 }
@@ -27,7 +27,7 @@ based on the Dynamic Time Warping definition of a distance between
 single-variate timeseries.
 
 The \code{dtwDist} command is a synonym for the \code{\link[proxy:dist]{proxy::dist()}}
-function of package \pkg{proxy}; the DTW distance is registered as
+function of package \CRANpkg{proxy}; the DTW distance is registered as
 \code{method="DTW"} (see examples below).
 
 The timeseries are stored as rows in the matrix argument \code{m}. In other
@@ -112,11 +112,6 @@ stopifnot(dm[2,1]==dtw(mm[2,],mm[1,],step=asymmetric)$distance)
 
 
 
-}
-\seealso{
-Other "distance" functions are: \code{\link[=dist]{dist()}},
-\code{\link[vegan:vegdist]{vegan::vegdist()}} in package \code{vegan},
-\code{\link[analogue:distance]{analogue::distance()}} in package \code{analogue}, etc.
 }
 \author{
 Toni Giorgino

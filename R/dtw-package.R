@@ -49,7 +49,7 @@
 #' 
 #' Multivariate timeseries can be aligned with arbitrary local distance
 #' definitions, leveraging the [proxy::dist()] function of package
-#' \pkg{proxy}. DTW itself becomes a distance function with the dist semantics.
+#' \CRANpkg{proxy}. DTW itself becomes a distance function with the dist semantics.
 #' 
 #' In addition to computing alignments, the package provides:
 #'  * methods for plotting alignments and warping functions in several classic
@@ -60,7 +60,7 @@
 #' 
 #' If you use this software, please cite it according to
 #' `citation("dtw")`.  The package home page is at
-#' <http://dtw.r-forge.r-project.org>.
+#' <https://dynamictimewarping.github.io>.
 #' 
 #' @name dtw-package
 #' @docType package
@@ -70,15 +70,16 @@
 #' @seealso [dtw()] for the main entry point to the package;
 #' [dtwWindowingFunctions()] for global constraints;
 #' [stepPattern()] for local constraints;
-#' [analogue::distance()], [outer()] for building a local
-#' cost matrix with multivariate timeseries and custom distance functions.
+#' [proxy::dist()], `analogue::distance()`, `vegan::vegdist()` to build local
+#' cost matrices for multivariate timeseries and custom distance functions.
 #' @references
 #'  * Toni Giorgino. *Computing and Visualizing Dynamic Time
 #' Warping Alignments in R: The dtw Package.* Journal of Statistical Software,
-#' 31(7), 1-24. <http://www.jstatsoft.org/v31/i07/> 
+#' 31(7), 1-24. \doi{10.18637/jss.v031.i07}
 #'  * Tormene, P.; Giorgino, T.; Quaglini, S. & Stefanelli, M. *Matching incomplete time
 #' series with dynamic time warping: an algorithm and an application to
 #' post-stroke rehabilitation.* Artif Intell Med, 2009, 45, 11-34 
+#' \doi{10.1016/j.artmed.2008.11.007}
 #'  * Rabiner, L. R., & Juang, B.-H. (1993). Chapter 4 in *Fundamentals of
 #' speech recognition.* Englewood Cliffs, NJ: Prentice Hall.
 #' @keywords package ts

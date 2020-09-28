@@ -62,7 +62,7 @@ plot(al,main="Minimum Variance Matching alignment")
 \references{
 Latecki, L. J.; Megalooikonomou, V.; Wang, Q. & Yu, D.
 \emph{An elastic partial shape matching technique} Pattern Recognition,
-2007, 40, 3069-3080. \url{http://dx.doi.org/10.1016/j.patcog.2007.03.004}
+2007, 40, 3069-3080. \doi{10.1016/j.patcog.2007.03.004}
 }
 \seealso{
 Other objects in \code{\link[=stepPattern]{stepPattern()}}.

@@ -6,7 +6,9 @@
 \alias{aami3a}
 \alias{aami3b}
 \title{ANSI/AAMI EC13 Test Waveforms, 3a and 3b}
-\format{Time-series objects (class \code{ts}).}
+\format{
+Time-series objects (class \code{ts}).
+}
 \source{
 \url{https://www.physionet.org/content/aami-ec13/1.0.0/}
 }
