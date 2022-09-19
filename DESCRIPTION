@@ -10,18 +10,18 @@ Description: A comprehensive implementation of dynamic time warping
     cumulative distances, alignments, specialized plot styles, etc.,
     as described in Giorgino (2009) <doi:10.18637/jss.v031.i07>.
 Authors@R: c(person("Toni","Giorgino",email="toni.giorgino@gmail.com",role=c("aut","cre")))
-Version: 1.22-3
-Date: 2020-9-26
+Version: 1.23-1
+Date: 2022-9-19
 Depends: R (>= 2.10.0), proxy
 Imports: graphics, grDevices, stats, utils
 License: GPL (>= 2)
 URL: https://dynamictimewarping.github.io/,
         http://dtw.r-forge.r-project.org/
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.1
 Encoding: UTF-8
 NeedsCompilation: yes
-Packaged: 2020-09-28 12:13:21 UTC; toni
+Packaged: 2022-09-19 17:02:06 UTC; toni
 Author: Toni Giorgino [aut, cre]
 Maintainer: Toni Giorgino <toni.giorgino@gmail.com>
 Repository: CRAN
-Date/Publication: 2020-09-28 13:40:07 UTC
+Date/Publication: 2022-09-19 17:36:11 UTC

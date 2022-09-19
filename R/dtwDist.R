@@ -42,7 +42,7 @@
 #' `dtwDist` returns a square matrix, whereas the `dist` object is
 #' lower-triangular. This makes sense because in general the DTW "distance" is
 #' not symmetric (see e.g.  asymmetric step patterns).  To make a square matrix
-#' with the [proxy::dist()] function sematics, use the two-arguments
+#' with the [proxy::dist()] function semantics, use the two-arguments
 #' call as `dist(m,m)`. This will return a square `crossdist` object.
 #' 
 #' @param mx numeric matrix, containing timeseries as rows

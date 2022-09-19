@@ -66,7 +66,9 @@ A step pattern characterizes the matching model and slope constraint
 specific of a DTW variant. They also known as local- or slope-constraints,
 transition types, production or recursion rules (GiorginoJSS).
 
-\strong{Pre-defined step patterns}\preformatted{   ## Well-known step patterns
+\strong{Pre-defined step patterns}
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{   ## Well-known step patterns
    symmetric1
    symmetric2
    asymmetric
@@ -89,7 +91,7 @@ transition types, production or recursion rules (GiorginoJSS).
    ## Miscellaneous
    mori2006;
    rigid;
-}
+}\if{html}{\out{</div>}}
 
 A variety of classification schemes have been proposed for step patterns, including
 Sakoe-Chiba (Sakoe1978); Rabiner-Juang (Rabiner1993); and Rabiner-Myers
@@ -134,13 +136,15 @@ Each family has four slope weighting sub-types, named in sec. 4.7.2.5 as
 \code{slope.weighting}, as in the table below. Furthermore, each subtype can
 be either plain or smoothed (figure 4.44); smoothing is enabled setting the
 logical argument \code{smoothed}.  (Not all combinations of arguments make
-sense.)\preformatted{  Subtype | Rule       | Norm | Unbiased 
+sense.)
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{  Subtype | Rule       | Norm | Unbiased 
   --------|------------|------|---------
      a    | min step   |  --  |   NO 
      b    | max step   |  --  |   NO 
      c    | Di step    |   N  |  YES 
      d    | Di+Dj step | N+M  |  YES 
-}
+}\if{html}{\out{</div>}}
 
 \strong{3. The Sakoe-Chiba set}
 

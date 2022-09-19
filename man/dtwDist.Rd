@@ -39,7 +39,7 @@ elements long.
 \code{dtwDist} returns a square matrix, whereas the \code{dist} object is
 lower-triangular. This makes sense because in general the DTW "distance" is
 not symmetric (see e.g.  asymmetric step patterns).  To make a square matrix
-with the \code{\link[proxy:dist]{proxy::dist()}} function sematics, use the two-arguments
+with the \code{\link[proxy:dist]{proxy::dist()}} function semantics, use the two-arguments
 call as \code{dist(m,m)}. This will return a square \code{crossdist} object.
 }
 \note{

@@ -1,3 +1,6 @@
+1.23-1
+        Workaround for the special case of open.begin + rigid pattern
+
 1.22-3
         Documentation cleanups
 

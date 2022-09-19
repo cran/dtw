@@ -326,9 +326,14 @@ function(x, y=NULL,
     lm <- rbind(0,lm);
     np <- n+1;
 
-    ##  pre-initialize elements in the cumulative cost matrix
+    ## pre-initialize elements in the cumulative cost matrix
     precm <- matrix(NA,nrow=np,ncol=m);
     precm[1,] <- 0;
+    
+    ## Work-around for https://github.com/DynamicTimeWarping/dtw-python/issues/36
+    if(identical(step.pattern,rigid)) {
+        precm[2,1] <- lm[2,1]
+    }
 
   } else {
     precm <- NULL;
