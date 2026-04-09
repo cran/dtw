@@ -25,7 +25,7 @@
 #' Compute the dissimilarity matrix between a set of single-variate timeseries.
 #' 
 #' 
-#' `dtwDist` computes a dissimilarity matrix, akin to [dist()],
+#' `dtwDist` computes a dissimilarity matrix, akin to [proxy::dist()],
 #' based on the Dynamic Time Warping definition of a distance between
 #' single-variate timeseries.
 #' 
@@ -52,7 +52,7 @@
 #' Warp distance between row `i` (query) and `j` (reference) of
 #' `mx` and `my`, i.e.  `dtw(mx[i,],my[j,])$distance`.
 #' @note To convert a square cross-distance matrix (`crossdist` object) to
-#' a symmetric [dist()] object, use a suitable conversion strategy
+#' a symmetric [proxy::dist()] object, use a suitable conversion strategy
 #' (see examples).
 #' @author Toni Giorgino
 #' @keywords ts

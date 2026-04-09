@@ -163,7 +163,7 @@ lines(1:100-25,col="red")
 
 alignmentOBE <-
   dtw(query[44:88],reference,
-      keep=TRUE,step=asymmetric,
+      keep.internals=TRUE,step.pattern=asymmetric,
       open.end=TRUE,open.begin=TRUE);
 plot(alignmentOBE,type="two",off=1);
 
@@ -193,9 +193,9 @@ points(reference[alignment$index2]~alignment$index1)
 ## See more plots in ?plot.dtw 
 ##
 
-## keep = TRUE so we can look into the cost matrix
+## keep.internals = TRUE so we can look into the cost matrix
 
-alignment<-dtw(query,reference,keep=TRUE);
+alignment<-dtw(query,reference,keep.internals=TRUE);
 
 contour(alignment$costMatrix,col=terrain.colors(100),x=1:100,y=1:100,
 	xlab="Query (noisy sine)",ylab="Reference (cosine)");
@@ -216,7 +216,7 @@ ldist[2,5]<-.01;		 # Forcely cut the corner
 
 ds<-dtw(ldist);			 # DTW with user-supplied local
                                  #   cost matrix
-da<-dtw(ldist,step=asymmetric);	 # Also compute the asymmetric 
+da<-dtw(ldist,step.pattern=asymmetric);	 # Also compute the asymmetric 
 plot(ds$index1,ds$index2,pch=3); # Symmetric: alignment follows
                                  #   the low-distance marked path
 points(da$index1,da$index2,col="red");  # Asymmetric: visiting
@@ -224,6 +224,40 @@ points(da$index1,da$index2,col="red");  # Asymmetric: visiting
 
 ds$distance;
 da$distance;
+
+
+
+#########
+##
+## A multivariate alignment example
+##
+
+## Reference: one lap around the unit circle
+t.ref <- seq(0, 2*pi, length.out = 100)
+reference <- cbind(cos(t.ref), sin(t.ref))
+
+## Query: same path, traversed with a nonlinear time axis
+u <- seq(0, 1, length.out = 70)
+t.query <- 2*pi*(u^1.5)
+query <- cbind(cos(t.query), sin(t.query))
+
+## Explicitly choose the local distance for the multivariate samples
+alignment.mv <- dtw(query, reference,
+                    dist.method = "Euclidean",
+                    keep.internals = TRUE)
+
+## Equivalent precomputed local cost matrix:
+## local.cost <- proxy::dist(query, reference, method = "Euclidean")
+## alignment.mv <- dtw(local.cost, keep.internals = TRUE)
+
+plot(reference, type = "l", asp = 1, col = "black",
+     xlab = "x", ylab = "y",
+     main = "Multivariate alignment: same path, different timing")
+lines(query, col = "blue")
+
+plot(alignment.mv$index1, alignment.mv$index2, type = "l",
+     xlab = "query index", ylab = "reference index",
+     main = "Warping function for multivariate alignment")
 
 
 

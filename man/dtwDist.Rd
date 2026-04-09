@@ -22,7 +22,7 @@ Warp distance between row \code{i} (query) and \code{j} (reference) of
 Compute the dissimilarity matrix between a set of single-variate timeseries.
 }
 \details{
-\code{dtwDist} computes a dissimilarity matrix, akin to \code{\link[=dist]{dist()}},
+\code{dtwDist} computes a dissimilarity matrix, akin to \code{\link[proxy:dist]{proxy::dist()}},
 based on the Dynamic Time Warping definition of a distance between
 single-variate timeseries.
 
@@ -44,7 +44,7 @@ call as \code{dist(m,m)}. This will return a square \code{crossdist} object.
 }
 \note{
 To convert a square cross-distance matrix (\code{crossdist} object) to
-a symmetric \code{\link[=dist]{dist()}} object, use a suitable conversion strategy
+a symmetric \code{\link[proxy:dist]{proxy::dist()}} object, use a suitable conversion strategy
 (see examples).
 }
 \examples{

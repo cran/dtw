@@ -62,8 +62,8 @@ dtwPlotDensity(ita,
 }
 \seealso{
 Other plot: 
+\code{\link{dtwPlot}()},
 \code{\link{dtwPlotThreeWay}()},
-\code{\link{dtwPlotTwoWay}()},
-\code{\link{dtwPlot}()}
+\code{\link{dtwPlotTwoWay}()}
 }
 \concept{plot}

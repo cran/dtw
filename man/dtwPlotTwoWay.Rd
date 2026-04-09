@@ -111,9 +111,9 @@ legend("topright",c("Query","Reference (rt. axis)"), pch=21, col=1:6)
 \code{\link[=matplot]{matplot()}} for graphical parameters.
 
 Other plot: 
+\code{\link{dtwPlot}()},
 \code{\link{dtwPlotDensity}()},
-\code{\link{dtwPlotThreeWay}()},
-\code{\link{dtwPlot}()}
+\code{\link{dtwPlotThreeWay}()}
 }
 \author{
 Toni Giorgino

@@ -63,7 +63,6 @@
 #' <https://dynamictimewarping.github.io>.
 #' 
 #' @name dtw-package
-#' @docType package
 #' @author Toni Giorgino
 #'
 #' 
@@ -89,7 +88,7 @@
 #'  library(dtw);
 #'  ## demo(dtw);
 #' 
-NULL
+"_PACKAGE"
 
 
 
@@ -109,7 +108,6 @@ NULL
     
     # invisible()
 }
-
 
 
 

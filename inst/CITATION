@@ -21,7 +21,7 @@ bibentry(bibtype = "Article",
 bibentry(bibtype = "Article",
            header = "For partial matching and normalization strategies also cite:",
            title        = "Matching Incomplete Time Series with Dynamic Time Warping: An Algorithm and an Application to Post-Stroke Rehabilitation",
-           author       = personList(
+           author       = c(
              as.person("Paolo Tormene"),
              as.person("Toni Giorgino"),
              as.person("Silvana Quaglini"),
@@ -40,4 +40,3 @@ bibentry(bibtype = "Article",
            ##   "Artificial Intelligence in Medicine, 45(1), 11-34.",
            ##   "doi:10.1016/j.artmed.2008.11.007"),
 )
-
