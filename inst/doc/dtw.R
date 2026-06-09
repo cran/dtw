@@ -205,5 +205,3 @@ dtwPlotThreeWay(alignment,match.indices=hi)
 ###################################################
 dtw(query,reference,keep=TRUE,step=asymmetric)->alignment
 dtwPlotDensity(alignment,normalize=TRUE)
-
-

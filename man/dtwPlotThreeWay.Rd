@@ -107,10 +107,10 @@ dtwPlotThreeWay(alignment,match.indices=hi);
 
 }
 \seealso{
-Other plot: 
-\code{\link{dtwPlot}()},
-\code{\link{dtwPlotDensity}()},
-\code{\link{dtwPlotTwoWay}()}
+Other plot:
+\code{\link[=dtwPlot]{dtwPlot()}},
+\code{\link[=dtwPlotDensity]{dtwPlotDensity()}},
+\code{\link[=dtwPlotTwoWay]{dtwPlotTwoWay()}}
 }
 \author{
 Toni Giorgino

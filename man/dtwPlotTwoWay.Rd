@@ -110,10 +110,10 @@ legend("topright",c("Query","Reference (rt. axis)"), pch=21, col=1:6)
 \code{\link[=dtwPlot]{dtwPlot()}} for other dtw plotting functions,
 \code{\link[=matplot]{matplot()}} for graphical parameters.
 
-Other plot: 
-\code{\link{dtwPlot}()},
-\code{\link{dtwPlotDensity}()},
-\code{\link{dtwPlotThreeWay}()}
+Other plot:
+\code{\link[=dtwPlot]{dtwPlot()}},
+\code{\link[=dtwPlotDensity]{dtwPlotDensity()}},
+\code{\link[=dtwPlotThreeWay]{dtwPlotThreeWay()}}
 }
 \author{
 Toni Giorgino

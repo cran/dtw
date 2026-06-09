@@ -84,10 +84,10 @@ plot(alignment, type="density",
 \code{\link[=dtwPlotTwoWay]{dtwPlotTwoWay()}}, \code{\link[=dtwPlotThreeWay]{dtwPlotThreeWay()}} and  \code{\link[=dtwPlotDensity]{dtwPlotDensity()}} for details
 on the respective plotting styles.
 
-Other plot: 
-\code{\link{dtwPlotDensity}()},
-\code{\link{dtwPlotThreeWay}()},
-\code{\link{dtwPlotTwoWay}()}
+Other plot:
+\code{\link[=dtwPlotDensity]{dtwPlotDensity()}},
+\code{\link[=dtwPlotThreeWay]{dtwPlotThreeWay()}},
+\code{\link[=dtwPlotTwoWay]{dtwPlotTwoWay()}}
 }
 \author{
 Toni Giorgino

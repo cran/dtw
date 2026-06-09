@@ -10,17 +10,17 @@ Description: A comprehensive implementation of dynamic time warping
     cumulative distances, alignments, specialized plot styles, etc.,
     as described in Giorgino (2009) <doi:10.18637/jss.v031.i07>.
 Authors@R: person("Toni","Giorgino",email="toni.giorgino@gmail.com",role=c("aut","cre"))
-Version: 1.23-2
-Date: 2026-4-8
+Version: 1.23-3
+Date: 2026-6-8
 Depends: R (>= 2.10.0), proxy
 Imports: graphics, grDevices, stats, utils
 License: GPL (>= 2)
 URL: https://dynamictimewarping.github.io/
-RoxygenNote: 7.3.3
 Encoding: UTF-8
+Config/roxygen2/version: 8.0.0
 NeedsCompilation: yes
-Packaged: 2026-04-08 23:10:49 UTC; toni
+Packaged: 2026-06-09 10:02:03 UTC; toni
 Author: Toni Giorgino [aut, cre]
 Maintainer: Toni Giorgino <toni.giorgino@gmail.com>
 Repository: CRAN
-Date/Publication: 2026-04-09 05:10:45 UTC
+Date/Publication: 2026-06-09 11:10:02 UTC

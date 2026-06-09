@@ -47,6 +47,7 @@
 #' @return A step pattern object.
 #' @author Toni Giorgino
 #' @seealso Other objects in [stepPattern()].
+#' @family step patterns
 #' @references Latecki, L. J.; Megalooikonomou, V.; Wang, Q. & Yu, D.
 #' *An elastic partial shape matching technique* Pattern Recognition,
 #' 2007, 40, 3069-3080. \doi{10.1016/j.patcog.2007.03.004}

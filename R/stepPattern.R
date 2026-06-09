@@ -172,12 +172,6 @@
 #' that roles of query and reference become reversed.
 #'
 #'
-#' @aliases stepPattern is.stepPattern print.stepPattern t.stepPattern
-#' plot.stepPattern symmetric1 symmetric2 asymmetric rabinerJuangStepPattern
-#' symmetricP0 asymmetricP0 symmetricP05 asymmetricP05 symmetricP1 asymmetricP1
-#' symmetricP2 asymmetricP2 typeIa typeIas typeIb typeIbs typeIc typeIcs typeId
-#' typeIds typeIIa typeIIb typeIIc typeIId typeIIIc typeIVc mori2006 rigid
-#' @export symmetric1 symmetric2 asymmetric rabinerJuangStepPattern  symmetricP0 asymmetricP0 symmetricP05 asymmetricP05 symmetricP1 asymmetricP1  symmetricP2 asymmetricP2 typeIa typeIas typeIb typeIbs typeIc typeIcs typeId typeIds typeIIa typeIIb typeIIc typeIId typeIIIc typeIVc mori2006 rigid
 #' @param x a step pattern object
 #' @param type path specification, integer 1..7 (see (Rabiner1993), table 4.5)
 #' @param slope.weighting slope weighting rule: character `"a"` to `"d"` (see (Rabiner1993), sec. 4.7.2.5)
@@ -185,6 +179,7 @@
 #' @param ... additional arguments to [print()].
 #' @note Constructing `stepPattern` objects is tricky and thus undocumented. For a commented example please see source code for  `symmetricP1`.
 #' @author Toni Giorgino
+#' @family step patterns
 #' @seealso [mvmStepPattern()], implementing Latecki's Minimal
 #' Variance Matching algorithm.
 #' @references
@@ -283,6 +278,7 @@ stepPattern <- function(v,norm=NA) {
   return(obj);
 }
 
+#' @rdname stepPattern
 #' @export
 is.stepPattern <- function(x) {
   return(inherits(x,"stepPattern"));
@@ -818,6 +814,8 @@ rabinerJuangStepPattern <- function(type,slope.weighting="d",smoothed=FALSE) {
 ## White-Neely symmetric (default)
 ## aka Quasi-symmetric \cite{White1976}
 ## normalization: no (N+M?)
+#' @rdname stepPattern
+#' @export
 symmetric1 <- stepPattern(c(
                             1,1,1,-1,
                             1,0,0,1,
@@ -830,6 +828,8 @@ symmetric1 <- stepPattern(c(
 
 ## Normal symmetric
 ## normalization: N+M
+#' @rdname stepPattern
+#' @export
 symmetric2 <- stepPattern(c(
                             1,1,1,-1,
                             1,0,0,2,
@@ -842,6 +842,8 @@ symmetric2 <- stepPattern(c(
 
 ## classic asymmetric pattern: max slope 2, min slope 0
 ## normalization: N
+#' @rdname stepPattern
+#' @export
 asymmetric <-  stepPattern(c(
                              1,1,0,-1,
                              1,0,0,1,
@@ -906,9 +908,13 @@ asymmetric <-  stepPattern(c(
 
 
 ## Row P=0
+#' @rdname stepPattern
+#' @export
 symmetricP0 <- symmetric2;
 
 ## normalization: N ?
+#' @rdname stepPattern
+#' @export
 asymmetricP0 <- stepPattern(c(
                                   1,0,1,-1,
                                   1,0,0,0,
@@ -931,6 +937,8 @@ asymmetricP0 <- stepPattern(c(
 
 
 ## Row P=1/2
+#' @rdname stepPattern
+#' @export
 symmetricP05 <-  stepPattern(c(
                         1  ,  1, 3 , -1,
                         1  ,  0, 2 ,  2,
@@ -950,6 +958,8 @@ symmetricP05 <-  stepPattern(c(
                         5  ,  0, 0 ,  1
                                ),"N+M");
 
+#' @rdname stepPattern
+#' @export
 asymmetricP05 <-  stepPattern(c(
                         1  , 1 , 3 , -1,
                         1  , 0 , 2 ,1/3,
@@ -973,7 +983,8 @@ asymmetricP05 <-  stepPattern(c(
 
 ## Row P=1
 ## Implementation of Sakoe's P=1, Symmetric algorithm
-
+#' @rdname stepPattern
+#' @export
 symmetricP1 <- stepPattern(c(
                               1,1,2,-1,	# First branch: g(i-1,j-2)+
                               1,0,1,2,	#            + 2d(i  ,j-1)
@@ -985,6 +996,8 @@ symmetricP1 <- stepPattern(c(
                               3,0,0,1	#            +  d(  i,j)
                         ),"N+M");
 
+#' @rdname stepPattern
+#' @export
 asymmetricP1 <- stepPattern(c(
                               1, 1 , 2 , -1 ,
                               1, 0 , 1 , .5 ,
@@ -998,6 +1011,8 @@ asymmetricP1 <- stepPattern(c(
 
 
 ## Row P=2
+#' @rdname stepPattern
+#' @export
 symmetricP2 <- stepPattern(c(
 	1, 2, 3, -1,
 	1, 1, 2, 2,
@@ -1011,6 +1026,8 @@ symmetricP2 <- stepPattern(c(
 	3, 0, 0, 1
 ),"N+M");
 
+#' @rdname stepPattern
+#' @export
 asymmetricP2 <- stepPattern(c(
 	1, 2 , 3  , -1,
 	1, 1 , 2  ,2/3,
@@ -1064,7 +1081,8 @@ asymmetricP2 <- stepPattern(c(
 # type III    type IV
 # type IV     type VII
 
-
+#' @rdname stepPattern
+#' @export
 typeIa <-  stepPattern(c(
                          1, 2, 1, -1,
                          1, 1, 0,  1,
@@ -1076,6 +1094,8 @@ typeIa <-  stepPattern(c(
                          3, 0, 0,  0
  ));
 
+#' @rdname stepPattern
+#' @export
 typeIb <-  stepPattern(c(
                          1, 2, 1, -1,
                          1, 1, 0,  1,
@@ -1087,6 +1107,8 @@ typeIb <-  stepPattern(c(
                          3, 0, 0,  1
  ));
 
+#' @rdname stepPattern
+#' @export
 typeIc <-  stepPattern(c(
                          1, 2, 1, -1,
                          1, 1, 0,  1,
@@ -1098,6 +1120,8 @@ typeIc <-  stepPattern(c(
                          3, 0, 0,  0
  ),"N");
 
+#' @rdname stepPattern
+#' @export
 typeId <-  stepPattern(c(
                          1, 2, 1, -1,
                          1, 1, 0,  2,
@@ -1112,6 +1136,8 @@ typeId <-  stepPattern(c(
 ## ----------
 ## smoothed variants of above
 
+#' @rdname stepPattern
+#' @export
 typeIas <-  stepPattern(c(
                          1, 2, 1, -1,
                          1, 1, 0, .5,
@@ -1124,6 +1150,8 @@ typeIas <-  stepPattern(c(
  ));
 
 
+#' @rdname stepPattern
+#' @export
 typeIbs <-  stepPattern(c(
                          1, 2, 1, -1,
                          1, 1, 0,  1,
@@ -1136,6 +1164,8 @@ typeIbs <-  stepPattern(c(
  ));
 
 
+#' @rdname stepPattern
+#' @export
 typeIcs <-  stepPattern(c(
                          1, 2, 1, -1,
                          1, 1, 0,  1,
@@ -1148,6 +1178,8 @@ typeIcs <-  stepPattern(c(
  ),"N");
 
 
+#' @rdname stepPattern
+#' @export
 typeIds <-  stepPattern(c(
                          1, 2, 1, -1,
                          1, 1, 0, 1.5,
@@ -1166,6 +1198,8 @@ typeIds <-  stepPattern(c(
 
 ## ----------
 
+#' @rdname stepPattern
+#' @export
 typeIIa <- stepPattern(c(
                         1,  1,  1, -1,
                         1,  0,  0, 1,
@@ -1175,6 +1209,8 @@ typeIIa <- stepPattern(c(
                         3,  0,  0, 1
                         ));
 
+#' @rdname stepPattern
+#' @export
 typeIIb <- stepPattern(c(
                         1,  1,  1, -1,
                         1,  0,  0, 1,
@@ -1184,6 +1220,8 @@ typeIIb <- stepPattern(c(
                         3,  0,  0, 2
                         ));
 
+#' @rdname stepPattern
+#' @export
 typeIIc <- stepPattern(c(
                         1,  1,  1, -1,
                         1,  0,  0, 1,
@@ -1193,6 +1231,8 @@ typeIIc <- stepPattern(c(
                         3,  0,  0, 2
                         ),"N");
 
+#' @rdname stepPattern
+#' @export
 typeIId <- stepPattern(c(
                         1,  1,  1, -1,
                         1,  0,  0, 2,
@@ -1206,6 +1246,8 @@ typeIId <- stepPattern(c(
 
 ## Rabiner [3] discusses why this is not equivalent to Itakura's
 
+#' @rdname stepPattern
+#' @export
 typeIIIc <-  stepPattern(c(
                         1, 1, 2, -1,
 			1, 0, 0, 1,
@@ -1225,6 +1267,8 @@ typeIIIc <-  stepPattern(c(
 
 ## numbers follow as production rules in fig 2.16
 
+#' @rdname stepPattern
+#' @export
 typeIVc <-  stepPattern(c(
                           1,  1,  1,  -1,
                           1,  0,  0,   1,
@@ -1270,7 +1314,8 @@ typeIVc <-  stepPattern(c(
 ## International Conference on Pattern Recognition ICPR 2006, 2006, 3,
 ## 560-563
 ##
-
+#' @rdname stepPattern
+#' @export
 mori2006 <-  stepPattern(c(
                            1, 2, 1, -1,
                            1, 1, 0,  2,
@@ -1285,6 +1330,8 @@ mori2006 <-  stepPattern(c(
 
 ## Completely unflexible: fixed slope 1. Only makes sense with
 ## open.begin and open.end
+#' @rdname stepPattern
+#' @export
 rigid <- stepPattern(c(1,1,1,-1,
                        1,0,0,1  ),"N")
 

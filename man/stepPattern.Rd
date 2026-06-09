@@ -3,13 +3,13 @@
 \name{stepPattern}
 \alias{stepPattern}
 \alias{is.stepPattern}
-\alias{print.stepPattern}
 \alias{t.stepPattern}
 \alias{plot.stepPattern}
+\alias{print.stepPattern}
+\alias{rabinerJuangStepPattern}
 \alias{symmetric1}
 \alias{symmetric2}
 \alias{asymmetric}
-\alias{rabinerJuangStepPattern}
 \alias{symmetricP0}
 \alias{asymmetricP0}
 \alias{symmetricP05}
@@ -19,12 +19,12 @@
 \alias{symmetricP2}
 \alias{asymmetricP2}
 \alias{typeIa}
-\alias{typeIas}
 \alias{typeIb}
-\alias{typeIbs}
 \alias{typeIc}
-\alias{typeIcs}
 \alias{typeId}
+\alias{typeIas}
+\alias{typeIbs}
+\alias{typeIcs}
 \alias{typeIds}
 \alias{typeIIa}
 \alias{typeIIb}
@@ -36,6 +36,8 @@
 \alias{rigid}
 \title{Step patterns for DTW}
 \usage{
+is.stepPattern(x)
+
 \method{t}{stepPattern}(x)
 
 \method{plot}{stepPattern}(x, ...)
@@ -43,6 +45,60 @@
 \method{print}{stepPattern}(x, ...)
 
 rabinerJuangStepPattern(type, slope.weighting = "d", smoothed = FALSE)
+
+symmetric1
+
+symmetric2
+
+asymmetric
+
+symmetricP0
+
+asymmetricP0
+
+symmetricP05
+
+asymmetricP05
+
+symmetricP1
+
+asymmetricP1
+
+symmetricP2
+
+asymmetricP2
+
+typeIa
+
+typeIb
+
+typeIc
+
+typeId
+
+typeIas
+
+typeIbs
+
+typeIcs
+
+typeIds
+
+typeIIa
+
+typeIIb
+
+typeIIc
+
+typeIId
+
+typeIIIc
+
+typeIVc
+
+mori2006
+
+rigid
 }
 \arguments{
 \item{x}{a step pattern object}
@@ -278,8 +334,12 @@ Processing, IEEE Transactions on , vol.26, no.1, pp. 43-49, Feb 1978
 \seealso{
 \code{\link[=mvmStepPattern]{mvmStepPattern()}}, implementing Latecki's Minimal
 Variance Matching algorithm.
+
+Other step patterns:
+\code{\link{mvm}}
 }
 \author{
 Toni Giorgino
 }
+\concept{step patterns}
 \keyword{ts}

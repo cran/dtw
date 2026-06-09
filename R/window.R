@@ -64,14 +64,11 @@
 #' and `query.size` arguments.
 #' 
 #' @name dtwWindowingFunctions
-#' @aliases noWindow sakoeChibaWindow slantedBandWindow itakuraWindow
-#' dtwWindowingFunctions dtwWindow.plot
 #' @param iw index in the query (row) -- automatically set
 #' @param jw index in the reference (column) -- automatically set
 #' @param query.size size of the query time series -- automatically set
 #' @param reference.size size of the reference time series -- automatically set
-#' @param window.size window size, used by some windowing functions -- must be
-#' set
+#' @param window.size window size, used by some windowing functions -- must be set
 #' @param fun a windowing function
 #' @param ... additional arguments passed to windowing functions
 #' @return Windowing functions return `TRUE` if the coordinates passed as

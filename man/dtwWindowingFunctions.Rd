@@ -2,11 +2,11 @@
 % Please edit documentation in R/window.R
 \name{dtwWindowingFunctions}
 \alias{dtwWindowingFunctions}
-\alias{noWindow}
 \alias{sakoeChibaWindow}
 \alias{slantedBandWindow}
 \alias{itakuraWindow}
 \alias{dtwWindow.plot}
+\alias{noWindow}
 \title{Global constraints and windowing functions for DTW}
 \usage{
 sakoeChibaWindow(iw, jw, window.size, ...)
@@ -24,8 +24,7 @@ noWindow(iw, jw, ...)
 
 \item{jw}{index in the reference (column) -- automatically set}
 
-\item{window.size}{window size, used by some windowing functions -- must be
-set}
+\item{window.size}{window size, used by some windowing functions -- must be set}
 
 \item{...}{additional arguments passed to windowing functions}
 

@@ -66,8 +66,12 @@ Latecki, L. J.; Megalooikonomou, V.; Wang, Q. & Yu, D.
 }
 \seealso{
 Other objects in \code{\link[=stepPattern]{stepPattern()}}.
+
+Other step patterns:
+\code{\link[=stepPattern]{stepPattern()}}
 }
 \author{
 Toni Giorgino
 }
+\concept{step patterns}
 \keyword{ts}
